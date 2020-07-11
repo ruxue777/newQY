@@ -6,7 +6,7 @@ Vue.use(uView)
 Vue.config.productionTip = false
 
 App.mpType = 'app'
-
+//testasdasdasdasd
 const app = new Vue({
     ...App
 })
