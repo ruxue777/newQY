@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import {request} from '../../api/request.js'	
 	export default {
 	data() {
 		return {
@@ -23,6 +24,21 @@
 				text: '评论'
 			}],
 			show: true
+			
+		};
+	},
+	onLoad() {
+		this.getData()
+	},
+	methods:{
+		getData(){
+			let url = 'API_GetList_BusinessCircleSearch'
+			let data = {Keywords:'',
+						pageSize:8,
+						index:1}
+			request(url,data).then(res=>{
+				console.log(res)
+			})
 		}
 	}
 }
