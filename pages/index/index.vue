@@ -1,16 +1,23 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-		</view>
-		<u-action-sheet :list="list" v-model="show"></u-action-sheet>
+	<view>
+		<!-- <u-popup v-model="show">
+			<view>出淤泥而不染，濯清涟而不妖</view>
+		</u-popup>
+		<u-button @click="show = true">打开</u-button> -->
+		<top_seek></top_seek>
 	</view>
 </template>
 
 <script>
-import {request} from '../../api/request.js'	
-	export default {
+//请求组件
+import {request} from '../../api/request.js'
+//样式组件
+import top_seek from "./components/top_seek.vue";	
+	
+export default {
+	components:{
+		"top_seek":top_seek
+	},
 	data() {
 		return {
 			title:'test',
@@ -23,8 +30,8 @@ import {request} from '../../api/request.js'
 			}, {
 				text: '评论'
 			}],
-			show: true
-			
+			show: false,
+			keyword:''
 		};
 	},
 	onLoad() {
