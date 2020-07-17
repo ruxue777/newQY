@@ -1,19 +1,12 @@
 <template>
 	<view class="wrap">
-		<u-row gutter="12">
-			<u-col span="8">
-				<view class="demo-layout box-display">
-					<image class="location-img" src="../../../static/image/location.png"></image>
-					<text class="location-text">赣州市渡口路啊啊啊</text>
-				</view>
-			</u-col>
-			<u-col span="2">
-				<view class="demo-layout "></view>
-			</u-col>
-			<u-col span="2">
-				<view class="demo-layout "></view>
-			</u-col>
-		</u-row>
+		
+		<view class="demo-layout box-display">
+			<image class="location-img" src="../../../static/image/location.png"></image>
+			<view class="location-text">赣州市渡口路爱爱啊搜索啊
+				<image class="right-img" src="../../../static/image/small_rigth_pointer.png"></image>
+			</view>
+		</view>
 		
 		<u-row gutter="12">
 			<u-col span="12" @click="to_Search()">
@@ -22,7 +15,8 @@
 					<text class="search-text">幸福山庄养生</text>
 				</view>
 			</u-col>
-		</u-row>	
+		</u-row>	 
+		
 	</view>
 	
 </template>
@@ -36,7 +30,7 @@
 		},
 		methods: {
 			to_Search(){
-				
+				console.log('去搜索页面')
 			}
 		}
 	}
@@ -44,26 +38,32 @@
 
 <style lang="less" scoped>
 .wrap {
-	padding: 25rpx 20rpx 10rpx 20rpx;
+	padding: 55rpx 20rpx 10rpx 20rpx;
 	background-color: #FAE64F;
-}
-
-.u-row {
-	margin: 40rpx 0;
+	width: 100%;
+	height: 355rpx;
+	margin-bottom: -120rpx;
 }
 
 .demo-layout {
 	height: 55rpx;
 	border-radius: 8rpx;
 }
+.right-img{
+	height: 17rpx;
+	width: 11rpx;
+	margin-left: 20rpx;
+}
 .seek{
 	height: 70rpx;
-	margin-top: -25rpx;
+	width: 710rpx;
 	border-radius: 10rpx;
 	background:rgba(255,255,255,1);
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	position: absolute;
+	top: 135rpx;
 	
 	.search-img{
 		width: 36rpx;
@@ -86,10 +86,11 @@
 	height: 34rpx;
 }
 .location-text{
-	width: 360rpx;
+	width: 560rpx;
 	height: 45rpx;
 	font-size:36rpx;
 	font-weight: bold;
 	margin-left: 12rpx;
+	margin-top: -5rpx;
 }
 </style>

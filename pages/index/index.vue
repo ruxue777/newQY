@@ -1,7 +1,8 @@
 <template>
 	<view>
 		<topSeek></topSeek>
-		
+		<topSwiper :swiperData="swiperData"></topSwiper>
+		<centralNav></centralNav>
 	</view>
 </template>
 
@@ -10,26 +11,29 @@
 import {request} from '../../api/request.js'
 //样式组件
 import topSeek from "./components/topSeek.vue";	
+import topSwiper from "./components/topSwiper.vue";
+import centralNav from"./components/centralNav.vue"
 	
 export default {
 	components:{
-		"topSeek":topSeek
+		topSeek:topSeek,
+		topSwiper:topSwiper,
+		centralNav:centralNav
 	},
 	data() {
 		return {
-			
+			swiperData:[]
 		};
 	},
 	onLoad() {
-		this.getData()
+		this.getSwiperData()
 	},
 	methods:{
-		getData(){	
-						
-			request('API_GetList_BusinessCircleSearch',{Keywords:'',pageSize:8,index:1})
-				.then(res=>{
-					console.log(res)
-				})
+		//获得轮播图数据
+		getSwiperData(){				
+			request('API_GetList_IndexBanner').then(res=>{	
+				this.swiperData = res
+			})
 		}
 	}
 }
