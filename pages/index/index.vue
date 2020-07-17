@@ -3,6 +3,8 @@
 		<topSeek></topSeek>
 		<topSwiper :swiperData="swiperData"></topSwiper>
 		<centralNav></centralNav>
+		<zhixunlan></zhixunlan>
+		<bottomWaterfall></bottomWaterfall>
 	</view>
 </template>
 
@@ -13,12 +15,16 @@ import {request} from '../../api/request.js'
 import topSeek from "./components/topSeek.vue";	
 import topSwiper from "./components/topSwiper.vue";
 import centralNav from"./components/centralNav.vue"
-	
+import zhixunlan from "./components/zhixunlan.vue"
+import bottomWaterfall from "./components/bottomWaterfall.vue"
+
 export default {
 	components:{
 		topSeek:topSeek,
 		topSwiper:topSwiper,
-		centralNav:centralNav
+		centralNav:centralNav,
+		zhixunlan:zhixunlan,
+		bottomWaterfall:bottomWaterfall
 	},
 	data() {
 		return {
