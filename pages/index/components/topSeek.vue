@@ -3,7 +3,7 @@
 		
 		<view class="demo-layout box-display">
 			<image class="location-img" src="../../../static/image/location.png"></image>
-			<view class="location-text">赣州市渡口路爱爱啊搜索啊
+			<view class="location-text">{{LocationData}}
 				<image class="right-img" src="../../../static/image/small_rigth_pointer.png"></image>
 			</view>
 		</view>
@@ -23,6 +23,7 @@
 
 <script>
 	export default {
+		props:['LocationData'],
 		data() {
 			return {
 				keyword:''

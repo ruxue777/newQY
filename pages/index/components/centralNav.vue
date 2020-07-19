@@ -58,7 +58,7 @@
 				align-items: center;
 				
 				.shop-img{
-					width: 98rpx;
+					width: 94rpx;
 					height: 98rpx;
 					border-radius: 15rpx;
 					background-color: #74BEFF;

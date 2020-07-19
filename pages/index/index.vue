@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<topSeek></topSeek>
+		<topSeek :LocationData="LocationData"></topSeek>
 		<topSwiper :swiperData="swiperData"></topSwiper>
 		<centralNav :ShopListData="ShopListData"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->
@@ -9,23 +9,33 @@
 		
 		<!-- 瀑布流不支持组件形式 -->
 		<view class="wrap">
-			<u-waterfall v-model="flowList" ref="uWaterfall">
+			<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">
 				<template v-slot:left="{ leftList }">
 					<view class="demo-warter" v-for="(item, index) in leftList" :key="index">
 						<!-- 警告：微信小程序不支持嵌入lazyload组件，请自行如下使用image标签 -->
 						<!-- #ifndef MP-WEIXIN -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image" :index="index"></u-lazy-load>
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl " :index="index"></u-lazy-load>
 						<!-- #endif -->
 						<!-- #ifdef MP-WEIXIN -->
-						<view class="demo-img-wrap"><image class="demo-image" :src="item.image" mode="widthFix"></image></view>
+						<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl " mode="widthFix"></image></view>
 						<!-- #endif -->
-						<view class="demo-title">{{ item.title }}</view>
-						<view class="demo-price">{{ item.price }}元</view>
-						<view class="demo-tag">
-							<view class="demo-tag-owner">自营</view>
-							<view class="demo-tag-text">放心购</view>
+						<view class="demo-title">{{ item.BP_Name  }}</view>
+						<view class="demo-price">{{ item.BP_Amount  }}元
+							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 						</view>
-						<view class="demo-shop">{{ item.shop }}</view>
+						<view class="demo-tag">
+							<!-- <view class="demo-tag-owner">自营</view>
+							<view class="demo-tag-text">放心购</view> -->
+							<view class="subsidy">
+								test
+							</view>
+							<!-- <p class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
+								<span class="jintie">津贴</span>
+								<span class="diyong">可抵{{Math.floor(item.BP_IntegralConsumeAmount)}}元</span>
+							</p>
+							 -->
+						</view>
+						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
 						<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon>
 					</view>
@@ -33,18 +43,20 @@
 				<template v-slot:right="{ rightList }">
 					<view class="demo-warter" v-for="(item, index) in rightList" :key="index">
 						<!-- #ifndef MP-WEIXIN -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.image" :index="index"></u-lazy-load>
+						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl" :index="index"></u-lazy-load>
 						<!-- #endif -->
 						<!-- #ifdef MP-WEIXIN -->
-						<view class="demo-img-wrap"><image class="demo-image" :src="item.image" mode="widthFix"></image></view>
+						<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl" mode="widthFix"></image></view>
 						<!-- #endif -->
-						<view class="demo-title">{{ item.title }}</view>
-						<view class="demo-price">{{ item.price }}元</view>
+						<view class="demo-title">{{ item.BP_Name  }}</view>
+						<view class="demo-price">{{ item.BP_Amount  }}元
+							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
+						</view>
 						<view class="demo-tag">
 							<view class="demo-tag-owner">自营</view>
 							<view class="demo-tag-text">放心购</view>
 						</view>
-						<view class="demo-shop">{{ item.shop }}</view>
+						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
 						<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon>
 					</view>
@@ -59,6 +71,8 @@
 <script>
 //请求组件
 import {request} from '@/api/request.js'
+//QQ地图组件
+import QQMap_SDK from '@/SDK/qqmap-wx-jssdk.min.js'
 //样式组件
 import topSeek from "./components/topSeek.vue";	
 import topSwiper from "./components/topSwiper.vue";
@@ -78,94 +92,44 @@ export default {
 	},
 	data() {
 		return {
+			//轮播图数据
 			swiperData:[],
+			//商铺列表数据
 			ShopListData:[],
+			//热门列表数据
 			HotListData:[],
+			//热门商品列表
+			HotGoodsListData:[],
+			LatItude:'',
+			LongItude:'',
+			LocationData:'',
 			loadStatus: 'loadmore',
 			flowList: [],
-			list: [
-				{
-					price: 35,
-					title: '北国风光，千里冰封，万里雪飘',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23327_s.jpg'
-				},
-				{
-					price: 75,
-					title: '望长城内外，惟余莽莽',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic.sc.chinaz.com/Files/pic/pic9/202002/zzpic23325_s.jpg'
-				},
-				{
-					price: 385,
-					title: '大河上下，顿失滔滔',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg'
-				},
-				{
-					price: 784,
-					title: '欲与天公试比高',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/zzpic23369_s.jpg'
-				},
-				{
-					price: 7891,
-					title: '须晴日，看红装素裹，分外妖娆',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2130_s.jpg'
-				},
-				{
-					price: 2341,
-					shop: '李白杜甫白居易旗舰店',
-					title: '江山如此多娇，引无数英雄竞折腰',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23346_s.jpg'
-				},
-				{
-					price: 661,
-					shop: '李白杜甫白居易旗舰店',
-					title: '惜秦皇汉武，略输文采',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23344_s.jpg'
-				},
-				{
-					price: 1654,
-					title: '唐宗宋祖，稍逊风骚',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg'
-				},
-				{
-					price: 1678,
-					title: '一代天骄，成吉思汗',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg'
-				},
-				{
-					price: 924,
-					title: '只识弯弓射大雕',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg'
-				},
-				{
-					price: 8243,
-					title: '俱往矣，数风流人物，还看今朝',
-					shop: '李白杜甫白居易旗舰店',
-					image: 'http://pic1.sc.chinaz.com/Files/pic/pic9/202002/zzpic23343_s.jpg'
-				}
-			]
+			//当前页面数量
+			Index:1
 		};
 	},
 	onLoad() {
+		this.getLocationData()
 		this.getSwiperData();
 		this.getShopListData();
 		this.addRandomData();
 		this.getHotListData();
+		
 	},
 	onReachBottom() {
-		this.loadStatus = 'loading';
-		// 模拟数据加载
-		setTimeout(() => {
-			this.addRandomData();
-			this.loadStatus = 'loadmore';
-		}, 1000);
+		if(this.HotGoodsListData.length<this.Index*20){
+			this.loadStatus = 'nomore';
+			return;
+		}else{
+			this.Index++;
+			this.loadStatus = 'loading';
+			// 模拟数据加载效果
+			setTimeout(() => {
+				this.getHotGoodsListData();
+				this.loadStatus = 'loadmore';
+			}, 1000);
+		}
 	},
 	methods:{
 		//获得轮播图数据
@@ -184,18 +148,67 @@ export default {
 				this.HotListData = res
 			})
 		},
+		getHotGoodsListData(callBack){
+			request('API_GetList_BusinessProductSearch',{CategoryID:0,BusinessID:0,Keywords:'',
+						Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:1,IsBP:-1,
+							pageSize:20,index:this.Index})	
+			.then(res=>{
+				this.HotGoodsListData = [...this.HotGoodsListData,...res]
+				callBack && callBack()
+			})							
+		},
 		addRandomData() {
-			for (let i = 0; i < 10; i++) {
-				let index = this.$u.random(0, this.list.length - 1);
-				// 先转成字符串再转成对象，避免数组对象引用导致数据混乱
-				let item = JSON.parse(JSON.stringify(this.list[index]));
-				item.id = this.$u.guid();
-				this.flowList.push(item);
-			}
-		},		
-		clear() {
-			this.$refs.uWaterfall.clear();
-		}
+			console.log('触发')
+		},
+		getLocationData(){
+			const QQMapWx = new QQMap_SDK({
+				key:'FXCBZ-4H36W-FBDR5-O6E6O-KGQ27-MHB6U'
+			})
+			
+			uni.getLocation({
+				type:'gcj02',
+				geocode:true,
+				success: (res) => {
+					console.log('获得经纬度成功')
+					const {latitude,longitude} = res
+					this.LatItude = latitude;
+					this.LongItude = longitude;
+					
+					this.getHotGoodsListData()
+				},
+				fail:(err) => {
+					console.log('获得经纬度失败' + err)
+				},
+				complete:() => {
+					QQMapWx.reverseGeocoder({
+						location: {
+							latitude: this.LatItude,
+							longitude: this.LongItude
+						},
+						success:(res)=>{
+							//区
+							let district =res.result.ad_info.district
+							//路
+							let path = res.result.address_component.street
+							
+							this.LocationData = district + path
+							console.log(`解析地址成功,当前位置:${this.LocationData}`);
+						},
+						fail: function(res) {
+							uni.showToast({
+								title: '定位失败',
+								duration: 2000,
+								icon: "none"
+							})
+							console.log(res);
+						}
+					})
+				}
+			})
+		}		
+		// clear() {
+		// 	this.$refs.uWaterfall.clear();
+		// }
 	}
 }
 </script>
@@ -239,6 +252,42 @@ page {
 .demo-tag {
 	display: flex;
 	margin-top: 5px;
+	
+	.subsidy{
+		width: 240rpx;
+		background: #ffffff;
+		display: flex;
+		align-items: center;
+	}	
+	// 	// .jintie {
+	// 	// 	font-size: 22rpx;
+	// 	// 	color: red;
+	// 	// 	width: 60rpx;
+	// 	// 	height: 36rpx;
+	// 	// 	background: #fff1e4;
+	// 	// 	border: 1rpx solid #f88c8c;
+	// 	// 	display: flex;
+	// 	// 	justify-content: center;
+	// 	// 	align-items: center;
+	// 	// 	border-top-left-radius: 5rpx;
+	// 	// 	border-bottom-left-radius: 5rpx;
+	// 	// 	border-right: 1px dashed #f88c8c;
+	// 	// }
+	// 	// .diyong {
+	// 	// 	font-size: 22rpx;
+	// 	// 	color: #eb544d;
+	// 	// 	width: 140rpx;
+	// 	// 	height: 36rpx;
+	// 	// 	background: #ffffff;
+	// 	// 	border: 1rpx solid #f88c8c;
+	// 	// 	display: flex;
+	// 	// 	justify-content: center;
+	// 	// 	align-items: center;
+	// 	// 	border-top-right-radius: 5rpx;
+	// 	// 	border-bottom-right-radius: 5rpx;
+	// 	// 	border-style: solid;
+	// 	// 	border-left: 1rpx dashed #f88c8c;
+	// 	// }
 }
 
 .demo-tag-owner {
@@ -269,6 +318,16 @@ page {
 	font-size: 30rpx;
 	color: $u-type-error;
 	margin-top: 5px;
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+	
+	.sold{
+		color: #999999;
+		font-size: 20rpx;
+		position: relative;
+		left: 15rpx;
+	}
 }
 
 .demo-shop {
