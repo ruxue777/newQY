@@ -15,8 +15,7 @@
 					<text class="search-text">幸福山庄养生</text>
 				</view>
 			</u-col>
-		</u-row>	 
-		
+		</u-row>			 
 	</view>
 	
 </template>
@@ -63,8 +62,8 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	position: absolute;
-	top: 135rpx;
+	position: relative;
+	top: 25rpx;
 	
 	.search-img{
 		width: 36rpx;

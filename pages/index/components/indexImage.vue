@@ -51,7 +51,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			font-size: 32rpx;
+			font-size: 30rpx;
 			font-weight: bold;
 			position: relative;
 			top: 10rpx;

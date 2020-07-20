@@ -3,12 +3,6 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationStyle": "custom"
-			}
-		}
 		// ,{
 		// 	"path":"pages/shangcheng/shangcheng",
 		// 	"style":{
@@ -16,12 +10,65 @@
 		// 		"enablePullDownRefresh": true,
 		// 		"backgroundTextStyle": "dark" 
 		// 	}
-		// }
-	],
+		// },
+		{
+			"path": "pages/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark" 
+			}
+		}
+	    ,{
+            "path" : "pages/mall/mall",
+            "style":{
+				"navigationBarTitleText": "399"
+			}
+        }
+        ,{
+            "path" : "pages/order/order",
+            "style":{
+            	"navigationBarTitleText": "订单"
+            }
+        }
+        ,{
+            "path" : "pages/user/user",
+            "style":{
+            	"navigationStyle": "custom"
+            }
+        } 
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
 		"navigationBarBackgroundColor": "#F8F8F8",
 		"backgroundColor": "#F8F8F8"
+	},
+	"tabBar":{
+		"list":[{
+			"pagePath":"pages/index/index",
+			"iconPath": "static/image/not_index.png",
+			"selectedIconPath": "static/image/in_index.png",
+			"text": "首页"
+		},
+		{
+			"pagePath": "pages/mall/mall",
+			"iconPath": "static/image/not_store.png",
+			"selectedIconPath": "static/image/in_store.png",
+			"text": "399专区"
+		},
+		{
+			"pagePath": "pages/order/order",
+			"iconPath": "static/image/not_order.png",
+			"selectedIconPath": "static/image/in_order.png",
+			"text": "订单"
+		},
+		{
+			"pagePath": "pages/user/user",
+			"iconPath": "static/image/not_my.png",
+			"selectedIconPath": "static/image/in_my.png",
+			"text": "我的"
+		}
+		]
 	}
-}
+} 

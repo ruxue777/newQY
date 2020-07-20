@@ -26,14 +26,10 @@
 						<view class="demo-tag">
 							<!-- <view class="demo-tag-owner">自营</view>
 							<view class="demo-tag-text">放心购</view> -->
-							<view class="subsidy">
-								test
-							</view>
-							<!-- <p class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
+							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
 								<span class="jintie">津贴</span>
-								<span class="diyong">可抵{{Math.floor(item.BP_IntegralConsumeAmount)}}元</span>
-							</p>
-							 -->
+								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
+							</view>
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
@@ -53,8 +49,10 @@
 							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 						</view>
 						<view class="demo-tag">
-							<view class="demo-tag-owner">自营</view>
-							<view class="demo-tag-text">放心购</view>
+							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
+								<span class="jintie">津贴</span>
+								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
+							</view>
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
@@ -113,12 +111,29 @@ export default {
 		this.getLocationData()
 		this.getSwiperData();
 		this.getShopListData();
-		this.addRandomData();
 		this.getHotListData();
 		
 	},
+	//下拉刷新 
+	onPullDownRefresh() {
+		console.log(123)
+		this.Index = 1
+		this.HotGoodsListData = [{}]
+		this.clear();
+		//刷新效果
+		setTimeout(()=>{
+			this.getHotGoodsListData(()=>{
+				uni.stopPullDownRefresh()
+			})
+				
+			//重新加载首页数据	
+			this.getSwiperData();
+			this.getShopListData();	
+			this.getHotListData();
+		},1000)	
+	} ,
 	onReachBottom() {
-		if(this.HotGoodsListData.length<this.Index*20){
+		if(this.HotGoodsListData.length<this.Index*10){
 			this.loadStatus = 'nomore';
 			return;
 		}else{
@@ -151,7 +166,7 @@ export default {
 		getHotGoodsListData(callBack){
 			request('API_GetList_BusinessProductSearch',{CategoryID:0,BusinessID:0,Keywords:'',
 						Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:1,IsBP:-1,
-							pageSize:20,index:this.Index})	
+							pageSize:10,index:this.Index})	
 			.then(res=>{
 				this.HotGoodsListData = [...this.HotGoodsListData,...res]
 				callBack && callBack()
@@ -159,6 +174,9 @@ export default {
 		},
 		addRandomData() {
 			console.log('触发')
+		},
+		clear() {
+			this.$refs.uWaterfall.clear();
 		},
 		getLocationData(){
 			const QQMapWx = new QQMap_SDK({
@@ -206,9 +224,6 @@ export default {
 				}
 			})
 		}		
-		// clear() {
-		// 	this.$refs.uWaterfall.clear();
-		// }
 	}
 }
 </script>
@@ -259,35 +274,35 @@ page {
 		display: flex;
 		align-items: center;
 	}	
-	// 	// .jintie {
-	// 	// 	font-size: 22rpx;
-	// 	// 	color: red;
-	// 	// 	width: 60rpx;
-	// 	// 	height: 36rpx;
-	// 	// 	background: #fff1e4;
-	// 	// 	border: 1rpx solid #f88c8c;
-	// 	// 	display: flex;
-	// 	// 	justify-content: center;
-	// 	// 	align-items: center;
-	// 	// 	border-top-left-radius: 5rpx;
-	// 	// 	border-bottom-left-radius: 5rpx;
-	// 	// 	border-right: 1px dashed #f88c8c;
-	// 	// }
-	// 	// .diyong {
-	// 	// 	font-size: 22rpx;
-	// 	// 	color: #eb544d;
-	// 	// 	width: 140rpx;
-	// 	// 	height: 36rpx;
-	// 	// 	background: #ffffff;
-	// 	// 	border: 1rpx solid #f88c8c;
-	// 	// 	display: flex;
-	// 	// 	justify-content: center;
-	// 	// 	align-items: center;
-	// 	// 	border-top-right-radius: 5rpx;
-	// 	// 	border-bottom-right-radius: 5rpx;
-	// 	// 	border-style: solid;
-	// 	// 	border-left: 1rpx dashed #f88c8c;
-	// 	// }
+	.jintie {
+		font-size: 22rpx;
+		color: red;
+		width: 60rpx;
+		height: 36rpx;
+		background: #fff1e4;
+		border: 1rpx solid #f88c8c;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-top-left-radius: 5rpx;
+		border-bottom-left-radius: 5rpx;
+		border-right: 1px dashed #f88c8c;
+	}
+	.diyon{
+		width: 140rpx;
+		height: 36rpx;
+		font-size: 22rpx;
+		color: #eb544d;
+		background-color: #FFFFFF;
+		border: 1rpx solid #f88c8c;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-top-right-radius: 5rpx;
+		border-bottom-right-radius: 5rpx;
+		border-style: solid;
+		border-left: 1rpx dashed #f88c8c;
+	}
 }
 
 .demo-tag-owner {
