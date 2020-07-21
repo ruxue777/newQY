@@ -1,5 +1,8 @@
 <template>
 	<view>
+		<view class="top-title">
+			<text class="cont">订单列表</text>
+		</view>
 		<view class="wrap">
 			<view class="u-tabs-box">
 				<u-tabs-swiper activeColor="#f29100" ref="tabs" :list="list" :current="current" @change="change" :is-scroll="false" swiperWidth="750"></u-tabs-swiper>
@@ -9,101 +12,55 @@
 				<!-- 待付款 -->
 				<swiper-item class="swiper-item">
 					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box">
-							<view class="order" v-for="(res, index) in orderList[0]" :key="res.id">
+						<view class="page-box" v-if="orderList[0].length != 0">
+							<view class="order" v-for="(item, index) in orderList[0]" :key="index">
 								<view class="top">
 									<view class="left">
 										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
-										<view class="store">{{ res.store }}</view>
+										<view class="store">{{ item.BusinessName }}</view>
 										<u-icon name="arrow-right" color="rgb(203,203,203)" :size="26"></u-icon>
 									</view>
 									<view class="right">等待付款</view>
 								</view>
-								<view class="item" v-for="(item, index) in res.goodsList" :key="index">
-									<view class="left"><image :src="item.goodsUrl" mode="aspectFill"></image></view>
+								<view class="item">
+									<view class="left"><image :src="item.BP_ImgUrl" mode="aspectFill"></image></view>
 									<view class="content">
-										<view class="title u-line-2">{{ item.title }}</view>
-										<view class="type">{{ item.type }}</view>
-										<view class="delivery-time">发货时间 {{ item.deliveryTime }}</view>
+										<view class="title u-line-2">{{ item.BP_Desc }}</view>
 									</view>
 									<view class="right">
 										<view class="price">
-											￥{{ priceInt(item.price) }}
-											<text class="decimal">.{{ priceDecimal(item.price) }}</text>
+											￥{{ priceInt(item.BPR_AppAmount) }}
+											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount) }}</text>
 										</view>
-										<view class="number">x{{ item.number }}</view>
+										<view class="number">x{{ item.BPR_Count }}</view>
 									</view>
 								</view>
 								<view class="total">
-									共{{ totalNum(res.goodsList) }}件商品 合计:
+									共{{ item.BPR_Count }}件商品 合计:
 									<text class="total-price">
-										￥{{ priceInt(totalPrice(res.goodsList)) }}.
-										<text class="decimal">{{ priceDecimal(totalPrice(res.goodsList)) }}</text>
+										￥{{ priceInt(item.BPR_AppAmount) }}.
+										<text class="decimal">{{ priceDecimal(item.BPR_AppAmount) }}</text>
 									</text>
 								</view>
+								
+								<u-line class="line-0" color="#909399" border-style="dashed" />
+								
 								<view class="bottom">
-									<view class="more"><u-icon name="more-dot-fill" color="rgb(203,203,203)"></u-icon></view>
-									<view class="logistics btn">查看物流</view>
-									<view class="exchange btn">卖了换钱</view>
-									<view class="evaluate btn">评价</view>
+									<view class="Amount">
+										<text class="Amount-left">应付总额:</text>
+										<text class="Amount-right">￥{{item.BPR_AppAmount}}</text>
+									</view>
+									
+									<view class="buttom">
+										<u-button type="default" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">取消订单</u-button>
+										<u-button type="error" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">立即付款</u-button>
+									</view>
 								</view>
 							</view>
-							<u-loadmore :status="loadStatus[0]" bgColor="#f2f2f2"></u-loadmore>
+							<u-loadmore :status="loadStatus[0]" bgColor="#ffffff"></u-loadmore>
 						</view>
-					</scroll-view>
-				</swiper-item>
-				
-				<!-- 待核销 -->
-				<swiper-item class="swiper-item">
-					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box">
-							<view class="order" v-for="(res, index) in  orderList[1]" :key="res.id">
-								<view class="top">
-									<view class="left">
-										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
-										<view class="store">{{ res.store }}</view>
-										<u-icon name="arrow-right" color="rgb(203,203,203)" :size="26"></u-icon>
-									</view>
-									<view class="right">{{ res.deal }}</view>
-								</view>
-								<view class="item" v-for="(item, index) in res.goodsList" :key="index">
-									<view class="left"><image :src="item.goodsUrl" mode="aspectFill"></image></view>
-									<view class="content">
-										<view class="title u-line-2">{{ item.title }}</view>
-										<view class="type">{{ item.type }}</view>
-										<view class="delivery-time">发货时间 {{ item.deliveryTime }}</view>
-									</view>
-									<view class="right">
-										<view class="price">
-											￥{{ priceInt(item.price) }}
-											<text class="decimal">.{{ priceDecimal(item.price) }}</text>
-										</view>
-										<view class="number">x{{ item.number }}</view>
-									</view>
-								</view>
-								<view class="total">
-									共{{ totalNum(res.goodsList) }}件商品 合计:
-									<text class="total-price">
-										￥{{ priceInt(totalPrice(res.goodsList)) }}.
-										<text class="decimal">{{ priceDecimal(totalPrice(res.goodsList)) }}</text>
-									</text>
-								</view>
-								<view class="bottom">
-									<view class="more"><u-icon name="more-dot-fill" color="rgb(203,203,203)"></u-icon></view>
-									<view class="logistics btn">查看物流</view>
-									<view class="exchange btn">卖了换钱</view>
-									<view class="evaluate btn">评价</view>
-								</view>
-							</view>
-							<u-loadmore :status="loadStatus[1]" bgColor="#f2f2f2"></u-loadmore>
-						</view>
-					</scroll-view>
-				</swiper-item>
-				
-				<!-- 已完成 -->
-				<swiper-item class="swiper-item">
-					<scroll-view scroll-y style="height: 100%;width: 100%;">
-						<view class="page-box">
+						
+						<view class="page-box" v-else>
 							<view>
 								<view class="centre">
 									<image src="https://cdn.uviewui.com/uview/template/taobao-order.png" mode=""></image>
@@ -118,62 +75,159 @@
 					</scroll-view>
 				</swiper-item>
 				
-				<!-- 全部订单 -->
+				<!-- 待核销 -->
 				<swiper-item class="swiper-item">
 					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box">
-							<view class="order" v-for="(res, index) in  orderList[3]" :key="res.id">
+						<view class="page-box" v-if="orderList[1].length != 0">
+							<view class="order" v-for="(item, index) in  orderList[1]" :key="index">
 								<view class="top">
 									<view class="left">
 										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
-										<view class="store">{{ res.store }}</view>
+										<view class="store">{{item.BusinessName}}</view>
 										<u-icon name="arrow-right" color="rgb(203,203,203)" :size="26"></u-icon>
 									</view>
-									<view class="right">{{ res.deal }}</view>
+									<view class="right">等待核销</view>
 								</view>
-								<view class="item" v-for="(item, index) in res.goodsList" :key="index">
-									<view class="left"><image :src="item.goodsUrl" mode="aspectFill"></image></view>
+								<view class="item">
+									<view class="left"><image :src="item.BP_ImgUrl" mode="aspectFill"></image></view>
 									<view class="content">
-										<view class="title u-line-2">{{ item.title }}</view>
-										<view class="type">{{ item.type }}</view>
-										<view class="delivery-time">发货时间 {{ item.deliveryTime }}</view>
+										<view class="title u-line-2">{{ item.BP_Desc }}</view>
 									</view>
-									<view class="right">
+									<view class="right-1">
 										<view class="price">
-											￥{{ priceInt(item.price) }}
-											<text class="decimal">.{{ priceDecimal(item.price) }}</text>
+											￥{{ priceInt(item.BPR_AppAmount) }}
+											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount) }}</text>
 										</view>
-										<view class="number">x{{ item.number }}</view>
+										<view class="number">x{{ item.BPR_Count }}</view>
 									</view>
 								</view>
 								<view class="total">
-									共{{ totalNum(res.goodsList) }}件商品 合计:
+									共{{ item.BPR_Count }}件商品 合计:
 									<text class="total-price">
-										￥{{ priceInt(totalPrice(res.goodsList)) }}.
-										<text class="decimal">{{ priceDecimal(totalPrice(res.goodsList)) }}</text>
+										￥{{ priceInt(item.BPR_AppAmount) }}.
+										<text class="decimal">{{ priceDecimal(item.BPR_AppAmount) }}</text>
 									</text>
 								</view>
-								<view class="bottom">
-									<view class="more"><u-icon name="more-dot-fill" color="rgb(203,203,203)"></u-icon></view>
-									<view class="logistics btn">查看物流</view>
-									<view class="exchange btn">卖了换钱</view>
-									<view class="evaluate btn">评价</view>
+								
+								<u-line class="line-1" color="#909399" border-style="dashed" />
+								
+								<view class="reservation">
+									<view class="cont">
+										<text class="name">品名</text>
+										<text class="number">测试发布</text>
+									</view>
+									<view class="cont">
+										<text class="name">总数</text>
+										<text class="number">1</text>
+									</view>
+									<view class="cont">
+										<text class="name">未领取</text>
+										<text class="number">1</text>
+									</view>
+									<view class="cont">
+										<text class="name">预约领取</text>
+										<u-button type="warning" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="test">立即付款</u-button>
+									</view>
+								</view>
+							
+							</view>
+							<u-loadmore :status="loadStatus[1]" bgColor="#f2f2f2"></u-loadmore>
+						</view>
+					
+						<view class="page-box" v-else>
+							<view>
+								<view class="centre">
+									<image src="https://cdn.uviewui.com/uview/template/taobao-order.png" mode=""></image>
+									<view class="explain">
+										您还没有相关的订单
+										<view class="tips">可以去看看有那些想买的</view>
+									</view>
+									<view class="btn">随便逛逛</view>
 								</view>
 							</view>
-							<u-loadmore :status="loadStatus[3]" bgColor="#f2f2f2"></u-loadmore>
 						</view>
 					</scroll-view>
 				</swiper-item>
+				
+				<!-- 已完成 -->
+				<swiper-item class="swiper-item">
+					<scroll-view scroll-y style="height: 100%;width: 100%;">
+						<view class="page-box" v-if="orderList[2].length != 0">
+							<view class="order" v-for="(item, index) in orderList[2]" :key="index">
+								<view class="top">
+									<view class="left">
+										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
+										<view class="store">{{ item.BusinessName }}</view>
+										<u-icon name="arrow-right" color="rgb(203,203,203)" :size="26"></u-icon>
+									</view>
+									<view class="right">等待付款</view>
+								</view>
+								<view class="item">
+									<view class="left"><image :src="item.BP_ImgUrl" mode="aspectFill"></image></view>
+									<view class="content">
+										<view class="title u-line-2">{{ item.BP_Desc }}</view>
+									</view>
+									<view class="right">
+										<view class="price">
+											￥{{ priceInt(item.BPR_AppAmount) }}
+											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount) }}</text>
+										</view>
+										<view class="number">x{{ item.BPR_Count }}</view>
+									</view>
+								</view>
+								<view class="total">
+									共{{ item.BPR_Count }}件商品 合计:
+									<text class="total-price">
+										￥{{ priceInt(item.BPR_AppAmount) }}.
+										<text class="decimal">{{ priceDecimal(item.BPR_AppAmount) }}</text>
+									</text>
+								</view>
+								
+								<u-line class="line-0" color="#909399" border-style="dashed" />
+								
+								<view class="bottom">
+									
+									<view class="Amount">
+										<text class="Amount-left">应付总额:</text>
+										<text class="Amount-right">￥{{item.BPR_AppAmount}}</text>
+									</view>
+									
+									<view class="buttom">
+										<u-button type="default" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">取消订单</u-button>
+										<u-button type="error" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">立即付款</u-button>
+									</view>
+								</view>
+							</view>
+							<u-loadmore :status="loadStatus[0]" bgColor="#ffffff"></u-loadmore>
+						</view>
+						
+						<view class="page-box" v-else>
+							<view>
+								<view class="centre">
+									<image src="https://cdn.uviewui.com/uview/template/taobao-order.png" mode=""></image>
+									<view class="explain">
+										您还没有相关的订单
+										<view class="tips">可以去看看有那些想买的</view>
+									</view>
+									<view class="btn">随便逛逛</view>
+								</view>
+							</view>
+						</view>
+					</scroll-view>
+				</swiper-item>
+			
 			</swiper>
 		</view>
 	</view>
 </template>
 
 <script>
+//请求组件
+import {request} from '@/api/request.js'
 export default {
 	data() {
 		return {
-			orderList: [[], [], [], []],
+			orderList: [[], [], []],
 			dataList: [
 				{
 					id: 1,
@@ -284,9 +338,6 @@ export default {
 				},
 				{
 					name: '已完成'
-				},
-				{
-					name: '全部'
 				}
 			],
 			current: 0,
@@ -299,7 +350,7 @@ export default {
 	onLoad() {
 		this.getOrderList(0);
 		this.getOrderList(1);
-		this.getOrderList(3);
+		this.getOrderList(2);
 	},
 	computed: {
 		// 价格小数
@@ -327,15 +378,69 @@ export default {
 				}, 1200);
 			}
 		},
+		test(){
+			console.log('按键点击')
+		},
 		// 页面数据
 		getOrderList(idx) {
-			for(let i = 0; i < 5; i++) {
-				let index = this.$u.random(0, this.dataList.length - 1);
-				let data = JSON.parse(JSON.stringify(this.dataList[index]));
-				data.id = this.$u.guid();
-				this.orderList[idx].push(data);
+			// if(idx!=0){
+			// 	for(let i = 0; i < 5; i++) {
+			// 		let index = this.$u.random(0, this.dataList.length - 1);
+			// 		let data = JSON.parse(JSON.stringify(this.dataList[index]));
+			// 		data.id = this.$u.guid();
+			// 		this.orderList[idx].push(data);
+			// 	}
+			// 	this.loadStatus.splice(this.current,1,"loadmore")
+			// }
+			
+			
+			switch(idx){
+				case 0:
+					request('API_GetList_BusinessProductRecord',{
+						user_id:8565,
+						state:0,
+						pageSize:10,
+						index:1
+					}).then(res=>{
+						this.loadStatus.splice(this.current,1,"loadmore")
+						
+						for(let i=0;i<res.length;i++){
+							this.orderList[idx].push(res[i]);
+						}
+					})
+				break;
+				case 1:
+					request('API_GetList_BusinessProductRecord',{
+						user_id:8565,
+						state:1,
+						pageSize:10,
+						index:1
+					}).then(res=>{
+						this.loadStatus.splice(this.current,1,"loadmore")
+						
+						for(let i=0;i<res.length;i++){
+							this.orderList[idx].push(res[i]);
+						}
+					})
+				break;
+				case 2:
+					request('API_GetList_BusinessProductRecord',{
+						user_id:8565,
+						state:3,
+						pageSize:10,
+						index:1
+					}).then(res=>{
+						this.loadStatus.splice(this.current,1,"loadmore")
+						
+						for(let i=0;i<res.length;i++){
+							this.orderList[idx].push(res[i]);
+						}
+					})
+				break;
 			}
-			this.loadStatus.splice(this.current,1,"loadmore")
+			
+			
+			
 		},
 		// 总价
 		totalPrice(item) {
@@ -353,6 +458,7 @@ export default {
 			});
 			return num;
 		},
+		
 		// tab栏切换
 		change(index) {
 			this.swiperCurrent = index;
@@ -380,6 +486,20 @@ page {
 </style>
 
 <style lang="scss" scoped>
+.top-title{
+	width: 100%;
+	height: 130rpx;
+	display: flex;
+	align-items: center;
+	
+	.cont{
+		font-size: 36rpx;
+		font-weight: bold;
+		margin-left: 25rpx;
+		position: relative;
+		top: 15rpx;
+	}
+}
 .order {
 	width: 710rpx;
 	background-color: #ffffff;
@@ -431,9 +551,28 @@ page {
 			}
 		}
 		.right {
+			// position: relative;
+			// left: 300rpx;
 			margin-left: 10rpx;
-			padding-top: 20rpx;
+			padding-top: 15rpx;
 			text-align: right;
+			
+			
+			.decimal {
+				font-size: 24rpx;
+				margin-top: 4rpx;
+			}
+			.number {
+				color: $u-tips-color;
+				font-size: 24rpx;
+			}
+		}
+		.right-1{
+			position: relative;
+			left: 315rpx;
+			padding-top: 15rpx;
+			text-align: right;
+			
 			.decimal {
 				font-size: 24rpx;
 				margin-top: 4rpx;
@@ -452,12 +591,79 @@ page {
 			font-size: 32rpx;
 		}
 	}
+	.line-1{
+		position: relative;
+		top: 20rpx;
+	}
+	.reservation{
+		width: 100%;
+		height: 125rpx;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		position: relative;
+		top: 20rpx;
+		
+		.cont{
+			height: 100rpx;
+			width: 150rpx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			
+			.name{
+				font-size: 28rpx;
+				font-weight: bold;
+				margin-bottom: 8rpx;
+			}
+			
+			.number{
+				color: #fa3534;
+			}
+		}
+	}
+	.line-0{
+		position: relative;
+		top: 15rpx;
+	}
 	.bottom {
 		display: flex;
-		margin-top: 40rpx;
+		margin-top: 10rpx;
 		padding: 0 10rpx;
 		justify-content: space-between;
 		align-items: center;
+		position: relative;
+		top: 10rpx;
+		
+		.Amount{
+			width: 350rpx;
+			height: 75rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+			left: -45rpx;
+			.Amount-left{
+				font-size: 28rpx;
+			}
+			
+			.Amount-right{
+				font-size: 38rpx;
+				color: red;
+				font-weight: bold;
+			}
+		}
+		.buttom{
+			display: flex;
+			flex-direction: row;
+			justify-content: center;
+			align-items: center;
+			
+			u-button{
+				margin-left: 15rpx;
+			}
+		}
+		
 		.btn {
 			line-height: 52rpx;
 			width: 160rpx;
