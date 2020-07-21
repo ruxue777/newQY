@@ -22,7 +22,7 @@
 	    ,{
             "path" : "pages/mall/mall",
             "style":{
-				"navigationBarTitleText": "399"
+				"navigationBarTitleText": "399专区"
 			}
         }
         ,{
