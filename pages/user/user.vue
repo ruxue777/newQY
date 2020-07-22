@@ -84,8 +84,6 @@
 			</u-row>
 		</view>
 		
-		
-		
 		<view class="bottom">		
 			<u-row gutter="12">
 				<u-col span="2">
@@ -289,7 +287,7 @@ import {request} from "@/api/request.js"
 			border-radius: 8rpx;
 			display: flex;
 			align-items: center;
-			
+			font-size: 30rpx;
 			
 			.cont{
 				display: flex;

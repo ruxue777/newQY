@@ -4,10 +4,10 @@
 		},
 	"pages": [ 
 		{
-			"path" : "pages/user/user",
-            "style":{
-            	"navigationStyle": "custom"
-            }
+			"path" : "pages/user/signIn",
+			"style" : {
+				"navigationStyle": "custom"
+			}
 		},
 		{
 			"path": "pages/index/index",
@@ -29,12 +29,24 @@
             	"navigationStyle": "custom"
             }
         }
-        // ,{
-        //     "path" : "pages/user/user",
-        //     "style":{
-        //     	"navigationStyle": "custom"
-        //     }
-        // } 
+        ,{
+            "path" : "pages/user/user",
+            "style":{
+            	"navigationStyle": "custom"
+            }
+        } 
+        ,{
+            "path":"pages/user/signUp",
+			"style":{
+				"navigationStyle": "custom"
+			}
+        }
+   //      ,{
+   //          "path" : "pages/user/signIn",
+   //          "style" : {
+			// 	"navigationStyle": "custom"
+			// }
+   //      }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
