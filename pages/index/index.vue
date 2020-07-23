@@ -6,7 +6,7 @@
 		<!-- <zhixunlan></zhixunlan> -->
 		<centGoods :HotListData="HotListData"></centGoods>
 		<indexImage></indexImage>
-		
+		 
 		<!-- 瀑布流不支持组件形式 -->
 		<view class="wrap">
 			<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">

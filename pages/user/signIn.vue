@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<view class="main-0" v-if="isNight==false">
-			<view class="arrow-leftward">
+			<view class="arrow-leftward" @click="back">
 				<u-icon name="arrow-leftward" size="46"></u-icon>
 			</view>
 			
@@ -27,13 +27,18 @@
 					</view>
 				</view>
 				
+				<view class="operating">
+					<view class="left" @click="tosignIn">注册</view> 
+					<view class="right">忘记密码</view>
+				</view>
+				
 				<u-button :ripple="true" shape="circle" type="warning" ripple-bg-color="#f3f3f3" @click="userLogin">登录</u-button>
 				<u-toast ref="uToast" />
 			</view>
 		</view>
 		
 		<view class="main-1" v-if="isNight==true">
-			<view class="arrow-leftward">
+			<view class="arrow-leftward" @click="back">
 				<u-icon name="arrow-leftward" color="#f3f3f3" size="46"></u-icon>
 			</view>
 			<view class="head-portrait">
@@ -56,6 +61,11 @@
 					</view>
 				</view>
 				
+				<view class="operating">
+					<view class="left" @click="tosignIn">注册</view>
+					<view class="right">忘记密码</view>
+				</view>
+				
 				<u-button :ripple="true" shape="circle"  ripple-bg-color="#bdbdbd" @click="userLogin">登录</u-button>
 				<u-toast ref="uToast" />
 			</view>
@@ -71,34 +81,49 @@ import {request} from '@/api/request.js'
 			return {
 				mobile:'',
 				password:'',
-				isNight:true
+				isNight:false
 			};
 		},
 		onLoad() {
 			this.getTime()
 		},
 		methods:{
+			tosignIn(){
+				uni.navigateTo({
+					url:'/pages/user/signUp'
+				})
+			},
 			userLogin(){
 				if(!this.mobile){
 					this.$refs.uToast.show({
 						title: '请输入手机号',
-						type: 'error '
+						type: 'error ',
+						icon: true
 					})
 					return;
 				}else if(!this.password){
 					this.$refs.uToast.show({
 						title: '请输入密码',
-						type: 'error '
+						type: 'error ',
+						icon: true
 					})
 					return;
 				}else{
 					request('API_CheckLogin',{loginName:this.mobile,loginPsw:this.password}).then(res=>{
 						if(res.result_code === "SUCCESS"){
-							console.log(123)
+							//放入本地缓存
+							uni.setStorageSync("globalUser",res);
+							this.$refs.uToast.show({
+								title: "登录成功,欢迎",
+								type: 'success',
+								isTab:true,
+								url: '/pages/user/user'
+							})
 						}else{
 							this.$refs.uToast.show({
 								title: res.result_content,
-								type: 'error '
+								type: 'error ',
+								icon: true
 							})
 							return;
 						}
@@ -108,12 +133,15 @@ import {request} from '@/api/request.js'
 			getTime(){
 				//取得当前时间的小时
 			    let timeNow = new Date().getHours();
-			    //判断当前时间是否在  09:00-12:00 13:00-16:00 之间
+			    //判断当前时间是否在  06:00-18:00 之间
 			    if(timeNow >= 6 && timeNow < 18 ){
 			        this.isNight = false
 			    }else{
 					this.isNight = true
 				}
+			},
+			back(){
+				uni.navigateBack({})
 			}
 		}
 	}
@@ -122,7 +150,7 @@ import {request} from '@/api/request.js'
 <style lang="less">
 .main-0{
 	width: 100%;
-	height: 1500rpx;
+	height: 1200rpx;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -134,7 +162,7 @@ import {request} from '@/api/request.js'
 	}
 	.head-portrait{
 		width: 710rpx;
-		height: 1200rpx;
+		height: 900rpx;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
@@ -162,6 +190,23 @@ import {request} from '@/api/request.js'
 				font-size: 26rpx;
 				letter-spacing: 2rpx;
 				color: #999999;
+			}
+		}
+		
+		.operating{
+			width: 550rpx;
+			height: 60rpx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			
+			.left{
+				position: relative;
+				left: -35rpx;
+			}
+			.right{
+				position: relative;
+				right: -35rpx;
 			}
 		}
 		
@@ -231,11 +276,12 @@ import {request} from '@/api/request.js'
 
 .main-1{
 	width: 100%;
-	height: 1500rpx;
+	height: 1700rpx;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 	background: linear-gradient(#3f3d56,#2f2e41);
+	
 	
 	.arrow-leftward{
 		position: absolute;
@@ -248,7 +294,8 @@ import {request} from '@/api/request.js'
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		
+		position: relative;
+		top: 200rpx;
 		
 		.morn-img{
 			width: 340rpx;
@@ -275,7 +322,24 @@ import {request} from '@/api/request.js'
 				color: #999999;
 			}
 		}
-		
+		.operating{
+			width: 550rpx;
+			height: 60rpx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			
+			.left{
+				color: #f3f3f3;
+				position: relative;
+				left: -35rpx;
+			}
+			.right{
+				color:#f3f3f3;
+				position: relative;
+				right: -35rpx;
+			}
+		}
 		.userInfo{
 			width: 600rpx;
 			height: 200rpx;
@@ -320,13 +384,7 @@ import {request} from '@/api/request.js'
 				}
 			}
 			
-			.psd{
-				width: 560rpx;
-				height: 100rpx;
-				display: flex;
-				align-items: center;
-				justify-content: flex-start;
-			}
+			
 		}
 		u-button{
 			width: 430rpx;
@@ -335,9 +393,6 @@ import {request} from '@/api/request.js'
 			top: 45rpx;
 		}
 	}
-	
-	.test{
-		background-color: pink;
-	}
+
 }
 </style>
