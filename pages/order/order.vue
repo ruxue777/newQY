@@ -68,7 +68,7 @@
 										您还没有相关的订单
 										<view class="tips">可以去看看有那些想买的</view>
 									</view>
-									<view class="btn">随便逛逛</view>
+									<view class="btn" @click="toIndex">随便逛逛</view>
 								</view>
 							</view>
 						</view>
@@ -142,7 +142,7 @@
 										您还没有相关的订单
 										<view class="tips">可以去看看有那些想买的</view>
 									</view>
-									<view class="btn">随便逛逛</view>
+									<view class="btn" @click="toIndex">随便逛逛</view>
 								</view>
 							</view>
 						</view>
@@ -245,7 +245,7 @@
 										您还没有相关的订单
 										<view class="tips">可以去看看有那些想买的</view>
 									</view>
-									<view class="btn">随便逛逛</view>
+									<view class="btn" @click="toIndex">随便逛逛</view>
 								</view>
 							</view>
 						</view>
@@ -360,7 +360,11 @@ export default {
 					})
 				break;
 			}
-			
+		},
+		toIndex(){
+			uni.switchTab({
+				url:'../index/index'
+			})
 		},
 		// 总价
 		totalPrice(item) {

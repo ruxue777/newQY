@@ -5,11 +5,10 @@
 		</view>
 		
 		<view class="avatar">
-			<u-avatar src="/static/image/img4.jpg" mode="circle" size="150"></u-avatar>
+			<u-avatar :src="userInfo.WM_headimgurl" mode="circle" size="150"></u-avatar>
 			<image class="grade-img" src="../../static/image/grade.png"></image>
-			<text class="grade-cont">消费合伙人</text>
+			<text class="grade-cont">{{userInfo.Grade}}</text>
 		</view>
-	
 		<view class="user-activity">
 			<view >
 				<view class="cont">
@@ -37,7 +36,7 @@
 					<view class="demo-layout bg-color0">
 						<view class="cont">
 							<view class="account-name">津贴权益</view>
-							<view class="account-amount">11111.9</view>
+							<view class="account-amount">{{AccoutAmount.BonusAmount}}</view>
 						</view>
 						
 					</view>
@@ -46,7 +45,7 @@
 					<view class="demo-layout bg-color1">
 						<view class="cont">
 							<view class="account-name">补贴账户</view>
-							<view class="account-amount">11111.9</view>
+							<view class="account-amount">{{AccoutAmount.IntegralAmount}}</view>
 						</view>
 					</view>
 				</u-col>
@@ -54,7 +53,7 @@
 					<view class="demo-layout bg-color2">
 						<view class="cont">
 							<view class="account-name">消费账户</view>
-							<view class="account-amount">11111.9</view>
+							<view class="account-amount">{{AccoutAmount.RechargeAmount}}</view>
 						</view>
 					</view>
 				</u-col>
@@ -67,7 +66,7 @@
 					<view class="demo-layout bg-color3">
 						<view class="cont">
 							<view class="account-name">余额</view>
-							<view class="account-amount">11111.9</view>
+							<view class="account-amount">{{AccoutAmount.ProfitAmount}}</view>
 						</view>	
 					</view>
 				</u-col>
@@ -75,7 +74,7 @@
 					<view class="demo-layout bg-color4">
 						<view class="cont">
 							<view class="account-name">商家账户</view>
-							<view class="account-amount">11111.9</view>
+							<view class="account-amount">{{AccoutAmount.CreditAmount}}</view>
 						</view>	
 					</view>
 				</u-col>
@@ -85,7 +84,7 @@
 		</view>
 		
 		<view class="bottom">		
-			<u-row gutter="12">
+			<!-- <u-row gutter="12">
 				<u-col span="2">
 					<view class="demo-layout1 ">
 						<image src="../../static/image/amount.png"></image>
@@ -103,7 +102,7 @@
 						<u-icon name="arrow-right" size="36"></u-icon>
 					</view>
 				</u-col>
-			</u-row>
+			</u-row> -->
 			
 			<u-row gutter="12">
 				<u-col span="2">
@@ -165,13 +164,13 @@
 				</u-col>
 			</u-row>
 			
-			<u-row gutter="12">
+			<u-row gutter="12" >
 				<u-col span="2">
 					<view class="demo-layout1 ">
 						<image src="../../static/image/setting.png"></image>
 					</view>
 				</u-col>
-				<u-col span="8">
+				<u-col span="8" @click="toSetting">
 					<view class="demo-layout ">
 						设置
 					</view>
@@ -194,13 +193,50 @@ import {request} from "@/api/request.js"
 	export default {
 		data() {
 			return {
+				userInfo:{},
+				AccoutAmount:[]
 			}
 		},
-		onLoad() {
-			
+		onShow() {
+			this.getUserInfo()
 		},
 		methods:{
-			
+			getUserInfo(){
+				const userInfo = uni.getStorageSync("globalUser");
+				if(!userInfo){
+					uni.showModal({
+						title:'您还没有登录哦',
+						confirmText:'去登录',
+						success:function(res){
+							if(res.cancel)
+							{
+								return
+							}
+							else if(res.confirm)
+							{
+								uni.navigateTo({
+									url:'./signIn'
+								})
+							}
+						}
+					})
+				}
+				else{
+					this.userInfo = userInfo;
+					this.getAccoutAmount()
+				}
+				
+			},
+			getAccoutAmount(){
+				request('API_GetAccountAmount',{user_id:this.userInfo.user_id}).then(res=>{
+					this.AccoutAmount = res
+				})
+			},
+			toSetting(){
+				uni.navigateTo({
+					url:'../userSetting/setting'
+				})
+			}
 		}
 	}
 </script>
@@ -239,6 +275,7 @@ import {request} from "@/api/request.js"
 			top: 136rpx;
 			color: #F1F1F1;
 		}
+		
 	}
 	
 	.user-activity{
