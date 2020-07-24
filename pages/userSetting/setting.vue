@@ -50,7 +50,7 @@
 		
 		<!-- 反馈组件 -->
 		<u-toast ref="uToast" />
-		<u-verification-code seconds="60" ref="uCode" @change="codeChange"></u-verification-code>
+		<u-verification-code seconds="120" ref="uCode" @change="codeChange"></u-verification-code>
 		
 		<u-popup v-model="show_0" mode="center" border-radius="14" closeable="true" close-icon-pos="top-left">
 			<view class="popup-cont">
@@ -71,26 +71,26 @@
 					
 					<view class="cont">
 						<u-icon name="lock" :size="46" ></u-icon>
-						<input placeholder="设置新密码" type="password" v-model="newLogPsd" />
+						<input placeholder="设置新登录密码" type="password" v-model="newLogPsd0" />
 					</view>
 					<view class="cont">
 						<u-icon name="lock" :size="46" ></u-icon>
-						<input placeholder="设置新密码" type="password" v-model="newLogPsd" />
+						<input placeholder="确认新密码" type="password" v-model="newLogPsd1" />
 					</view>
 					<view class="bottom">
-						<u-message-input breathe="true" width="50"></u-message-input>
-						<u-button slot="right" type="success" size="mini" width="90rpx" @click="getCode">{{codeTips}}</u-button>
+						<u-message-input breathe="false" mode="bottomLine" font-size="30" width="50" :maxlength="maxlength" @finish="finish"></u-message-input>
+						<!-- <u-button slot="right" type="success" size="mini" width="90rpx" @click="getCode">{{codeTips}}</u-button> -->
 					</view>
-					
 				</view>
+				<u-button type="success" shape="circle" ripple="true" ripple-bg-color="#909399" @click="getCodeAndupPsd" :disabled="disabled">{{initText}}</u-button>
 			</view>
-		</u-popup>
-	
+		</u-popup>	
 	</view>
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request} from '@/api/request.js';
+import md5Libs from "uview-ui/libs/function/md5";
 	export default {
 		data() {
 			return {
@@ -99,7 +99,14 @@ import {request} from '@/api/request.js'
 				//用户本地信息
 				userInfo:{},
 				referrer_mobile:'',
-				codeTips: ''
+				codeTips: '',
+				psdType:'',
+				maxlength:4,
+				initText:'发送验证码',
+				//按键禁用
+				disabled:false,
+				newLogPsd0:'',
+				newLogPsd1:''
 			};
 		},
 		methods:{
@@ -114,6 +121,7 @@ import {request} from '@/api/request.js'
 					case 'log':
 						if(this.getUserInfo()==true){
 							this.show_1 = true;
+							this.psdType =  "loginpwd_smscode"
 						}
 					break;
 				}
@@ -158,22 +166,80 @@ import {request} from '@/api/request.js'
 					return true;
 				}
 			},
-			getCode() {
-				if(this.$refs.uCode.canGetCode) {
+			getCodeAndupPsd(e) {
 					// 模拟向后端请求验证码
-					uni.showLoading({
-						title: '正在获取验证码',
-						mask: true
+				uni.showLoading({
+					title: '正在获取验证码',
+					mask: true
+				})
+				if(this.psdType === "loginpwd_smscode"){
+					request('API_GetForgetLoginPwdSMSCode',{mobile:this.userInfo.mobile,pubKey:md5Libs.md5(this.userInfo.mobile + "XFC@2019#2020")}).then(res=>{
+						if(res.result_code == 'SUCCESS'){
+							this.maxlength = res.result_content.length
+							this.initText = '输入验证码完成修改'
+							this.disabled = true
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+						}
 					})
-					setTimeout(() => {
-						uni.hideLoading();
-						// 这里此提示会被this.start()方法中的提示覆盖
-						this.$u.toast('验证码已发送');
-						// 通知验证码组件内部开始倒计时
-						this.$refs.uCode.start();
-					}, 2000);
-				} else {
-					this.$u.toast('倒计时结束后再发送');
+				}
+				else if(this.psdType === "paypwd_smscode "){
+					request('API_GetForgetPayPwdSMSCode',{mobile:this.userInfo.mobile,pubKey:md5Libs.md5(this.userInfo.mobile + "XFC@2019#2020")}).then(res=>{
+						if(res.result_code == 'SUCCESS'){
+							this.maxlength = res.result_content.length
+							this.initText = '输入验证码完成修改'
+							this.disabled = true
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+						}
+					})
+				}	
+				setTimeout(() => {
+					uni.hideLoading();
+					
+					this.$u.toast('验证码已发送');
+				}, 1500);
+			},
+			finish(code){
+				if(this.newLogPsd0 !== this.newLogPsd1){
+					this.initText = '重新输入验证码来完成修改'
+					this.$refs.uToast.show({
+						title: '两次密码不一致',
+						type: 'error'
+					})
+				}
+				else if(this.newLogPsd0 == '' || this.newLogPsd1 == ' ' || this.newLogPsd0 == undefined || this.newLogPsd1 == undefined){
+					this.initText = '重新输入验证码来完成修改'
+					this.$refs.uToast.show({
+						title: '请输入密码',
+						type: 'error'
+					})
+				}else{
+					request('API_EditPwdBySMS',{mobile:this.userInfo.mobile,smscode:code,NewPwd:this.newLogPsd1, smscodeType:this.psdType}).then(res=>{
+						if(res.result_code == 'SUCCESS'){
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'success'
+							})
+							this.initText = '发送验证码'
+							this.disabled = false
+							this.show_1 = false
+							this.psdType = ''
+							this.newLogPsd0 = ''
+							this.newLogPsd1 = ''
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+						}
+					})
 				}
 			},
 			codeChange(text) {
@@ -243,7 +309,14 @@ import {request} from '@/api/request.js'
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		
+		.title{
+			position: relative;
+			top: 25rpx;
+		}
+		u-button{
+			position: relative;
+			top: -50rpx;
+		}
 		.up-psd{
 			width: 450rpx;
 			height: 480rpx;
@@ -251,6 +324,7 @@ import {request} from '@/api/request.js'
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+			
 			
 			.cont{
 				width: 420rpx;
@@ -270,16 +344,9 @@ import {request} from '@/api/request.js'
 				width: 450rpx;
 				height: 120rpx;
 				display: flex;
-				justify-content: space-between;
+				justify-content: center;
 				align-items: center;
 				
-				u-button{
-					width: 100rpx;
-					height: 60rpx;
-					position: relative;
-					left: -45rpx;
-					top: 3rpx;
-				}
 			}
 		}
 	}
