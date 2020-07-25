@@ -3,12 +3,6 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		//  {
-		// 	"path" : "pages/userAccout/IntegralAmount ",
-		// 	"style" : {
-		// 		"navigationStyle": "custom"
-		// 	}
-		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -55,12 +49,12 @@
 		 		"navigationBarTextStyle": "white"
 			}
         }
-        ,{
-           "path" : "pages/userAccout/IntegralAmount ",
-           	"style" : {
-           		"navigationStyle": "custom"
-           	}
-        }
+		,{
+			"path":"pages/userAccout/Integral",
+			"style" : {
+				"navigationStyle": "custom"
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

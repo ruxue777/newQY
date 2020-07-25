@@ -17,17 +17,16 @@
 			<text>我的补贴</text>
 		</view>
 		
-		<view class="bottom">
+		<view class="bottom" v-for="(item,index) in listData" :key="index">
 			<view class="cont">
 				<view class="left">
-					<text class="title">自动转化消费</text>
-					<text class="time">2020/7/25 3:25:53</text>
+					<text class="title">{{item.LP_Type}}</text>
+					<text class="time">{{item.createTime}}</text>
 				</view>
-				<view class="right">转出100.88</view>
+				<view class="right">{{item.LP_Event}}{{item.LP_Amount}}</view>
 			</view>
-		<u-loadmore :status="status" />
 		</view>
-			
+		<u-loadmore :status="status" />	
 	</view>
 </template>
 
@@ -38,7 +37,8 @@ import {request} from '@/api/request.js'
 			return {
 				status:'loadmore',
 				user_id:'',
-				Index:1
+				Index:1,
+				listData:[]
 			};
 		},
 		onLoad(parameter){
@@ -56,7 +56,7 @@ import {request} from '@/api/request.js'
 		methods:{
 			getIntegralListData(){
 				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Integral',pageSize:15,index:this.Index}).then(res=>{
-					console.log(res)
+					this.listData = res
 				})
 			}
 		}
@@ -67,7 +67,9 @@ import {request} from '@/api/request.js'
 .main{
 	width: 100%;
 	display: flex;
-	flex-direction: column;
+	//flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: center;
 	align-items: center;
 	.top{
 		width: 100%;

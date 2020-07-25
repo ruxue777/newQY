@@ -253,13 +253,8 @@ import {request} from "@/api/request.js"
 				else{
 					switch(AccoutType){
 						case "Integral":
-							// uni.navigateTo({
-							// 	//url:`/pages/userAccout/IntegralAmount?user_id${this.userInfo.user_id}`
-							// 	url:'/pages/userAccout/IntegralAmount'
-							// })
-							console.log(AccoutType)
 							uni.navigateTo({
-								url:'../userAccout/IntegralAmount'
+								url:`/pages/userAccout/Integral?user_id=${this.userInfo.user_id}`,
 							})
 						break;
 					}
