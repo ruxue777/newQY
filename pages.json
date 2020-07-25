@@ -4,11 +4,10 @@
 		},
 	"pages": [ 
 		//  {
-		// 	"path" : "pages/userSetting/setting",
-		// 	 "style" : {
-		// 			"navigationStyle": "custom",
-		// 			"navigationBarTextStyle": "white"
-		// 		}
+		// 	"path" : "pages/userAccout/IntegralAmount ",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
+		// 	}
 		// },
 		{
 			"path": "pages/index/index",
@@ -55,6 +54,12 @@
 				"navigationStyle": "custom",
 		 		"navigationBarTextStyle": "white"
 			}
+        }
+        ,{
+           "path" : "pages/userAccout/IntegralAmount ",
+           	"style" : {
+           		"navigationStyle": "custom"
+           	}
         }
     ],
 	"globalStyle": {

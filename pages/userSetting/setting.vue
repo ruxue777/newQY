@@ -7,12 +7,12 @@
 				<u-grid-item >
 					<u-icon name="phone" :size="46"></u-icon>
 					<text class="grid-text">手机号</text>
-					<view class="grid-text">15083574935</view>
+					<view class="grid-text">{{userInfo.mobile || '暂无'}}</view>
 				</u-grid-item>
 				<u-grid-item>
 					<u-icon name="man-add" :size="46"></u-icon>
 					<text class="grid-text">推荐人</text>
-					<view class="grid-text">*</view>
+					<view class="grid-text">{{userInfo.p_user_name || '暂无'}}</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('referrer')">
 					<u-icon name="man-delete" :size="46"></u-icon>
@@ -65,13 +65,14 @@
 		
 		<u-popup v-model="show_1" mode="center" border-radius="14" closeable="true" close-icon-pos="top-left">
 			<view class="popup-cont-1">
-				<text class="title">登录密码修改</text>
-				
+				<text class="title" v-if="psdType==='loginpwd_smscode'">登录密码修改</text>
+				<text class="title" v-else>支付密码修改</text>
 				<view class="up-psd">
 					
 					<view class="cont">
 						<u-icon name="lock" :size="46" ></u-icon>
-						<input placeholder="设置新登录密码" type="password" v-model="newLogPsd0" />
+						<input placeholder="设置新登录密码" v-if="psdType==='loginpwd_smscode'" type="password" v-model="newLogPsd0" />
+						<input placeholder="设置新支付密码" v-else type="password" v-model="newLogPsd0"/>
 					</view>
 					<view class="cont">
 						<u-icon name="lock" :size="46" ></u-icon>
@@ -97,7 +98,8 @@ import md5Libs from "uview-ui/libs/function/md5";
 				show_0:false,
 				show_1:false,
 				//用户本地信息
-				userInfo:{},
+				userInfo:{
+				},
 				referrer_mobile:'',
 				codeTips: '',
 				psdType:'',
@@ -118,11 +120,22 @@ import md5Libs from "uview-ui/libs/function/md5";
 							this.show_0 = true;
 						}
 					break;
+					//修改登录密码
 					case 'log':
 						if(this.getUserInfo()==true){
 							this.show_1 = true;
 							this.psdType =  "loginpwd_smscode"
 						}
+					break;
+					//修改支付密码
+					case 'pay':
+						if(this.getUserInfo()==true){
+							this.show_1 = true;
+							this.psdType =  "paypwd_smscode"
+						}
+					break;
+					case 'exit':
+						this.exit()
 					break;
 				}
 			},
@@ -167,7 +180,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 				}
 			},
 			getCodeAndupPsd(e) {
-					// 模拟向后端请求验证码
+				// 模拟向后端请求验证码
 				uni.showLoading({
 					title: '正在获取验证码',
 					mask: true
@@ -186,7 +199,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 						}
 					})
 				}
-				else if(this.psdType === "paypwd_smscode "){
+				else if(this.psdType === "paypwd_smscode"){
 					request('API_GetForgetPayPwdSMSCode',{mobile:this.userInfo.mobile,pubKey:md5Libs.md5(this.userInfo.mobile + "XFC@2019#2020")}).then(res=>{
 						if(res.result_code == 'SUCCESS'){
 							this.maxlength = res.result_content.length
@@ -241,6 +254,25 @@ import md5Libs from "uview-ui/libs/function/md5";
 						}
 					})
 				}
+			},
+			exit(){
+				uni.showModal({
+					title:'您确定退出此账户吗?',
+					confirmText:'确认',
+					success:function(res){
+						if(res.cancel)
+						{
+							return;
+						}
+						else if(res.confirm)
+						{
+							uni.clearStorageSync();
+							uni.navigateTo({
+								url:"/pages/user/signIn"
+							})
+						}
+					}
+				})
 			},
 			codeChange(text) {
 				this.codeTips = text;

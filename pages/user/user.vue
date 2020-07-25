@@ -33,16 +33,15 @@
 		<view class="wrap">
 			<u-row gutter="16">
 				<u-col span="4">
-					<view class="demo-layout bg-color0">
+					<view class="demo-layout bg-color0" @click="toUserAccout()">
 						<view class="cont">
-							<view class="account-name">津贴权益</view>
+							<view class="account-name" >津贴权益</view>
 							<view class="account-amount">{{AccoutAmount.BonusAmount}}</view>
 						</view>
-						
 					</view>
 				</u-col>
 				<u-col span="4">
-					<view class="demo-layout bg-color1">
+					<view class="demo-layout bg-color1" @click="toUserAccout('Integral')">
 						<view class="cont">
 							<view class="account-name">补贴账户</view>
 							<view class="account-amount">{{AccoutAmount.IntegralAmount}}</view>
@@ -225,12 +224,46 @@ import {request} from "@/api/request.js"
 					this.userInfo = userInfo;
 					this.getAccoutAmount()
 				}
-				
 			},
 			getAccoutAmount(){
 				request('API_GetAccountAmount',{user_id:this.userInfo.user_id}).then(res=>{
 					this.AccoutAmount = res
 				})
+			},
+			toUserAccout(AccoutType){
+				const userInfo = uni.getStorageSync("globalUser");
+				if(!userInfo){
+					uni.showModal({
+						title:'您还没有登录哦',
+						confirmText:'去登录',
+						success:function(res){
+							if(res.cancel)
+							{
+								return
+							}
+							else if(res.confirm)
+							{
+								uni.navigateTo({
+									url:'./signIn'
+								})
+							}
+						}
+					})
+				}
+				else{
+					switch(AccoutType){
+						case "Integral":
+							// uni.navigateTo({
+							// 	//url:`/pages/userAccout/IntegralAmount?user_id${this.userInfo.user_id}`
+							// 	url:'/pages/userAccout/IntegralAmount'
+							// })
+							console.log(AccoutType)
+							uni.navigateTo({
+								url:'../userAccout/IntegralAmount'
+							})
+						break;
+					}
+				}
 			},
 			toSetting(){
 				uni.navigateTo({
