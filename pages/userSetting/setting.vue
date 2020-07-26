@@ -20,7 +20,7 @@
 						<view class="grid-text">推荐人修改</view>
 					</view>	
 				</u-grid-item>
-				<u-grid-item @click="monitor('log')">
+				<u-grid-item @click="monitor('login')">
 					<u-icon name="lock" :size="46"></u-icon>
 					<view class="grid-text">修改登陆密码</view>
 				</u-grid-item>
@@ -28,17 +28,25 @@
 					<u-icon name="lock-fill" :size="46"></u-icon>
 					<view class="grid-text">修改支付密码</view>
 				</u-grid-item>
-				<u-grid-item @click="monitor('message')">
-					<u-icon name="info-circle" :size="46"></u-icon>
-					<view class="grid-text">关于平台</view>
+				<u-grid-item @click="monitor('location')">
+					<u-icon name="car" size="46"></u-icon>
+					<view class="grid-text">修改收货地址</view>
+				</u-grid-item>
+				<u-grid-item @click="monitor('bankcard')">
+					<u-icon name="car" size="46"></u-icon>
+					<view class="grid-text">银行卡管理</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('avatar')">
 					<u-icon name="camera-fill " :size="46"></u-icon>
 					<view class="grid-text">修改头像</view>
 				</u-grid-item>
-				<u-grid-item @click="monitor('location')">
-					<u-icon name="car" size="46"></u-icon>
-					<view class="grid-text">修改收货地址</view>
+				<u-grid-item @click="monitor('updatalog')">
+					<u-icon name="bookmark" :size="46"></u-icon>
+					<view class="grid-text">更新日志</view>
+				</u-grid-item>
+				<u-grid-item @click="monitor('message')">
+					<u-icon name="info-circle" :size="46"></u-icon>
+					<view class="grid-text">关于平台</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('exit')">
 					<u-icon name="close-circle" color="" :size="46"></u-icon>
@@ -121,7 +129,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 						}
 					break;
 					//修改登录密码
-					case 'log':
+					case 'login':
 						if(this.getUserInfo()==true){
 							this.show_1 = true;
 							this.psdType =  "loginpwd_smscode"

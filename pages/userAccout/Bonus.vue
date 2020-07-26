@@ -3,27 +3,27 @@
 		<view class="top">
 			<view class="navbar">
 				<u-icon name="arrow-left" size="42" color="#edeef5" @click="back"></u-icon>
-				<text class="title">我的补贴</text>
+				<text class="title">权益明细</text>
 			</view>
 			
 			<view class="amount">
-				<text class="title">可用补贴数(份)</text>
+				<text class="title">权益份额(份)</text>
 				<text>{{accoutAmount}}</text>
 			</view>
 		</view>
 		
 		<view class="content">
-			<u-icon name="red-packet"></u-icon>
-			<text>我的补贴</text>
+			<u-icon name="star"></u-icon>
+			<text>我的权益</text>
 		</view>
 		
 		<view class="bottom" v-for="(item,index) in listData" :key="index">
 			<view class="cont">
 				<view class="left">
-					<text class="title">{{item.LP_Type}}</text>
+					<text class="title">{{item.LB_Desc}}</text>
 					<text class="time">{{item.createTime}}</text>
 				</view>
-				<view class="right">{{item.LP_Event}}{{item.LP_Amount}}</view>
+				<view class="right">{{item.LB_Event}}{{item.LB_Amount}}</view>
 			</view>
 		</view>
 		<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus"  />	
@@ -45,7 +45,7 @@ import {request} from '@/api/request.js'
 		onLoad(parameter){
 			this.user_id = parameter.user_id
 			this.accoutAmount = parameter.accoutAmount
-			this.getIntegralListData()
+			this.getBonusListData()
 		},
 		onReachBottom() {
 			if(this.listData.length<this.Index*15){
@@ -56,14 +56,14 @@ import {request} from '@/api/request.js'
 				this.loadStatus = 'loading';
 				// 模拟数据加载效果
 				setTimeout(() => {
-					this.getIntegralListData();
+					this.getBonusListData();
 					this.loadStatus = 'loadmore';
 				}, 1000);
 			}
 		},
 		methods:{
-			getIntegralListData(callBack){
-				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Integral',pageSize:15,index:this.Index}).then(res=>{
+			getBonusListData(callBack){
+				request('API_GetList_LogsUserBonus',{user_id:this.user_id,pageSize:15,index:this.Index}).then(res=>{
 					if(res.length<15){
 						this.loadStatus = 'nomore'
 					}
@@ -80,15 +80,10 @@ import {request} from '@/api/request.js'
 
 <style lang="less">
 .main{
-	// width: 100%;
-	// display: flex;
-	// flex-wrap: wrap;
-	// justify-content: center;
-	// align-items: center;
 	.top{
 		width: 100%;
 		height: 340rpx;
-		background-color: #A16BFE;
+		background-color: #48d5e7;
 		display: flex;
 		flex-direction: column;
 		

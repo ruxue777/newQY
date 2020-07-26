@@ -4,6 +4,12 @@
 		},
 	"pages": [ 
 		{
+			"path" : "pages/transaction/Recharge",
+			"style" : {
+				"navigationStyle": "custom"
+			}
+		},
+		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
@@ -55,6 +61,18 @@
 				"navigationStyle": "custom"
 			}
 		}
+        ,{
+            "path" : "pages/userAccout/Bonus",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+   //      ,{
+   //          "path" : "pages/transaction/Recharge",
+   //          "style" : {
+			// 	"navigationStyle": "custom"
+			// }
+   //      }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -60,7 +60,7 @@
 					</view>
 				</template>
 			</u-waterfall>
-			<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" @loadmore="addRandomData"></u-loadmore>
+			<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
 		</view>
 		
 	</view>
@@ -171,9 +171,6 @@ export default {
 				this.HotGoodsListData = [...this.HotGoodsListData,...res]
 				callBack && callBack()
 			})							
-		},
-		addRandomData() {
-			console.log('触发')
 		},
 		clear() {
 			this.$refs.uWaterfall.clear();

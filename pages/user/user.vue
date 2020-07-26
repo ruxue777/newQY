@@ -33,7 +33,7 @@
 		<view class="wrap">
 			<u-row gutter="16">
 				<u-col span="4">
-					<view class="demo-layout bg-color0" @click="toUserAccout()">
+					<view class="demo-layout bg-color0" @click="toUserAccout('Bonus')">
 						<view class="cont">
 							<view class="account-name" >津贴权益</view>
 							<view class="account-amount">{{AccoutAmount.BonusAmount}}</view>
@@ -252,9 +252,14 @@ import {request} from "@/api/request.js"
 				}
 				else{
 					switch(AccoutType){
+						case "Bonus":
+							uni.navigateTo({
+								url:`/pages/userAccout/Bonus?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.BonusAmount}`,
+							})
+						break;
 						case "Integral":
 							uni.navigateTo({
-								url:`/pages/userAccout/Integral?user_id=${this.userInfo.user_id}`,
+								url:`/pages/userAccout/Integral?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.IntegralAmount}`,
 							})
 						break;
 					}
