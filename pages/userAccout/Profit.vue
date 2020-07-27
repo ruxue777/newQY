@@ -3,18 +3,36 @@
 		<view class="top">
 			<view class="navbar">
 				<u-icon name="arrow-left" size="42" color="#edeef5" @click="back"></u-icon>
-				<text class="title">我的补贴</text>
+				<text class="title">余额账户</text>
 			</view>
 			
 			<view class="amount">
-				<text class="title">可用补贴数(份)</text>
+				<text class="title">总收益(元)</text>
 				<text>{{accoutAmount}}</text>
 			</view>
 		</view>
 		
+		<view class="Recharge">
+			<view class="Recharge-top">
+				<image src="../../static/image/withdraw.png"></image>
+				<text>提现</text>
+				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
+			</view>
+			<view class="Recharge-cont">
+				<image src="../../static/image/Recharge.png"></image>
+				<text>充值</text>
+				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
+			</view>
+			<view class="Recharge-bottom">
+				<image src="../../static/image/Transfer.png"></image>
+				<text>给会员转账</text>
+				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
+			</view>
+		</view>
+		
 		<view class="content">
-			<u-icon name="red-packet"></u-icon>
-			<text>我的补贴</text>
+			<u-icon name="grid"></u-icon>
+			<text>余额账户</text>
 		</view>
 		
 		<view class="bottom" v-for="(item,index) in listData" :key="index">
@@ -45,7 +63,7 @@ import {request} from '@/api/request.js'
 		onLoad(parameter){
 			this.user_id = parameter.user_id
 			this.accoutAmount = parameter.accoutAmount
-			this.getIntegralListData()
+			this.getProfitListData()
 		},
 		onReachBottom() {
 			if(this.listData.length<this.Index*15){
@@ -56,14 +74,14 @@ import {request} from '@/api/request.js'
 				this.loadStatus = 'loading';
 				// 模拟数据加载效果
 				setTimeout(() => {
-					this.getIntegralListData();
+					this.getProfitListData();
 					this.loadStatus = 'loadmore';
 				}, 1000);
 			}
 		},
 		methods:{
-			getIntegralListData(callBack){
-				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Integral',pageSize:15,index:this.Index}).then(res=>{
+			getProfitListData(callBack){
+				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Profit',pageSize:15,index:this.Index}).then(res=>{
 					if(res.length<15){
 						this.loadStatus = 'nomore'
 					}
@@ -84,7 +102,7 @@ import {request} from '@/api/request.js'
 	.top{
 		width: 100%;
 		height: 340rpx;
-		background-color: #A16BFE;
+		background-color: #ffbbc8;
 		display: flex;
 		flex-direction: column;
 		
@@ -130,6 +148,73 @@ import {request} from '@/api/request.js'
 			}
 		}
 	}
+	.Recharge{
+		width: 100%;
+		height: 360rpx;
+		background-color: #FFFFFF;
+		padding: 10rpx;
+		display: flex;
+		flex-direction: column;
+		margin-bottom: -10rpx;
+		
+		.Recharge-top{
+			width: 100%;
+			height: 120rpx;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			border-bottom: 1rpx solid #C8C7CC;
+			image{
+				width: 70rpx;
+				height: 70rpx;
+			}
+			text{
+				font-size: 30rpx;
+			}
+			u-icon{
+				position: relative;
+				left: 525rpx;
+			}
+		}
+		.Recharge-cont{
+			width: 100%;
+			height: 120rpx;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			border-bottom: 1rpx solid #C8C7CC;
+			image{
+				width: 70rpx;
+				height: 70rpx;
+			}
+			text{
+				font-size: 30rpx;
+			}
+			u-icon{
+				position: relative;
+				left: 525rpx;
+			}
+		}
+		.Recharge-bottom{
+			width: 100%;
+			height: 120rpx;
+			display: flex;
+			justify-content: flex-start;
+			align-items: center;
+			border-bottom: 1rpx solid #C8C7CC;
+			image{
+				width: 70rpx;
+				height: 70rpx;
+			}
+			text{
+				font-size: 30rpx;
+			}
+			u-icon{
+				position: relative;
+				left: 437rpx;
+			}
+		}
+	}
 	.content{
 		width: 700rpx;
 		height: 60rpx;
@@ -152,6 +237,7 @@ import {request} from '@/api/request.js'
 			align-items: center;
 			border-bottom: 1rpx solid #f3f3f4;
 			.left{
+				width: 300rpx;
 				display: flex;
 				flex-direction: column;
 				align-items: center;

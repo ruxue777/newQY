@@ -33,7 +33,7 @@
 					<view class="grid-text">修改收货地址</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('bankcard')">
-					<u-icon name="car" size="46"></u-icon>
+					<image src="../../static/image/card.png" style="width: 46rpx;height: 46rpx;"></image>
 					<view class="grid-text">银行卡管理</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('avatar')">

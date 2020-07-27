@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path" : "pages/transaction/Recharge",
-			"style" : {
-				"navigationStyle": "custom"
-			}
-		},
+		// {
+		// 	"path" : "pages/userAccout/Profit",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -67,12 +67,24 @@
 				"navigationStyle": "custom"
 			}
         }
+		,{
+			"path":"pages/userAccout/Recharge",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		}
    //      ,{
    //          "path" : "pages/transaction/Recharge",
    //          "style" : {
 			// 	"navigationStyle": "custom"
 			// }
    //      }
+        ,{
+            "path" : "pages/userAccout/Profit",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

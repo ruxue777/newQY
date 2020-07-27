@@ -5,16 +5,16 @@
 		<view class="Bank-card">
 			<view class="cont">
 				<view class="left">提现到银行卡</view>
-				<view class="right">
-					<image src="../../static/image/Bankcard.png"></image>
-					<view class="title">请选择银行卡</view>
+				<view class="right" @click="pickBankCard">
+					<image :src="imgUrl"></image>
+					<view class="title">{{title}}</view>
 					<u-icon name="arrow-right"></u-icon>
 				</view>
 			</view>
 		</view>
 		
 		<view class="accout">
-			<view class="cont"  @click="show = true">
+			<view class="cont"  @click="show_0 = true">
 				<view class="title">账户类别:</view>
 				<text class="sort">{{default_0}}</text>
 			</view>
@@ -36,7 +36,8 @@
 		
 		
 		<u-toast ref="uToast" />
-		<u-select v-model="show" :list="list" @confirm="confirm"></u-select>
+		<u-select v-model="show_0" :list="list" @confirm="confirm_0"></u-select>
+		<u-select v-model="show_1" :list="BankCardList" @confirm="confirm_1"></u-select>
 	</view>
 </template>
 
@@ -45,8 +46,11 @@ import {request} from "@/api/request.js"
 	export default {
 		data() {
 			return {
-				show: false,
+				show_0: false,
+				show_1: false,
 				default_0:'点击选择提现的账户',
+				title:'请选择银行卡',
+				imgUrl:'../../static/image/Bankcard.png',
 				list: [
 					{
 						value: '1',
@@ -63,22 +67,41 @@ import {request} from "@/api/request.js"
 			};
 		},
 		onLoad() {
-			this.getBankCardList()
+		
 		},
 		methods:{
-			getBankCardList(){
+			pickBankCard(){
 				request('API_GetList_BankCard',{user_id:8565}).then(res=>{
 					if(res.length!=0){
-						this.BankCardList = res
+						let BankCardList = []
+						for(var i = 0;i<res.length;i++){
+							BankCardList.push({value: i+1,label:`${res[i].BC_BankCnName}尾号${res[i].BC_CardID.substr(-4,4)}`,extra:res[i].BC_BankEnName})
+						}
+						this.BankCardList = BankCardList
+						this.show_1 = true
 					}
 					else{
-						
+						uni.showModal({
+							title:'您还没有绑定银行卡哦',
+							confirmText:'去添加',
+							success:function(res){
+								if(res.cancel)
+								{
+									return
+								}
+								else if(res.confirm)
+								{
+									console.log('去添加银行卡')
+								}
+							}
+						})
 					}
 				})
 			},
 			withdraw(){
 				if(this.amount && this.amount!=0){
 					console.log(123)
+					
 				}else{
 					this.$refs.uToast.show({
 						title: '请输入提现金额',
@@ -87,8 +110,20 @@ import {request} from "@/api/request.js"
 					return;
 				}
 			},
-			confirm(e){
+			//提现账户选择
+			confirm_0(e){
 				this.default_0 = JSON.parse(JSON.stringify(e))[0].label
+			},
+			//提现到的银行卡选择
+			confirm_1(e){
+				const data = JSON.parse(JSON.stringify(e))
+				this.title = data[0].label
+				if(data[0].extra){
+					this.imgUrl = `../../static/bankCard/${data[0].extra}.png`
+				}
+				else{
+					this.imgUrl = `../../static/bankCard/UnionPay.png`
+				}
 			}
 		}
 	}
@@ -124,8 +159,8 @@ import {request} from "@/api/request.js"
 			}
 			
 			.right{
-				width: 350rpx;
-				height: 60rpx;
+				width: 430rpx;
+				height: 65rpx;
 				display: flex;
 				justify-content: center;
 				align-items: center;

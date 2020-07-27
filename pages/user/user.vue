@@ -49,7 +49,7 @@
 					</view>
 				</u-col>
 				<u-col span="4">
-					<view class="demo-layout bg-color2">
+					<view class="demo-layout bg-color2" @click="toUserAccout('Recharge')">
 						<view class="cont">
 							<view class="account-name">消费账户</view>
 							<view class="account-amount">{{AccoutAmount.RechargeAmount}}</view>
@@ -62,7 +62,7 @@
 			
 			<u-row gutter="16" >
 				<u-col span="4">
-					<view class="demo-layout bg-color3">
+					<view class="demo-layout bg-color3" @click="toUserAccout('Profit')">
 						<view class="cont">
 							<view class="account-name">余额</view>
 							<view class="account-amount">{{AccoutAmount.ProfitAmount}}</view>
@@ -260,6 +260,16 @@ import {request} from "@/api/request.js"
 						case "Integral":
 							uni.navigateTo({
 								url:`/pages/userAccout/Integral?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.IntegralAmount}`,
+							})
+						break;
+						case "Recharge":
+							uni.navigateTo({
+								url:`/pages/userAccout/Recharge?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.RechargeAmount}`,
+							})
+						break;
+						case "Profit":
+							uni.navigateTo({
+								url:`/pages/userAccout/Profit?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.ProfitAmount}`,
 							})
 						break;
 					}
