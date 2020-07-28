@@ -72,15 +72,27 @@
 			"style":{
 				"navigationStyle": "custom"
 			}
+		},
+		{
+			"path":"pages/userAccout/Credit",
+			"style":{
+				"navigationStyle": "custom"
+			}
 		}
-   //      ,{
-   //          "path" : "pages/transaction/Recharge",
-   //          "style" : {
-			// 	"navigationStyle": "custom"
-			// }
-   //      }
+        ,{
+            "path" : "pages/transaction/Recharge",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
         ,{
             "path" : "pages/userAccout/Profit",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/userSetting/bankCardSettings",
             "style" : {
 				"navigationStyle": "custom"
 			}

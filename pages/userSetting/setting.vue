@@ -119,6 +119,10 @@ import md5Libs from "uview-ui/libs/function/md5";
 				newLogPsd1:''
 			};
 		},
+		onLoad() {
+			const userInfo = uni.getStorageSync("globalUser");
+			this.userInfo = userInfo
+		},
 		methods:{
 			monitor(e){
 				switch(e){
@@ -141,6 +145,11 @@ import md5Libs from "uview-ui/libs/function/md5";
 							this.show_1 = true;
 							this.psdType =  "paypwd_smscode"
 						}
+					break;
+					case 'bankcard':
+						uni.navigateTo({
+							url:`/pages/userSetting/bankCardSettings?user_id=${this.userInfo.user_id}`
+						})
 					break;
 					case 'exit':
 						this.exit()

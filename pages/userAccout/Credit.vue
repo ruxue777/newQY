@@ -3,7 +3,7 @@
 		<view class="top">
 			<view class="navbar">
 				<u-icon name="arrow-left" size="42" color="#edeef5" @click="back"></u-icon>
-				<text class="title">余额账户</text>
+				<text class="title">商家账户</text>
 			</view>
 			
 			<view class="amount">
@@ -18,21 +18,11 @@
 				<text>提现</text>
 				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
 			</view>
-			<view class="Recharge-cont">
-				<image src="../../static/image/Recharge.png"></image>
-				<text>充值</text>
-				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
-			</view>
-			<view class="Recharge-bottom">
-				<image src="../../static/image/Transfer.png"></image>
-				<text>给会员转账</text>
-				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
-			</view>
 		</view>
 		
 		<view class="content">
-			<u-icon name="grid"></u-icon>
-			<text>余额账户</text>
+			<u-icon name="rmb-circle"></u-icon>
+			<text>商家账户</text>
 		</view>
 		
 		<view class="bottom" v-for="(item,index) in listData" :key="index">
@@ -63,7 +53,7 @@ import {request} from '@/api/request.js'
 		onLoad(parameter){
 			this.user_id = parameter.user_id
 			this.accoutAmount = parameter.accoutAmount
-			this.getProfitListData()
+			this.getCreditListData()
 		},
 		onReachBottom() {
 			if(this.listData.length<this.Index*15){
@@ -74,14 +64,14 @@ import {request} from '@/api/request.js'
 				this.loadStatus = 'loading';
 				// 模拟数据加载效果
 				setTimeout(() => {
-					this.getProfitListData();
+					this.getCreditListData();
 					this.loadStatus = 'loadmore';
 				}, 1000);
 			}
 		},
 		methods:{
-			getProfitListData(callBack){
-				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Profit',pageSize:15,index:this.Index}).then(res=>{
+			getCreditListData(callBack){
+				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:'Credit',pageSize:15,index:this.Index}).then(res=>{
 					if(res.length<15){
 						this.loadStatus = 'nomore'
 					}
@@ -107,7 +97,7 @@ import {request} from '@/api/request.js'
 	.top{
 		width: 100%;
 		height: 340rpx;
-		background-color: #ffb5c0;
+		background-color: #00b3ff;
 		display: flex;
 		flex-direction: column;
 		
@@ -155,7 +145,7 @@ import {request} from '@/api/request.js'
 	}
 	.Recharge{
 		width: 100%;
-		height: 360rpx;
+		height: 120rpx;
 		background-color: #FFFFFF;
 		padding: 10rpx;
 		display: flex;

@@ -70,7 +70,7 @@
 					</view>
 				</u-col>
 				<u-col span="4">
-					<view class="demo-layout bg-color4">
+					<view class="demo-layout bg-color4" @click="toUserAccout('Credit')">
 						<view class="cont">
 							<view class="account-name">商家账户</view>
 							<view class="account-amount">{{AccoutAmount.CreditAmount}}</view>
@@ -270,6 +270,11 @@ import {request} from "@/api/request.js"
 						case "Profit":
 							uni.navigateTo({
 								url:`/pages/userAccout/Profit?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.ProfitAmount}`,
+							})
+						break;
+						case "Credit":
+							uni.navigateTo({
+								url:`/pages/userAccout/Credit?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.CreditAmount}`,
 							})
 						break;
 					}
