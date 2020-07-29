@@ -15,15 +15,15 @@
 					<image class="cont-img" src="../../static/image/shopService.png"></image>
 					<text class="cont-title">商家服务</text>
 				</view>
-				<view class="cont">
+				<view class="cont" @click="toRecharge">
 					<image class="cont-img" src="../../static/image/withdrawal.png"></image>
 					<text class="cont-title">提现申请</text>
 				</view>
-				<view class="cont">
+				<view class="cont" @click="toRecommend">
 					<image class="cont-img" src="../../static/image/myPartner.png"></image>
 					<text class="cont-title">我的推荐</text>
 				</view>
-				<view class="cont">
+				<view class="cont" @click="getWxappQR">
 					<image class="cont-img" src="../../static/image/myQRcode.png"></image>
 					<text class="cont-title">推荐码</text>
 				</view>
@@ -184,6 +184,12 @@
 			</u-row>
 		</view>
 		
+		
+		<u-popup v-model="show" mode="center" border-radius="14" >
+			<view class="wxQRimg">
+				
+			</view>
+		</u-popup>	
 	</view>
 </template>
 
@@ -193,7 +199,8 @@ import {request} from "@/api/request.js"
 		data() {
 			return {
 				userInfo:{},
-				AccoutAmount:[]
+				AccoutAmount:[],
+				show:false
 			}
 		},
 		onShow() {
@@ -228,6 +235,11 @@ import {request} from "@/api/request.js"
 			getAccoutAmount(){
 				request('API_GetAccountAmount',{user_id:this.userInfo.user_id}).then(res=>{
 					this.AccoutAmount = res
+				})
+			},
+			getWxappQR(){
+				request('API_GetWxappQR',{scene:this.userInfo.mobile,page:"pages/user/signUp"}).then(res=>{
+					this.show = true
 				})
 			},
 			toUserAccout(AccoutType){
@@ -283,6 +295,16 @@ import {request} from "@/api/request.js"
 			toSetting(){
 				uni.navigateTo({
 					url:'../userSetting/setting'
+				})
+			},
+			toRecharge(){
+				uni.navigateTo({
+					url:`/pages/transaction/Recharge?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toRecommend(){
+				uni.navigateTo({
+					url:`/pages/user/recommend?user_id=${this.userInfo.user_id}`
 				})
 			}
 		}

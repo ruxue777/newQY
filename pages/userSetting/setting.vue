@@ -143,7 +143,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 					case 'pay':
 						if(this.getUserInfo()==true){
 							this.show_1 = true;
-							this.psdType =  "paypwd_smscode"
+							this.psdType = "paypwd_smscode"
 						}
 					break;
 					case 'bankcard':

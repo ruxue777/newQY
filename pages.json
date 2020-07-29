@@ -3,12 +3,13 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		// {
-		// 	"path" : "pages/userAccout/Profit",
-		// 	"style" : {
-		// 		"navigationStyle": "custom"
-		// 	}
-		// },
+		{
+			"path":"pages/user/signUp",
+			"style":{
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white"
+			}
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -35,13 +36,13 @@
             	"navigationStyle": "custom"
             }
         } 
-        ,{
-            "path":"pages/user/signUp",
-			"style":{
-				"navigationStyle": "custom",
-		 		"navigationBarTextStyle": "white"
-			}
-        }
+   //      ,{
+   //          "path":"pages/user/signUp",
+			// "style":{
+			// 	"navigationStyle": "custom",
+		 // 		"navigationBarTextStyle": "white"
+			// }
+   //      }
         ,{
             "path" : "pages/user/signIn",
             "style" : {
@@ -93,6 +94,12 @@
         }
         ,{
             "path" : "pages/userSetting/bankCardSettings",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/user/recommend",
             "style" : {
 				"navigationStyle": "custom"
 			}

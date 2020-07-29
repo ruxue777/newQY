@@ -15,7 +15,7 @@
 			</view>
 			
 			<view class="button">
-				<u-icon name="plus" color="#999999" size="60" @click="addBankCard()"></u-icon>
+				<u-icon name="plus" color="#999999" size="60" @click="show = true"></u-icon>
 			</view>
 			
 		</view>
@@ -23,8 +23,18 @@
 			<u-empty text="暂无绑定银行卡" mode="list" ></u-empty>
 		</view>
 		
-		
+		<!-- 反馈组件 -->
 		<u-toast ref="uToast" />
+		<u-popup v-model="show" mode="center" border-radius="14" closeable="true" close-icon-pos="top-left">
+			<view class="content">
+				<text class="top-title">添加银行卡</text>
+				<text class="tips">请填写有效的银行卡号</text>
+				<input v-model="userName" placeholder="请输入真实姓名"/>
+				<input v-model="CardID" placeholder="请输入银行卡号"/>
+				<input v-model="Psd" type="password" placeholder="请输入平台支付密码"/>
+				<u-button type="primary" shape="circle" ripple="true" ripple-bg-color="#e4e7ed" @click="addBankCard">提交</u-button>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -35,7 +45,11 @@ import {request} from '@/api/request.js'
 			return {
 				showEmpty:0,
 				user_id:'',
-				BankCardList:[]
+				BankCardList:[],
+				show:false,
+				userName:'',
+				CardID:'',
+				Psd:''
 			};
 		},
 		onLoad(e) {
@@ -69,14 +83,40 @@ import {request} from '@/api/request.js'
 				})
 			},
 			addBankCard(){
-				uni.request({
-					url:`https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardBinCheck=true&cardNo=${this.cardNumber}`,
-					method:'GET',
-					header:{'content-type': 'application/x-www-form-urlencoded'},
-				}).then(res=>{
-					let name = res.bank
-					
-				})
+				if(this.CardID !='' && this.userName!='' && this.Psd!=''){
+					uni.request({
+						url:`https://ccdcapi.alipay.com/validateAndCacheCardInfo.json?_input_charset=utf-8&cardBinCheck=true&cardNo=${this.CardID}`,
+						method:'GET',
+						header:{'content-type': 'application/x-www-form-urlencoded'},
+					}).then(res=>{
+						
+						let data = res[1].data
+						
+						request('API_AddBankCard',{BC_BankType:this.isType(data.cardType),BC_BankEnName:data.bank,BC_BankCnName:this.BANK_Map[data.bank],
+							BC_UserName:this.userName,BC_CardID:data.key,user_id:this.user_id,PayPwd:this.Psd}).then(result=>{
+								
+							if(result.result_code === "SUCCESS"){
+								this.$refs.uToast.show({
+									title: result.result_content,
+									type: 'success'
+								})
+								this.show = false
+								this.getBankCardList()
+							}else{
+								this.$refs.uToast.show({
+									title: result.result_content,
+									type: 'error'
+								})
+							}	
+						})
+					})
+				}else{
+					this.$refs.uToast.show({
+						title: '请完善信息',
+						type: 'error'
+					})
+				}
+				
 			},
 			removeBankCard(CardID){
 				uni.showModal({
@@ -195,6 +235,44 @@ import {request} from '@/api/request.js'
 		width: 500rpx;
 		height: 500rpx;
 		margin-top: 350rpx;	
+	}
+	.content{
+		width: 500rpx;
+		height: 600rpx;
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		.top-title{
+			width: 100%;
+			height: 120rpx;
+			font-size: 36rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		.tips{
+			font-size: 24rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		input{
+			width: 460rpx;
+			height: 80rpx;
+			font-size: 32rpx;
+			border: 1rpx solid #999999;
+			margin-top: 25rpx;
+			border-radius: 15rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+		}
+		u-button{
+			position: relative;
+			top: 25rpx;
+			width: 300rpx;
+			height: 90rpx;
+		}
 	}
 }
 </style>

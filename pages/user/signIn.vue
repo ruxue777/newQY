@@ -167,7 +167,6 @@ import {request} from '@/api/request.js'
 		align-items: center;
 		flex-direction: column;
 		
-		
 		.morn-img{
 			width: 320rpx;
 			height: 320rpx;
@@ -282,7 +281,6 @@ import {request} from '@/api/request.js'
 	justify-content: center;
 	background: linear-gradient(#3f3d56,#2f2e41);
 	
-	
 	.arrow-leftward{
 		position: absolute;
 		top: 65rpx;
@@ -315,7 +313,6 @@ import {request} from '@/api/request.js'
 				font-weight: bold;
 				color: #f3f3f3;
 			}
-			
 			.h2{
 				font-size: 26rpx;
 				letter-spacing: 2rpx;
@@ -383,8 +380,6 @@ import {request} from '@/api/request.js'
 					font-family: "Microsoft soft";
 				}
 			}
-			
-			
 		}
 		u-button{
 			width: 430rpx;
@@ -393,6 +388,5 @@ import {request} from '@/api/request.js'
 			top: 45rpx;
 		}
 	}
-
 }
 </style>
