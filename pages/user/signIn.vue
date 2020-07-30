@@ -28,7 +28,7 @@
 				</view>
 				
 				<view class="operating">
-					<view class="left" @click="tosignIn">注册</view> 
+					<view class="left" @click="tosignUp">注册</view> 
 					<view class="right">忘记密码</view>
 				</view>
 				
@@ -62,7 +62,7 @@
 				</view>
 				
 				<view class="operating">
-					<view class="left" @click="tosignIn">注册</view>
+					<view class="left" @click="tosignUp">注册</view>
 					<view class="right">忘记密码</view>
 				</view>
 				
@@ -88,9 +88,9 @@ import {request} from '@/api/request.js'
 			this.getTime()
 		},
 		methods:{
-			tosignIn(){
+			tosignUp(){
 				uni.navigateTo({
-					url:'/pages/user/signUp'
+					url:'./signUp'
 				})
 			},
 			userLogin(){

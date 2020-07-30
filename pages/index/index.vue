@@ -181,7 +181,7 @@ export default {
 			})
 			
 			uni.getLocation({
-				type:'gcj02',
+				type:'wgs84',
 				geocode:true,
 				success: (res) => {
 					console.log('获得经纬度成功')

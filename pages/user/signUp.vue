@@ -58,7 +58,8 @@ import md5Libs from "uview-ui/libs/function/md5";
 				mobile:'',
 				code:'',
 				Psd:'',
-				referrer:''
+				referrer:'',
+				up_Mobile:''
 			};
 		},
 		onLoad() {
@@ -84,13 +85,39 @@ import md5Libs from "uview-ui/libs/function/md5";
 				}
 				else{
 					this.$refs.uToast.show({
-						title: '发送失败,请稍后再试',
+						title: '请填写正确手机号',
 						type: 'error'
 					})
 				}
 			},
 			signUp(){
-				
+				if(this.mobile != '' && this.code != '' && this.Psd != ''){
+					request('API_RegisterSMS',{AeraID:0,mobile:this.mobile,smscode:this.code,Name:'',CardID:'',
+						Pws:this.PassWord,parentCode:this.up_Mobile}).then(res=>{
+						if(res.result_code === "SUCCESS"){
+							//放入本地缓存
+							uni.setStorageSync("globalUser",res);
+							this.$refs.uToast.show({
+								title: "注册成功,欢迎",
+								type: 'success',
+								isTab:true,
+								url: '/pages/user/user'
+							})
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error '
+							})
+							return;
+						}		
+					})
+				}
+				else{
+					this.$refs.uToast.show({
+						title: '请完善信息',
+						type: 'error'
+					})
+				}
 			},
 			back(){
 				uni.navigateBack()

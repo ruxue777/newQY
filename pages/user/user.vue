@@ -11,7 +11,7 @@
 		</view>
 		<view class="user-activity">
 			<view >
-				<view class="cont">
+				<view class="cont" @click="toShopservice">
 					<image class="cont-img" src="../../static/image/shopService.png"></image>
 					<text class="cont-title">商家服务</text>
 				</view>
@@ -58,8 +58,7 @@
 				</u-col>
 			</u-row>
 		</view>
-		<view class="wrap">
-			
+		<view class="wrap">		
 			<u-row gutter="16" >
 				<u-col span="4">
 					<view class="demo-layout bg-color3" @click="toUserAccout('Profit')">
@@ -77,31 +76,11 @@
 						</view>	
 					</view>
 				</u-col>
-				<u-col span="4"></u-col>
-				
+				<u-col span="4"></u-col>	
 			</u-row>
 		</view>
 		
 		<view class="bottom">		
-			<!-- <u-row gutter="12">
-				<u-col span="2">
-					<view class="demo-layout1 ">
-						<image src="../../static/image/amount.png"></image>
-					</view>
-				</u-col>
-				<u-col span="8">
-					<view class="demo-layout ">
-						账户说明
-					</view>
-					<u-line color="#e4e7ed" />
-				</u-col>
-				
-				<u-col span="2">
-					<view class="demo-layout ">
-						<u-icon name="arrow-right" size="36"></u-icon>
-					</view>
-				</u-col>
-			</u-row> -->
 			
 			<u-row gutter="12">
 				<u-col span="2">
@@ -184,23 +163,25 @@
 			</u-row>
 		</view>
 		
-		
+		<!-- 反馈组件 -->
+		<u-toast ref="uToast" />
 		<u-popup v-model="show" mode="center" border-radius="14" >
 			<view class="wxQRimg">
-				
+				<image class="qr-img" :src="WxappQR"></image>
 			</view>
 		</u-popup>	
 	</view>
 </template>
 
 <script>
-import {request} from "@/api/request.js"	
+import {request,userRequest} from "@/api/request.js"	
 	export default {
 		data() {
 			return {
 				userInfo:{},
 				AccoutAmount:[],
-				show:false
+				show:false,
+				WxappQR:''
 			}
 		},
 		onShow() {
@@ -238,8 +219,19 @@ import {request} from "@/api/request.js"
 				})
 			},
 			getWxappQR(){
-				request('API_GetWxappQR',{scene:this.userInfo.mobile,page:"pages/user/signUp"}).then(res=>{
+				uni.request({
+					url:'https://api.xfgoo.com:60020/WxappService.asmx/API_GetWxappQR',
+					data:{
+						scene:this.userInfo.mobile,
+						page:"pages/user/signUp"
+					},
+					method:'GET',
+					header:{'content-type': 'application/x-www-form-urlencoded'},
+				}).then(res=>{
 					this.show = true
+					
+					let data = res[1].data
+					this.WxappQR = data.result_content
 				})
 			},
 			toUserAccout(AccoutType){
@@ -305,6 +297,12 @@ import {request} from "@/api/request.js"
 			toRecommend(){
 				uni.navigateTo({
 					url:`/pages/user/recommend?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toShopservice(){
+				this.$refs.uToast.show({
+					title: '小程序暂不开放此功能',
+					type: 'warning '
 				})
 			}
 		}
@@ -452,11 +450,21 @@ import {request} from "@/api/request.js"
 			height: 50rpx;
 		}
 	}
-.bg-purple {
+	.bg-purple {
 		background: #d3dce6;
 	}
 
 	.bg-purple-light {
 		background: #e5e9f2;
+	}
+	.wxQRimg{
+		
+		// display: flex;
+		// justify-content: center;
+		// align-items: center;
+		.qr-img{
+			width: 450rpx;
+			height: 450rpx;
+		}
 	}
 </style>

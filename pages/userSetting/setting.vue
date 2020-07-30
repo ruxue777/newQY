@@ -6,13 +6,17 @@
 			<u-grid :col="3">
 				<u-grid-item >
 					<u-icon name="phone" :size="46"></u-icon>
-					<text class="grid-text">手机号</text>
-					<view class="grid-text">{{userInfo.mobile || '暂无'}}</view>
+					<view class="middle">
+						<text class="grid-text">手机号</text>
+						<view class="grid-text">{{userInfo.mobile || '暂无'}}</view>
+					</view>
 				</u-grid-item>
 				<u-grid-item>
 					<u-icon name="man-add" :size="46"></u-icon>
-					<text class="grid-text">推荐人</text>
-					<view class="grid-text">{{userInfo.p_user_name || '暂无'}}</view>
+					<view class="middle">
+						<text class="grid-text">推荐人</text>
+						<view class="grid-text">{{userInfo.p_user_name || '暂无'}}</view>
+					</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('referrer')">
 					<u-icon name="man-delete" :size="46"></u-icon>
@@ -305,6 +309,12 @@ import md5Libs from "uview-ui/libs/function/md5";
 		top: 65rpx;
 		left: 50rpx;
 	}
+	.middle{
+		height: 80rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 	.content{
 		padding: 35rpx;
 		.grid-text {
@@ -313,7 +323,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 		}
 		.null{
 			width: 160rpx;
-			height: 77rpx;
+			height: 81rpx;
 			display: flex;
 			justify-content: center;
 			align-items: center;

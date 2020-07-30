@@ -57,8 +57,7 @@ import {request} from '@/api/request.js'
 			this.getBankCardList();
 		},
 		methods:{
-			isType(category)
-			{	
+			isType(category){		
 				//DC为储蓄卡，CC为信用卡
 				if(category === "DC")
 				{
@@ -116,7 +115,6 @@ import {request} from '@/api/request.js'
 						type: 'error'
 					})
 				}
-				
 			},
 			removeBankCard(CardID){
 				uni.showModal({
