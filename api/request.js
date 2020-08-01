@@ -15,10 +15,10 @@ let request = (Url,Data) =>{
     })
 }
 
-let userRequest = (Url,Data) =>{
+let wxRequest = (Url,Data) =>{
     return new Promise((resolve,reject)=>{
         uni.request({
-            url:`https://api.xfgoo.com:60020/api/XFClientAPI_Json.asmx/${Url}`,
+            url:`https://api.xfgoo.com:60020/WxappService.asmx/${Url}`,
             data:Data,
             method:'GET',
             header:{'content-type':'application/x-www-form-urlencoded'}
@@ -32,4 +32,4 @@ let userRequest = (Url,Data) =>{
     })
 }
 
-export {request,userRequest};
+export {request,wxRequest};

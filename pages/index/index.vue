@@ -116,7 +116,6 @@ export default {
 	},
 	//下拉刷新 
 	onPullDownRefresh() {
-		console.log(123)
 		this.Index = 1
 		this.HotGoodsListData = [{}]
 		this.clear();

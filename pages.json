@@ -4,10 +4,9 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path":"pages/user/signUp",
-		// 	"style":{
-		// 		"navigationStyle": "custom",
-		// 		"navigationBarTextStyle": "white"
+		// 	"path" : "pages/transaction/Withdraw",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
 		// 	}
 		// },
 		{
@@ -100,6 +99,18 @@
         }
         ,{
             "path" : "pages/user/recommend",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/transaction/Transfer",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/transaction/Withdraw",
             "style" : {
 				"navigationStyle": "custom"
 			}

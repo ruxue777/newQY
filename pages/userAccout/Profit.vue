@@ -18,12 +18,12 @@
 				<text>提现</text>
 				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
 			</view>
-			<view class="Recharge-cont">
+			<view class="Recharge-cont" @click="toTransfer">
 				<image src="../../static/image/Recharge.png"></image>
 				<text>充值</text>
 				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
 			</view>
-			<view class="Recharge-bottom">
+			<view class="Recharge-bottom" @click="toWithdraw">
 				<image src="../../static/image/Transfer.png"></image>
 				<text>给会员转账</text>
 				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
@@ -92,6 +92,16 @@ import {request} from '@/api/request.js'
 			toRecharge(){
 				uni.navigateTo({
 					url:`/pages/transaction/Recharge?user_id=${this.user_id}`
+				})
+			},
+			toTransfer(){
+				uni.navigateTo({
+					url:`/pages/transaction/Transfer?user_id=${this.user_id}`
+				})
+			},
+			toWithdraw(){
+				uni.navigateTo({
+					url:`/pages/transaction/Withdraw?user_id=${this.user_id}`
 				})
 			},
 			back(){

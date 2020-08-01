@@ -13,7 +13,7 @@
 		</view>
 		
 		<view class="Recharge">
-			<view class="Recharge-top">
+			<view class="Recharge-top" @click="toTransfer">
 				<image src="../../static/image/Recharge.png"></image>
 				<text>充值</text>
 				<u-icon name="arrow-right" size="36" color="#C8C7CC" ></u-icon>
@@ -82,6 +82,11 @@ import {request} from '@/api/request.js'
 					}
 					this.listData = [...this.listData,...res]
 					callBack && callBack()
+				})
+			},
+			toTransfer(){
+				uni.navigateTo({
+					url:`/pages/transaction/Transfer?user_id=${this.user_id}`
 				})
 			},
 			back(){
