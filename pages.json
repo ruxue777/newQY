@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		// {
-		// 	"path" : "pages/transaction/Withdraw",
-		// 	"style" : {
-		// 		"navigationStyle": "custom"
-		// 	}
-		// },
+		{
+			"path" : "pages/user/user",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -29,12 +29,12 @@
             	"navigationStyle": "custom"
             }
         }
-        ,{
-            "path" : "pages/user/user",
-            "style":{
-            	"navigationStyle": "custom"
-            }
-        } 
+        // ,{
+        //     "path" : "pages/user/user",
+        //     "style":{
+        //     	"navigationStyle": "custom"
+        //     }
+        // } 
         ,{
             "path":"pages/user/signUp",
 			"style":{
