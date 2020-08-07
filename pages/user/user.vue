@@ -131,7 +131,7 @@
 					</view>
 					<view class="common-cont">
 						<image src="../../static/image/bill.png"></image>
-						<text class="name">银行卡号</text>
+						<text class="name">银行卡管理</text>
 					</view>
 					<view class="common-cont">
 						<image src="../../static/image/project.png"></image>
@@ -303,7 +303,7 @@ import {request} from "@/api/request.js"
 			toShopservice(){
 				this.$refs.uToast.show({
 					title: '小程序暂不开放此功能',
-					type: 'warning '
+					type: 'warning 	```'
 				})
 			}
 		}
@@ -389,7 +389,7 @@ page{
 							justify-content: flex-start;
 							align-items: center;
 							text{
-								width: 190rpx;
+								width: 200rpx;
 								font-size:24rpx;
 								font-family:PingFang SC;
 								font-weight:400;

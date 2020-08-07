@@ -4,9 +4,9 @@
 		},
 	"pages": [ 
 		{
-			"path" : "pages/user/user",
-			"style":{
-				"navigationStyle": "custom"
+			"path" : "pages/goodsdetails/goodsdetails",
+			"style" : {
+				"navigationBarTitleText": "商品详情"
 			}
 		},
 		{
@@ -29,12 +29,12 @@
             	"navigationStyle": "custom"
             }
         }
-        // ,{
-        //     "path" : "pages/user/user",
-        //     "style":{
-        //     	"navigationStyle": "custom"
-        //     }
-        // } 
+        ,{
+            "path" : "pages/user/user",
+            "style":{
+            	"navigationStyle": "custom"
+            }
+        } 
         ,{
             "path":"pages/user/signUp",
 			"style":{
@@ -115,6 +115,12 @@
 				"navigationStyle": "custom"
 			}
         }
+   //      ,{
+   //          "path" : "pages/goodsdetails/goodsdetails",
+   //          "style" : {
+			// 	"navigationStyle": "custom"
+			// }
+   //      }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
