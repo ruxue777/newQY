@@ -2,26 +2,39 @@
 	<view class="main">
 		<u-navbar title="会员转账"></u-navbar>
 	
-		<view class="middle">
-			<view class="amount">
-				<text class="top-title">可用额度(元)</text>
-				<text class="money">158.23</text>
+		<view class="top">
+			<view class="title">
+				<text>转账可用额度</text>
 			</view>
+			
+			<view class="middle">			
+				<view class="allowance">
+					<view class="accout-name">
+						<u-icon name="rmb-circle" size="42"></u-icon>
+						<text class="name">津贴账户</text>
+					</view>
+					
+					<view class="accout-amount">
+						<text>￥59159.2</text>
+					</view>
+				</view>
+				
+				<view class="subsidy">
+					<view class="accout-name">
+						<u-icon name="rmb-circle-fill" size="42"></u-icon>
+						<text class="name">补贴账户</text>
+					</view>
+					
+					<view class="accout-amount">
+						<text>￥59159.2</text>
+					</view>
+				</view>
+			</view>
+			
 		</view>
 		
-		<view class="content">
-			<view class="top">
-				<input placeholder="输入充值金额"/>
-			</view>
-			<view class="cont">
-				<input placeholder="用户名或手机号"/>
-			</view>
-			<view class="bottom">
-				<input type="password" placeholder="输入支付密码"/>
-			</view>
-			<view class="button">
-				<u-button type="primary" ripple="true" @click="withdraw">确定</u-button>
-			</view>
+		<view class="tips">
+			<text class="tips-cont">转账为个人行为,请核对对方真实姓名与账号,避免造成财产损失</text>
 		</view>
 		
 		
@@ -58,54 +71,75 @@
 
 <style lang="less">
 .main{
-	.middle{
+	.top{
 		width: 100%;
-		height: 150rpx;
+		height: 200rpx;
 		display: flex;
-		justify-content: center;
+		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		
-		.amount{
-			width: 300rpx;
-			height: 100rpx;
+		.title{
+			width: 100%;
+			height: 50rpx;
 			display: flex;
-			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			border-bottom: 1rpx solid #f5f5f5;
+			text{
+				position: relative;
+				left: 30rpx;
+				font-size: 26rpx;
+			}
+		}
+		.middle{
+			width: 100%;
+			height: 150rpx;
+			display: flex;
 			align-items: center;
 			justify-content: center;
-				
-			.top-title{
-				font-size: 26rpx;
-				color: #909399;
-			}
-			.money{
-				font-size: 40rpx;
-				letter-spacing:3rpx;
-				margin-top: 5rpx;
+			
+			.allowance,.subsidy{
+				width: 375rpx;
+				height: 100%;
+				.accout-name{
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					position: relative;
+					top: 30rpx;
+					
+					.name{
+						font-size: 30rpx;
+						position: relative;
+						left: 10rpx;
+					}
+				}
+				.accout-amount{
+					width: 100%;
+					height: 100%;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					
+					text{
+						font-size: 38rpx;
+					}
+				}
 			}
 		}
 	}
-	.content{
+	
+	.tips{
 		width: 100%;
-		height: 350rpx;
+		height: 40rpx;
 		display: flex;
-		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		
-		.top,.cont,.bottom{
-			width: 450rpx;
-			height: 80rpx;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			border-radius: 20rpx;
-			border: 1rpx solid #999999;
-			margin-bottom: 20rpx;
-		}
-		.button{
-			width: 450rpx;
-			height: 50rpx;
-			margin-top: 20rpx;
+		.tips-cont{
+			font-size: 24rpx;
+			color: #cccccc;
 		}
 	}
 }

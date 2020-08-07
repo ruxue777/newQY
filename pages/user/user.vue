@@ -7,30 +7,147 @@
 				<view class="userInfo-content">
 					<view class="userInfo-left">
 						<view class="user-avatar">
-							<image src="../../static/image/night.png"></image>
+							<image :src="userInfo.WM_headimgurl"></image>
 						</view>
 						
 						<view class="user-cont">
-							<view class="user-name">哈哈哈</view>
-							<view class="user-level">消费合伙人</view>
+							<view class="user-name">{{userInfo.nick_name}}</view>
+							<view class="user-level">{{userInfo.Grade}}</view>
 							<view class="invitation-code">
-								<text>邀请码:12312332</text>
-								<view class="invitation-button">复制</view>
+								<text>邀请码:{{userInfo.user_name}}</text>
+								<view class="invitation-button" @click="copy">复制</view>
 							</view>
 						</view>
 					</view>
 					
 					<view class="userInfo-right">
-						<view ></view>
+						<view class="userinfo-cont">
+							个人资料 >
+						</view>
+						
+						<view class="user-invite">
+							<image src="../../static/image/wxqr.png"></image>
+							<text>邀请好友</text>
+						</view>
 					</view>
 				</view>				
 			</view>
 			
-			<view class="navigation-bar"></view> 
+			<view class="navigation-bar">
+				<view class="navigation-bar-middle">
+					<view class="topbar-left">
+						<image class="v-img" src="../../static/image/v.png"></image>
+						<text class="left-title">消费合伙人</text>
+					</view>
+					<view class="topbar-middle">
+						<text class="title">会员尊享权益</text>
+					</view>
+					<view class="topbar-right">
+						<text class="title">立即查看</text>
+					</view>
+				</view>
+			</view> 
 		</view>
 		
-			
+		<view class="common">
+			<view class="middle">
+				<view class="top-title">
+					<text>常用功能</text>
+				</view>
+				<view class="bottom-cont">
+					<view class="commom-cont" @click="toShopservice">
+						<image class="icon" src="../../static/image/shopService.png"></image>
+						<text class="common-name">商家服务</text>
+					</view>
+					<view class="commom-cont" @click="toRecharge">
+						<image class="icon" src="../../static/image/withdrawal.png"></image>
+						<text class="common-name">提现申请</text>
+					</view>
+					<view class="commom-cont" @click="toRecommend">
+						<image class="icon" src="../../static/image/myPartner.png"></image>
+						<text class="common-name">我的邀请</text>
+					</view>
+					<view class="commom-cont" @click="toWithdraw">
+						<image class="icon" src="../../static/image/user_Transfer.png"></image>
+						<text class="common-name">转账</text>
+					</view>
+					<view class="commom-cont">
+						<image class="icon" src="../../static/image/myQRcode.png"></image>
+						<text class="common-name">推荐码</text>
+					</view>
+				</view>
+			</view>
+		</view>	
 		
+		<view class="accout">
+			<view class="middle">
+				<view class="top-title">
+					<text>我的账户</text>
+				</view>
+				
+				<view class="bottom-accout">
+					
+					<view class="user-accout">
+						<view class="left-allowance">
+							<view class="left-cont">
+								<view class="accout-name">津贴账户</view>
+								<view class="accout-amount">109.7</view>
+							</view>
+							<view class="right-cont">
+								<text class="today-earning">+13211.8</text>
+							</view>
+						</view>
+						
+						<view class="right-subsidy">
+							<view class="left-cont">
+								<view class="accout-name">补贴账户</view>
+								<view class="accout-amount">10119.7</view>
+							</view>
+							<view class="right-cont">
+								<text class="today-earning">+13211.8</text>
+							</view>
+						</view>
+					</view>
+					
+					<view class="shop-accout">
+						<view class="left-cont">
+							<view class="accout-name">商家账户</view>
+							<view class="accout-amount">10119.7</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		
+		<view class="bottom">
+			<view class="bottom-common">
+				<view class="top-title">
+					<text>常用功能</text>
+				</view>
+				<view  class="bottom-middle">
+					<view class="common-cont">
+						<image src="../../static/image/amount.png"></image>
+						<text class="name">账单</text>
+					</view>
+					<view class="common-cont">
+						<image src="../../static/image/bill.png"></image>
+						<text class="name">银行卡号</text>
+					</view>
+					<view class="common-cont">
+						<image src="../../static/image/project.png"></image>
+						<text class="name">我的项目</text>
+					</view>
+					<view class="common-cont">
+						<image src="../../static/image/lotter.png"></image>
+						<text class="name">我的卡券</text>
+					</view>
+					<view class="common-cont">
+						<image src="../../static/image/setting.png" @click="toSetting"></image>
+						<text class="name">设置</text>
+					</view>
+				</view>
+			</view>
+		</view>
 		
 		<!-- 反馈组件 -->
 		<u-toast ref="uToast" />
@@ -153,6 +270,16 @@ import {request} from "@/api/request.js"
 					}
 				}
 			},
+			copy(){
+				uni.setClipboardData({
+					data:this.userInfo.user_name,
+					success: () => {
+						uni.showToast({
+							title:'复制成功'
+						})
+					}
+				})
+			},
 			toSetting(){
 				uni.navigateTo({
 					url:'../userSetting/setting'
@@ -161,6 +288,11 @@ import {request} from "@/api/request.js"
 			toRecharge(){
 				uni.navigateTo({
 					url:`/pages/transaction/Recharge?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toWithdraw(){
+				uni.navigateTo({
+					url:`/pages/transaction/Withdraw?user_id=${this.userInfo.user_id}`
 				})
 			},
 			toRecommend(){
@@ -185,11 +317,13 @@ page{
 	background-color: #f5f5f5;
 }	
 .main{
+	background-color: #f5f5f5;
 	.top{
-		width: 100%;	
+		width: 100%;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		background-color: #f5f5f5;
 		.background-img{
 			width: 100%;
 			height: 400rpx;
@@ -224,6 +358,7 @@ page{
 						image{
 							width: 120rpx;
 							height: 120rpx;
+							border-radius: 10rpx;
 						}
 					}
 					.user-cont{
@@ -232,6 +367,8 @@ page{
 						display: flex;
 						flex-direction: column;
 						justify-content: space-around;
+						position: relative;
+						left: 20rpx;
 						
 						.user-name{
 							font-size: 36rpx;
@@ -277,16 +414,387 @@ page{
 				.userInfo-right{
 					width: 240rpx;
 					height: 150rpx;
-					background-color: #4CD964;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-around;
+					align-items: center;
+					position: relative;
+					top: 25rpx;
+					
+					.userinfo-cont{
+						width:143rpx;
+						height:40rpx;
+						background:rgba(255,255,255,1);
+						border-radius:20rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:300;
+						color:rgba(26,26,26,1);
+					}
+					.user-invite{
+						display: flex;
+						align-items: center;
+						flex-direction: column;
+						justify-content: space-around;
+						image{
+							width: 40rpx;
+							height: 40rpx;
+						}
+						text{
+							color: rgba(77, 77, 77, 1);
+							font-size: 20rpx;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						}
+					}
 				}
-			}
-			
+			}			
 		}
 		.navigation-bar{
 			width: 100%;
 			height: 50rpx;
 			position: relative;
 			top: -215rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			.navigation-bar-middle{
+				width: 710rpx;
+				height: 100%;
+				display: flex;
+				justify-content: space-around;
+				align-items: center;
+				
+				.topbar-left{
+					width: 185rpx;
+					height: 30rpx;
+					display: flex;
+					justify-content: space-around;
+					align-items: center;
+					
+					.v-img{
+						width: 25rpx;
+						height: 25rpx;
+						margin-right: 5rpx;
+					}
+					.left-title{
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size:30rpx;
+						font-family:Adobe Heiti Std;
+						font-weight:normal;
+						color:rgba(252,234,96,1);
+					}
+				}
+				
+				.topbar-middle{
+					width: 145rpx;
+					height: 25rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					.title{
+						font-size:24rpx;
+						font-family:Adobe Heiti Std;
+						font-weight:normal;
+						color:rgba(255,255,255,1);
+					}
+				}
+				
+				.topbar-right{
+					width:130rpx;
+					height:45rpx;
+					background:linear-gradient(174deg,rgba(242,222,79,1),rgba(248,238,149,1));
+					border-radius:20rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					
+					.title{
+						font-size:24rpx;
+						font-family:Adobe Heiti Std;
+						font-weight:normal;
+						color:rgba(0,0,0,1);
+					}
+				}
+			}
+		}
+	}
+	
+	.common{
+		width: 100%;
+		height: 230rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		top: -180rpx;
+		background-color: #f5f5f5;
+		
+		.middle{
+			width: 710rpx;
+			height: 210rpx;
+			background-color: #FFFFFF;
+			border-radius: 10rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			
+			.top-title{
+				width: 100%;
+				height: 65rpx;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				
+				text{
+					font-size:30rpx;
+					font-family:Adobe Heiti Std;
+					font-weight:bold;
+					color:rgba(0,0,0,1);
+					position: relative;
+					left: 30rpx;
+				}
+			}
+			.bottom-cont{
+				width: 100%;
+				height: 145rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.commom-cont{
+					width: 142rpx;
+					height: 160rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					
+					.icon{
+						width: 76rpx;
+						height: 76rpx;
+						position: relative;
+						bottom: 13rpx;
+					}
+					text{
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:500;
+						color:rgba(51,51,51,1);
+					}
+				}
+			}
+		}
+	}
+	
+	.accout{
+		width: 100%;
+		height: 330rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		top: -180rpx;
+		
+		.middle{
+			width: 710rpx;
+			height: 310rpx;
+			border-radius: 10rpx;
+			background: #FFFFFF;
+			
+			.top-title{
+				width: 100%;
+				height: 65rpx;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				border-bottom: 1rpx solid #f5f5f5;
+				
+				text{
+					font-size:30rpx;
+					font-family:Adobe Heiti Std;
+					font-weight:bold;
+					color:rgba(0,0,0,1);
+					position: relative;
+					left: 30rpx;
+				}
+			}
+			
+			.bottom-accout{
+				width: 100%;
+				height: 245rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				
+				.user-accout{
+					width: 100%;
+					height: 122.5rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					border-bottom: 1rpx solid #f5f5f5;
+					
+					.left-allowance,.right-subsidy{
+						width: 355rpx;
+						height: 100%;
+						border-right: 1rpx solid #f5f5f5;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						
+						.left-cont{
+							width: 195rpx;
+							height: 100%;
+							display: flex;
+							flex-direction: column;
+							align-items: flex-start;
+							justify-content: center;
+							position: relative;
+							left: 30rpx;
+							
+							.accout-name{
+								font-size:28rpx;
+								font-family:PingFang SC;
+								font-weight:400;
+								color:rgba(0,0,0,1);
+							}	
+							.accout-amount{
+								font-size:28rpx;
+								font-family:PingFang SC;
+								font-weight:400;
+								color:rgba(102,102,102,1);
+							}				
+						}
+						.right-cont{
+							width: 195rpx;
+							height: 100%;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+							
+							.today-earning{
+								display: flex;
+								justify-content: center;
+								align-items: center;
+								font-size:28rpx;
+								font-family:PingFang SC;
+								font-weight:400;
+								color:rgba(208,78,31,1);
+								position: relative;
+								top: 20rpx;
+								left: 15rpx;
+							}
+						}
+					}
+				}
+				
+				.shop-accout{
+					width: 100%;
+					height: 122.5rpx;
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+					
+					.left-cont{
+						width: 195rpx;
+						height: 100%;
+						display: flex;
+						flex-direction: column;
+						align-items: flex-start;
+						justify-content: center;
+						position: relative;
+						left: 30rpx;
+						
+						.accout-name{
+							font-size:28rpx;
+							font-family:PingFang SC;
+							font-weight:400;
+							color:rgba(0,0,0,1);
+						}	
+						.accout-amount{
+							font-size:28rpx;
+							font-family:PingFang SC;
+							font-weight:400;
+							color:rgba(102,102,102,1);
+						}				
+					}
+				}
+			}
+		}
+	}
+
+	.bottom{
+		width: 100%;
+		height: 320rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		position: relative;
+		top: -210rpx;
+		
+		.bottom-common{
+			width: 710rpx;
+			height: 250rpx;
+			border-radius: 10rpx;
+			background-color: #FFFFFF;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			
+			.top-title{
+				width: 100%;
+				height: 76rpx;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				border-bottom: 1rpx solid #f5f5f5;
+				
+				text{
+					font-size:30rpx;
+					font-family:Adobe Heiti Std;
+					font-weight:bold;
+					color:rgba(0,0,0,1);
+					position: relative;
+					left: 30rpx;
+				}
+			}
+			.bottom-middle{
+				width: 100%;
+				height: 171rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.common-cont{
+					width: 142rpx;
+					height: 100%;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-items: center;
+					
+					image{
+						width: 69rpx;
+						height: 69rpx;
+						position: relative;
+						bottom: 14rpx;
+					}
+					.name{
+						font-size:28rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(102,102,102,1);
+					}
+				}
+			}
 		}
 	}
 }	
