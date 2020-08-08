@@ -13,7 +13,7 @@
 						<view class="user-cont">
 							<view class="user-name">{{userInfo.nick_name}}</view>
 							<view class="user-level">{{userInfo.Grade}}</view>
-							<view class="invitation-code">
+							<view class="invitation-code" >
 								<text>邀请码:{{userInfo.user_name}}</text>
 								<view class="invitation-button" @click="copy">复制</view>
 							</view>
@@ -25,7 +25,7 @@
 							个人资料 >
 						</view>
 						
-						<view class="user-invite">
+						<view class="user-invite" @click="getWxappQR">
 							<image src="../../static/image/wxqr.png"></image>
 							<text>邀请好友</text>
 						</view>
@@ -71,7 +71,7 @@
 						<image class="icon" src="../../static/image/user_Transfer.png"></image>
 						<text class="common-name">转账</text>
 					</view>
-					<view class="commom-cont">
+					<view class="commom-cont" @click="getWxappQR">
 						<image class="icon" src="../../static/image/myQRcode.png"></image>
 						<text class="common-name">推荐码</text>
 					</view>
@@ -88,23 +88,23 @@
 				<view class="bottom-accout">
 					
 					<view class="user-accout">
-						<view class="left-allowance">
+						<view class="left-allowance" @click="toAllowance">
 							<view class="left-cont">
 								<view class="accout-name">津贴账户</view>
-								<view class="accout-amount">109.7</view>
+								<view class="accout-amount">{{AccoutAmount.ProfitAmount}}</view>
 							</view>
 							<view class="right-cont">
-								<text class="today-earning">+13211.8</text>
+								<!-- <text class="today-earning">+13211.8</text> -->
 							</view>
 						</view>
 						
-						<view class="right-subsidy">
+						<view class="right-subsidy" @click="toSubsidy">
 							<view class="left-cont">
 								<view class="accout-name">补贴账户</view>
-								<view class="accout-amount">10119.7</view>
+								<view class="accout-amount">{{AccoutAmount.RechargeAmount}}</view>
 							</view>
 							<view class="right-cont">
-								<text class="today-earning">+13211.8</text>
+								<!-- <text class="today-earning">+13211.8</text> -->
 							</view>
 						</view>
 					</view>
@@ -300,10 +300,20 @@ import {request} from "@/api/request.js"
 					url:`/pages/user/recommend?user_id=${this.userInfo.user_id}`
 				})
 			},
+			toAllowance(){
+				uni.navigateTo({
+					url:`/pages/userAccout/Allowance?AccountAmount=${encodeURIComponent(JSON.stringify(this.AccoutAmount))}`
+				})
+			},
+			toSubsidy(){
+				uni.navigateTo({
+					url:`/pages/userAccout/Subsidy?AccountAmount=${encodeURIComponent(JSON.stringify(this.AccoutAmount))}`
+				})
+			},
 			toShopservice(){
 				this.$refs.uToast.show({
 					title: '小程序暂不开放此功能',
-					type: 'warning 	```'
+					type: 'warning'
 				})
 			}
 		}

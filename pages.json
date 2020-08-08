@@ -4,9 +4,11 @@
 		},
 	"pages": [ 
 		{
-			"path" : "pages/goodsdetails/goodsdetails",
+			"path" : "pages/userAccout/Allowance",
 			"style" : {
-				"navigationBarTitleText": "商品详情"
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark" 
 			}
 		},
 		{
@@ -115,10 +117,26 @@
 				"navigationStyle": "custom"
 			}
         }
+        ,{
+            "path" : "pages/goodsdetails/goodsdetails",
+            "style" : {
+				"navigationBarTitleText": "商品详情"
+			}
+        }
+        ,{
+            "path" : "pages/userAccout/Subsidy",
+            "style" : {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark" 
+			}
+        }
    //      ,{
-   //          "path" : "pages/goodsdetails/goodsdetails",
+   //          "path" : "pages/userAccout/Allowance",
    //          "style" : {
-			// 	"navigationStyle": "custom"
+			// 	"navigationStyle": "custom",
+			// 	"enablePullDownRefresh": true,
+			// 	"backgroundTextStyle": "dark" 
 			// }
    //      }
     ],

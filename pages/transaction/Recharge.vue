@@ -143,20 +143,28 @@ import {request} from "@/api/request.js"
 				}
 			},
 			Pay(){
-				request('API_WithdrawMoney',{Amount:this.amount,BC_ID:this.BC_ID,PayPwd:this.Psd,user_id:this.user_id,AmountType:this.AmountType}).then(res=>{
-					if(res.result_code === "SUCCESS"){
-						this.$refs.uToast.show({
-							title: res.result_content,
-							type: 'success'
-						})
-						uni.navigateBack({})
-					}else{
-						this.$refs.uToast.show({
-							title: res.result_content,
-							type: 'error'
-						})
-					}
-				})
+				if(this.Psd != '' && this.Psd.length !=0){
+					request('API_WithdrawMoney',{Amount:this.amount,BC_ID:this.BC_ID,PayPwd:this.Psd,user_id:this.user_id,AmountType:this.AmountType}).then(res=>{
+						if(res.result_code === "SUCCESS"){
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'success'
+							})
+							uni.navigateBack({})
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+						}
+					})
+				}
+				else{
+					this.$refs.uToast.show({
+						title: '请输入密码',
+						type: 'error'
+					})
+				}
 			},
 			//提现账户选择
 			confirm_0(e){

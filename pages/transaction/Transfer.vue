@@ -64,8 +64,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 									success:(e=>{
 										let code = e.code
 										wxRequest('API_GetOpenid',{code:code}).then(result=>{
-											let openID = result.openid
-											wxRequest('API_GetWxpayTradeInfo_DepositOrder_Json',{OrderId:OrderId,openid:openID}).then(pay=>{
+											wxRequest('API_GetWxpayTradeInfo_DepositOrder_Json',{OrderId:OrderId,openid:result.openid}).then(pay=>{
 												let obj = JSON.parse(pay.RequestStr);
 												const {appId,timeStamp,nonceStr,paySign} = obj
 												const Zpackage = obj.package
