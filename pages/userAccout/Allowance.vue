@@ -72,6 +72,22 @@
 				</view>
 			</view>
 		</view>
+		
+		<view class="background">
+			<p class="title">津贴账单:</p>
+		</view>
+		
+		<view class="account-details">
+			<view class="details-content">
+				<view class="middle">
+					<view class="left">
+						<view class="cont-top"></view>
+						<view class="cont-bottom"></view>
+					</view>
+					<view class="right"></view>
+				</view>
+			</view>
+		</view>
 	</view>
 </template>
 
@@ -280,6 +296,7 @@ page{
 		flex-direction: column;
 		justify-content: center;
 		align-items: flex-end;
+		margin-bottom: -20rpx;
 		
 		.recharge,.withdraw,.transfer{
 			width: 100%;
@@ -317,6 +334,52 @@ page{
 				u-icon{
 					position: relative;
 					right: 45rpx;
+				}
+			}
+		}
+	}
+	
+	.background{
+		width: 100%;
+		height: 75rpx;
+		background-color: #fafafa;
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		
+		p{
+			font-size:24rpx;
+			font-family:PingFang SC;
+			font-weight:400;
+			color:rgba(153,153,153,1);
+			position: relative;
+			left: 30rpx;
+		}
+	}
+	
+	.account-details{
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		
+		.details-content{
+			width: 100%;
+			height: 100rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			.middle{
+				width: 690rpx;
+				height: 60rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.left{
+					
 				}
 			}
 		}
