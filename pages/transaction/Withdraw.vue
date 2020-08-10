@@ -260,6 +260,9 @@ import {request} from '@/api/request.js'
 			align-items: center;
 			border: 1rpx solid #C0C0C0;
 			border-radius: 15rpx;
+			input{
+				width: 350rpx;
+			}
 			
 			.middle{
 				width: 500rpx;

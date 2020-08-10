@@ -3,14 +3,14 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path" : "pages/userAccout/Allowance",
-			"style" : {
-				"navigationStyle": "custom",
-				"enablePullDownRefresh": true,
-				"backgroundTextStyle": "dark" 
-			}
-		},
+		// {
+		// 	"path" : "pages/userAccout/Allowance",
+		// 	"style" : {
+		// 		"navigationStyle": "custom",
+		// 		"enablePullDownRefresh": true,
+		// 		"backgroundTextStyle": "dark" 
+		// 	}
+		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -34,7 +34,9 @@
         ,{
             "path" : "pages/user/user",
             "style":{
-            	"navigationStyle": "custom"
+            	"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark" 
             }
         } 
         ,{
@@ -131,14 +133,14 @@
 				"backgroundTextStyle": "dark" 
 			}
         }
-   //      ,{
-   //          "path" : "pages/userAccout/Allowance",
-   //          "style" : {
-			// 	"navigationStyle": "custom",
-			// 	"enablePullDownRefresh": true,
-			// 	"backgroundTextStyle": "dark" 
-			// }
-   //      }
+        ,{
+            "path" : "pages/userAccout/Allowance",
+            "style" : {
+				"navigationStyle": "custom",
+				"enablePullDownRefresh": true,
+				"backgroundTextStyle": "dark" 
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

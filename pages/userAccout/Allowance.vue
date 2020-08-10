@@ -11,7 +11,7 @@
 			<view class="top-account-balance">
 				<view class="balance-content">
 					<view class="title">津贴账户(元)</view>
-					<view class="accout">0.00</view>
+					<view class="accout">{{accoutAmount.ProfitAmount}}</view>
 				</view>
 			</view>
 		</view>
@@ -26,7 +26,7 @@
 							津贴权益
 						</view>
 						<view class="bottom-account-amount">
-							500.00
+							{{accoutAmount.BonusAmount}}
 						</view>
 					</view>
 				</view>
@@ -78,13 +78,16 @@
 		</view>
 		
 		<view class="account-details">
-			<view class="details-content">
-				<view class="middle">
+			<view class="details-content" v-for="(item,index) in ProfitAmountData" :key="index">
+				<view class="middle" >
 					<view class="left">
-						<view class="cont-top"></view>
-						<view class="cont-bottom"></view>
+						<view class="cont-top">{{item.LP_Desc}}</view>
+						<view class="cont-bottom">{{item.createTime}}</view>
 					</view>
-					<view class="right"></view>
+					<view class="right">
+						<view class="turnover" v-if="item.LP_Event !=='转入'">-{{item.LP_Amount}}</view>
+						<view class="turnover_0" v-else>+{{item.LP_Amount}}</view>
+					</view>
 				</view>
 			</view>
 		</view>
@@ -92,27 +95,37 @@
 </template>
 
 <script>
+import {request} from '@/api/request.js'	
 	export default{
 		data(){
 			return{
 				//账户数据
-				LogsUserProfit:[],
+				accoutAmount:[],
+				userInfo:[],
 				//账户金额
 				ProfitAmount:0.00,
 				BonusAmount:0.00,
 				//页面数
-				Index:1
+				Index:1,
+				ProfitAmountData:[]
 			};
 		},
 		onLoad(options)  
 		{
-		
+			this.accoutAmount = JSON.parse(decodeURIComponent(options.AccountAmount));
+			this.userInfo = uni.getStorageSync("globalUser");
+			this.getAllowanceData()
 		},
 		onReachBottom() {
 		
 		},
 		methods:
 		{
+			getAllowanceData(){
+				request('API_GetList_LogsUserProfit',{user_id:this.userInfo.user_id,LP_Type:0,AmountType:"Profit",pageSize:10,index:this.Index}).then(res=>{
+					this.ProfitAmountData = res
+				})
+			},
 			back(){
 				uni.navigateBack({})
 			}
@@ -216,7 +229,7 @@ page{
 			justify-content: center;
 			
 			.left{
-				width: 215rpx;
+				width: 220rpx;
 				height: 100%;
 				display: flex;
 				justify-content: space-around;
@@ -370,16 +383,60 @@ page{
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			border-bottom: 1rpx solid #f5f5f5;
 			
 			.middle{
 				width: 690rpx;
-				height: 60rpx;
+				height: 100rpx;
 				display: flex;
-				justify-content: center;
+				justify-content: space-between;
 				align-items: center;
 				
 				.left{
+					width: 300rpx;
+					height: 100rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: center;
 					
+					.cont-top{
+						width: 350rpx;
+						height: 50rpx;
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(51,51,51,1);
+					}
+					.cont-bottom{
+						font-size:20rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(153,153,153,1);
+					}
+				}
+				.right{
+					width: 200rpx;
+					height: 40rpx;
+					
+					.turnover{
+						font-size:30rpx;
+						font-family:PingFang SC;
+						font-weight:600;
+						color:rgba(51,51,51,1);
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+					}
+					.turnover_0{
+						font-size:30rpx;
+						font-family:PingFang SC;
+						font-weight:600;
+						color:rgba(51,51,51,1);
+						display: flex;
+						justify-content: flex-end;
+						align-items: center;
+						color:rgba(247,76,50,1);
+					}
 				}
 			}
 		}

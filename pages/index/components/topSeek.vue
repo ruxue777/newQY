@@ -9,10 +9,18 @@
 		</view>
 		
 		<u-row gutter="12">
-			<u-col span="12" @click="to_Search()">
+			<u-col span="12" >
 				<view class="seek">
-					<image class="search-img" src="../../../static/image/search.png"></image>
-					<text class="search-text">幸福山庄养生</text>
+					<view class="left">
+						<u-icon name="scan" size="40"></u-icon>
+					</view>
+					
+					<view class="right" @click="to_Search()">
+						<view class="middle">
+							<image class="search-img" src="../../../static/image/search.png"></image>
+							<p class="search-text">幸福山庄养生</p>
+						</view>
+					</view>
 				</view>
 			</u-col>
 		</u-row>			 
@@ -65,14 +73,36 @@
 	position: relative;
 	top: 25rpx;
 	
-	.search-img{
-		width: 36rpx;
-		height: 36rpx;
-		margin-right: 5rpx;
+	.left{
+		width: 70rpx;
+		height: 70rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
-	.search-text{
-		font-size:28rpx;
-		color:rgba(153,153,153,1);
+	.right{
+		height: 70rpx;
+		width: 620rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+		.middle{
+			position: relative;
+			left: -25rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			.search-img{
+				width: 36rpx;
+				height: 36rpx;
+				margin-right: 5rpx;
+			}	
+			.search-text{
+				font-size:28rpx;
+				color:rgba(153,153,153,1);
+			}
+		}
 	}
 }
 .box-display{

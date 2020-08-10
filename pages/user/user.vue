@@ -7,10 +7,11 @@
 				<view class="userInfo-content">
 					<view class="userInfo-left">
 						<view class="user-avatar">
-							<image :src="userInfo.WM_headimgurl"></image>
+							<image v-if="userInfo != ''" :src="userInfo.WM_headimgurl"></image>
+							<image v-else src="../../static/image/img4.jpg" @click="tosignIn"></image>
 						</view>
 						
-						<view class="user-cont">
+						<view class="user-cont" v-if="userInfo != ''">
 							<view class="user-name">{{userInfo.nick_name}}</view>
 							<view class="user-level">{{userInfo.Grade}}</view>
 							<view class="invitation-code" >
@@ -18,6 +19,11 @@
 								<view class="invitation-button" @click="copy">复制</view>
 							</view>
 						</view>
+					
+						<view class="notLogin" v-else>
+							<view class="title">请点击头像登录哦~</view>
+						</view>
+					
 					</view>
 					
 					<view class="userInfo-right">
@@ -110,7 +116,7 @@
 					</view>
 					
 					<view class="shop-accout">
-						<view class="left-cont">
+						<view class="left-cont" v-if="userInfo.IsBusinessMaster == 1">
 							<view class="accout-name">商家账户</view>
 							<view class="accout-amount">10119.7</view>
 						</view>
@@ -164,13 +170,16 @@ import {request} from "@/api/request.js"
 	export default {
 		data() {
 			return {
-				userInfo:{},
+				userInfo:'',
 				AccoutAmount:[],
 				show:false,
 				WxappQR:''
 			}
 		},
-		onShow() {
+		onLoad() {
+			this.getUserInfo()
+		},
+		onPullDownRefresh() {
 			this.getUserInfo()
 		},
 		methods:{
@@ -283,6 +292,11 @@ import {request} from "@/api/request.js"
 			toSetting(){
 				uni.navigateTo({
 					url:'../userSetting/setting'
+				})
+			},
+			tosignIn(){
+				uni.navigateTo({
+					url:'signIn'
 				})
 			},
 			toRecharge(){
@@ -418,6 +432,13 @@ page{
 								left: 30rpx;
 							}
 						}
+					}
+				
+					.notLogin{
+						width: 300rpx;
+						height: 60rpx;
+						position: relative;
+						left: 50rpx;
 					}
 				}
 				
