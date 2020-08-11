@@ -34,7 +34,7 @@
 				<view class="right">
 					<view class="cont">
 						<p>每日奖励收益</p>
-						<view class="button">
+						<view class="button" @click="toBonus">
 							去看看
 						</view>
 					</view>
@@ -48,7 +48,7 @@
 				<view class="left">
 					<image src="../../static/image/Recharge-A.png"></image>
 				</view>
-				<view class="right">
+				<view class="right" @click="toTransfer">
 					<p>充值</p>
 					<u-icon name="arrow-right" size="32"></u-icon>
 				</view>
@@ -57,7 +57,7 @@
 				<view class="left">
 					<image src="../../static/image/withdraw-A.png"></image>
 				</view>
-				<view class="right">
+				<view class="right" @click="toRecharge">
 					<p>提现</p>
 					<u-icon name="arrow-right" size="32"></u-icon>
 				</view>
@@ -66,8 +66,8 @@
 				<view class="left">
 					<image src="../../static/image/Transfer-A.png"></image>
 				</view>
-				<view class="right">
-					<p>转账</p>
+				<view class="right" @click="toWithdraw">
+					<p>转账 (转给其他会员)</p>
 					<u-icon name="arrow-right" size="32"></u-icon>
 				</view>
 			</view>
@@ -91,6 +91,7 @@
 				</view>
 			</view>
 		</view>
+		<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus"  />
 	</view>
 </template>
 
@@ -102,6 +103,7 @@ import {request} from '@/api/request.js'
 				//账户数据
 				accoutAmount:[],
 				userInfo:[],
+				loadStatus: 'loadmore',
 				//账户金额
 				ProfitAmount:0.00,
 				BonusAmount:0.00,
@@ -117,13 +119,48 @@ import {request} from '@/api/request.js'
 			this.getAllowanceData()
 		},
 		onReachBottom() {
-		
+			if(this.ProfitAmountData.length<this.Index*10){
+				this.loadStatus = 'nomore';
+				return;
+			}else{
+				this.Index++;
+				this.loadStatus = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getAllowanceData();
+					this.loadStatus = 'loadmore';
+				}, 1000);
+			}
 		},
 		methods:
 		{
-			getAllowanceData(){
+			getAllowanceData(callBack){
 				request('API_GetList_LogsUserProfit',{user_id:this.userInfo.user_id,LP_Type:0,AmountType:"Profit",pageSize:10,index:this.Index}).then(res=>{
-					this.ProfitAmountData = res
+					if(res.length<10){
+						this.loadStatus = 'nomore'
+					}
+					this.ProfitAmountData = [...this.ProfitAmountData,...res]
+					callBack && callBack()
+				})
+			},
+			toBonus(){
+				uni.navigateTo({
+					url:`Bonus?user_id=${this.userInfo.user_id}&accoutAmount=${this.accoutAmount.BonusAmount}`
+				})
+			},
+			toRecharge(){
+				uni.navigateTo({
+					url:`/pages/transaction/Recharge?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toWithdraw(){
+				uni.navigateTo({
+					url:`/pages/transaction/Withdraw?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toTransfer(){
+				uni.navigateTo({
+					url:`/pages/transaction/Transfer?user_id=${this.userInfo.user_id}`
 				})
 			},
 			back(){

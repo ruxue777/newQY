@@ -114,15 +114,17 @@
 								<view class="reservation">
 									<view class="cont">
 										<text class="name">品名</text>
-										<text class="number">{{ item.BP_Name }}</text>
+										<text class="number">
+											<p>{{ item.BP_Name }}</p>
+										</text>
 									</view>
 									<view class="cont">
 										<text class="name">总数</text>
-										<text class="number">{{priceInt(item.BPR_Count)}}</text>
+										<text class="number_1">{{priceInt(item.BPR_Count)}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">未领取</text>
-										<text class="number">1</text>
+										<text class="number_2">1</text>
 									</view>
 									<view class="cont">
 										<text class="name">预约领取</text>
@@ -192,11 +194,11 @@
 									</view>
 									<view class="cont">
 										<text class="name">总数</text>
-										<text class="number">1</text>
+										<text class="number_1">1</text>
 									</view>
 									<view class="cont">
 										<text class="name">未领取</text>
-										<text class="number">1</text>
+										<text class="number_2">1</text>
 									</view>
 									<view class="cont">
 										<text class="name">预约领取</text>
@@ -279,9 +281,11 @@ export default {
 			tabsHeight: 0,
 			dx: 0,
 			loadStatus: ['loadmore','loadmore','loadmore','loadmore'],
+			userInfo:[]
 		};
 	},
 	onLoad() {
+		this.getUserInfo()
 		this.getOrderList(0);
 		this.getOrderList(1);
 		this.getOrderList(2);
@@ -310,16 +314,39 @@ export default {
 				this.getOrderList(this.current);
 			}, 1200);		
 		},
+		getUserInfo(){
+			const userInfo = uni.getStorageSync("globalUser");
+			if(!userInfo){
+				uni.showModal({
+					title:'您还没有登录哦',
+					confirmText:'去登录',
+					success:function(res){
+						if(res.cancel)
+						{
+							return
+						}
+						else if(res.confirm)
+						{
+							uni.navigateTo({
+								url:'./signIn'
+							})
+						}
+					}
+				})
+			}
+			else{
+				this.userInfo = userInfo;
+			}
+		},
 		test(){
 			console.log('按键点击')
 		},
 		// 页面数据
 		getOrderList(idx) {
-			
 			switch(idx){
 				case 0:
 					request('API_GetList_BusinessProductRecord',{
-						user_id:8565,
+						user_id:this.userInfo.user_id,
 						state:0,
 						pageSize:10,
 						index:1
@@ -333,7 +360,7 @@ export default {
 				break;
 				case 1:
 					request('API_GetList_BusinessProductRecord',{
-						user_id:8565,
+						user_id:this.userInfo.user_id,
 						state:1,
 						pageSize:10,
 						index:1
@@ -347,7 +374,7 @@ export default {
 				break;
 				case 2:
 					request('API_GetList_BusinessProductRecord',{
-						user_id:8565,
+						user_id:this.userInfo.user_id,
 						state:3,
 						pageSize:10,
 						index:1
@@ -545,6 +572,7 @@ page {
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			justify-content: center;
 			
 			.name{
 				font-size: 28rpx;
@@ -566,7 +594,25 @@ page {
 			}
 			
 			.number{
+				width: 200rpx;
+				height: 50rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				overflow:hidden;
+				white-space:nowrap;
+				text-overflow:ellipsis;
 				color: #fa3534;
+				p{
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+				}
+			}
+			.number_1,.number_2{
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			}
 		}
 	}
