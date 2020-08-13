@@ -1,24 +1,66 @@
 <template>
 	<view>
-		<topGoodsdetails></topGoodsdetails>
+		<topGoodsdetails :GoodsData="GoodsData"></topGoodsdetails>
+		<recommend></recommend>
+		<shopDetails></shopDetails>
+		<goodsH5 :GoodsData="GoodsData"></goodsH5>
+		<moreGoods></moreGoods>
+		<navigation></navigation>
 	</view>
 </template>
 
 <script>
-import topGoodsdetails from './components/topGoodsdetails.vue'
+import topGoodsdetails from './components/topGoodsdetails.vue';
+import recommend from './components/recommend.vue';
+import shopDetails from './components/shopDetails.vue';
+import goodsH5 from './components/goodsH5.vue';
+import moreGoods from './components/moreGoods.vue';
+import navigation from './components/navigation.vue';
+// 请求组件
+import {request} from '@/api/request.js'
+
 	export default {
 		components:{
-			topGoodsdetails:topGoodsdetails
-			
+			topGoodsdetails:topGoodsdetails,
+			recommend:recommend,
+			shopDetails:shopDetails,
+			goodsH5:goodsH5,
+			moreGoods:moreGoods,
+			navigation:navigation
 		},
 		data() {
 			return {
-				
+				//商品id
+				id:'',
+				//商铺id
+				BusinessID:'',
+				LatItude:'',
+				LongItude:'',
+				//商品详情数据
+				GoodsData:[]
 			};
+		},
+		onLoad(e){
+			this.id = e.id;
+			this.BusinessID = e.BusinessID;
+			this.LatItude = e.LatItude;
+			this.LongItude = e.LongItude;
+			
+			this.getGoodsDatails()
+		},
+		methods:{
+			getGoodsDatails(){
+				request('API_GetInfo_BusinessProductSearch',{ProductID:this.id,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
+					this.GoodsData = res
+				})
+			}
 		}
 	}
 </script>
 
 <style lang="less">
-
+navigation{
+	position:fixed;
+	bottom:0;
+}
 </style>

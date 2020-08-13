@@ -11,7 +11,7 @@
 		<view class="wrap">
 			<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">
 				<template v-slot:left="{ leftList }">
-					<view class="demo-warter" v-for="(item, index) in leftList" :key="index">
+					<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID)">
 						<!-- 警告：微信小程序不支持嵌入lazyload组件，请自行如下使用image标签 -->
 						<!-- #ifndef MP-WEIXIN -->
 						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl " :index="index"></u-lazy-load>
@@ -37,7 +37,7 @@
 					</view>
 				</template>
 				<template v-slot:right="{ rightList }">
-					<view class="demo-warter" v-for="(item, index) in rightList" :key="index">
+					<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID)">
 						<!-- #ifndef MP-WEIXIN -->
 						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl" :index="index"></u-lazy-load>
 						<!-- #endif -->
@@ -171,9 +171,6 @@ export default {
 				callBack && callBack()
 			})							
 		},
-		clear() {
-			this.$refs.uWaterfall.clear();
-		},
 		getLocationData(){
 			const QQMapWx = new QQMap_SDK({
 				key:'FXCBZ-4H36W-FBDR5-O6E6O-KGQ27-MHB6U'
@@ -219,7 +216,15 @@ export default {
 					})
 				}
 			})
-		}		
+		},		
+		toGoodsDetails(id,BusinessID){
+			uni.navigateTo({
+				url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+			})
+		},
+		clear() {
+			this.$refs.uWaterfall.clear();
+		}
 	}
 }
 </script>

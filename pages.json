@@ -4,18 +4,16 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/userAccout/Allowance",
+		// 	"path" : "pages/goodsdetails/goodsdetails",
 		// 	"style" : {
-		// 		"navigationStyle": "custom",
-		// 		"enablePullDownRefresh": true,
-		// 		"backgroundTextStyle": "dark" 
+		// 		"navigationBarTitleText": "商品详情"
 		// 	}
 		// },
 		{
 			"path": "pages/index/index",
 			"style": {
 				"navigationStyle": "custom",
-				"enablePullDownRefresh": true,
+				"enablePullDownRefresh": true, 
 				"backgroundTextStyle": "dark" 
 			}
 		}

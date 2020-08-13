@@ -135,7 +135,7 @@
 						<image src="../../static/image/amount.png"></image>
 						<text class="name">账单</text>
 					</view>
-					<view class="common-cont">
+					<view class="common-cont" @click="tobankCard">
 						<image src="../../static/image/bill.png"></image>
 						<text class="name">银行卡管理</text>
 					</view>
@@ -189,7 +189,7 @@ import {request} from "@/api/request.js"
 					uni.showModal({
 						title:'您还没有登录哦',
 						confirmText:'去登录',
-						success:function(res){
+						success:(res=>{
 							if(res.cancel)
 							{
 								return
@@ -200,7 +200,7 @@ import {request} from "@/api/request.js"
 									url:'./signIn'
 								})
 							}
-						}
+						})
 					})
 				}
 				else{
@@ -322,6 +322,11 @@ import {request} from "@/api/request.js"
 			toSubsidy(){
 				uni.navigateTo({
 					url:`/pages/userAccout/Subsidy?AccountAmount=${encodeURIComponent(JSON.stringify(this.AccoutAmount))}`
+				})
+			},
+			tobankCard(){
+				uni.navigateTo({
+					url:`../userSetting/bankCardSettings?user_id=${this.userInfo.user_id}`
 				})
 			},
 			toShopservice(){

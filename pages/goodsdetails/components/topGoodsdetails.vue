@@ -1,7 +1,7 @@
 <template>
 	<view class="main">
 		<view class="goods-img">
-			<image src="../../../static/image/goodsimg.png"></image>
+			<image :src="GoodsData.BP_ImgUrl"></image>
 		</view>
 		
 		<view class="goods-cont">
@@ -13,7 +13,7 @@
 					</view>
 					
 					<view class="right-content">
-						<p class="stock">已售 3 ・ 仅剩 999999</p>
+						<p class="stock">已售 3 ・ 仅剩 999</p>
 					</view>
 				</view>
 			</view>
@@ -21,7 +21,7 @@
 			<view class="goods-describe">
 				<view class="goods-describe-content">
 					<p class="goods-titile">
-						微软（Microsoft）Surface Book 2 创意商用设计二合一平板电脑笔记本 13.5英寸（Intel i5 8G内存 256G存储）
+						{{GoodsData.BP_Name}}
                     </p>
 					
 					<p class="goods-details">
@@ -76,6 +76,7 @@
 
 <script>
 	export default {
+		props:['GoodsData'],
 		data() {
 			return {
 				
