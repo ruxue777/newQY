@@ -8,12 +8,12 @@
 			<view class="goods-price">
 				<view class="goods-price-content">
 					<view class="left-content">
-						<text class="commodity-price">￥166.90</text>
-						<text class="original-price">￥166.90</text>
+						<text class="commodity-price">￥{{GoodsData.BP_Amount}}</text>
+						<text class="original-price">￥{{GoodsData.BP_MarketAmount}}</text>
 					</view>
 					
 					<view class="right-content">
-						<p class="stock">已售 3 ・ 仅剩 999</p>
+						<p class="stock">已售 {{GoodsData.BP_OrderIsSell}}{{GoodsData.BP_Unit}} ・ 仅剩 {{GoodsData.BP_OrderStock-GoodsData.BP_OrderIsSell}}{{GoodsData.BP_Unit}}</p>
 					</view>
 				</view>
 			</view>
@@ -25,9 +25,7 @@
                     </p>
 					
 					<p class="goods-details">
-					   这款属于略高端的一款床垫，面料选用的都是全棉面料 ，填充物是的吧
-					   竹炭纤维和防螨帝人棉 床垫的防螨效果估计都是大家最在意的吧我
-					   们的质检报告显示可以有效防螨99.9%
+					   {{GoodsData.BP_Desc}}
 					</p>
 				</view>
 			</view>
@@ -123,11 +121,13 @@
 				align-items: center;
 				
 				.left-content{
-					width: 236rpx;
+					width: 300rpx;
 					height: 30rpx;
 					display: flex;
 					align-items: center;
-					justify-content: center;
+					justify-content: flex-start;
+					position: relative;
+					left: 10rpx;
 					
 					.commodity-price{
 						font-size:36rpx;
@@ -138,7 +138,7 @@
 					
 					.original-price{
 						position: relative;
-						top: 10rpx;
+						top: 5rpx;
 						left: 10rpx;
 						font-size:24rpx;
 						font-family:PingFang SC;
@@ -149,14 +149,17 @@
 				}
 				
 				.right-content{
-					width: 200rpx;
+					width: 320rpx;
 					height: 25rpx;
 					display: flex;
 					align-items: center;
-					justify-content: center;
+					justify-content: flex-end;
 					
 					.stock{
-						width: 200rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						width: 300rpx;
 						font-size:24rpx;
 						font-family:PingFang SC;
 						font-weight:500;
@@ -167,20 +170,16 @@
 		}
 		.goods-describe{ 
 			width: 100%;
-			height: 280rpx;
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			
 			.goods-describe-content{
 				width: 670rpx;
-				height: 200rpx;
 				display: flex;
 				flex-direction: column;
 				justify-content: space-around;
 				align-content: center;
-				position: relative;
-				top: -30rpx;
 				
 				.goods-titile{
 					width:660rpx;
@@ -189,7 +188,6 @@
 					font-weight:500;
 					color:rgba(0,0,0,1);
 				}
-				
 				.goods-details{
 					width:660rpx;
 					font-size:22rpx;
@@ -215,8 +213,8 @@
 				justify-content: center;
 				flex-direction: column;
 				align-items: center;
-				position: relative;
-				top: -20rpx;
+				// position: relative;
+				// top: -20rpx;
 				-moz-box-shadow:0px 0px 10rpx #e4e4e4;
 				-webkit-box-shadow:0px 0px 10rpx #e4e4e4;
 				box-shadow:0px 0px 10rpx #e4e4e4;
