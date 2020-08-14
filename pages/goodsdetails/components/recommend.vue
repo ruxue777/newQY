@@ -71,7 +71,7 @@
 .main{
 	width: 100%;
 	height: 820rpx;
-	margin-top: -60rpx;
+	margin-top: 60rpx;
 	display: flex;
 	justify-content: center;
 	align-items: center;

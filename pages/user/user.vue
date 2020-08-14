@@ -107,7 +107,7 @@
 						<view class="right-subsidy" @click="toSubsidy">
 							<view class="left-cont">
 								<view class="accout-name">补贴账户</view>
-								<view class="accout-amount">{{AccoutAmount.RechargeAmount}}</view>
+								<view class="accout-amount newColor">{{AccoutAmount.RechargeAmount}}</view>
 							</view>
 							<view class="right-cont">
 								<!-- <text class="today-earning">+13211.8</text> -->
@@ -148,9 +148,17 @@
 						<text class="name">我的卡券</text>
 					</view>
 					<view class="common-cont">
+						<image src="../../static/image/proxy.png" @click="toProxy"></image>
+						<text class="name">代理</text>
+					</view>
+					<view class="common-cont">
 						<image src="../../static/image/setting.png" @click="toSetting"></image>
 						<text class="name">设置</text>
 					</view>
+					
+					<!-- 占位 -->
+					<view class="common-cont"></view>
+					<view class="common-cont"></view>
 				</view>
 			</view>
 		</view>
@@ -328,6 +336,9 @@ import {request} from "@/api/request.js"
 				uni.navigateTo({
 					url:`../userSetting/bankCardSettings?user_id=${this.userInfo.user_id}`
 				})
+			},
+			toProxy(){
+				
 			},
 			toShopservice(){
 				this.$refs.uToast.show({
@@ -599,7 +610,6 @@ page{
 			}
 			.bottom-cont{
 				width: 100%;
-				height: 145rpx;
 				display: flex;
 				justify-content: center;
 				align-items: center;
@@ -702,10 +712,13 @@ page{
 								color:rgba(0,0,0,1);
 							}	
 							.accout-amount{
-								font-size:28rpx;
+								font-size:42rpx;
 								font-family:PingFang SC;
-								font-weight:400;
-								color:rgba(102,102,102,1);
+								font-weight:600;
+								color:rgba(255,56,66,1);
+							}
+							.newColor{
+								color: rgba(74, 95, 196, 1);
 							}				
 						}
 						.right-cont{
@@ -777,7 +790,6 @@ page{
 		
 		.bottom-common{
 			width: 710rpx;
-			height: 250rpx;
 			border-radius: 10rpx;
 			background-color: #FFFFFF;
 			display: flex;
@@ -804,14 +816,14 @@ page{
 			}
 			.bottom-middle{
 				width: 100%;
-				height: 171rpx;
 				display: flex;
+				flex-flow: row wrap;
 				justify-content: center;
 				align-items: center;
 				
 				.common-cont{
-					width: 142rpx;
-					height: 100%;
+					width: 177.5rpx;
+					height: 200rpx;
 					display: flex;
 					flex-direction: column;
 					justify-content: center;

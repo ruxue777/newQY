@@ -47,13 +47,22 @@ import {request} from '@/api/request.js'
 			this.LongItude = e.LongItude;
 			
 			this.getGoodsDatails()
+			this.getMerchantData()
 		},
 		methods:{
+			//商品详情
 			getGoodsDatails(){
 				request('API_GetInfo_BusinessProductSearch',{ProductID:this.id,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
 					this.GoodsData = res
 				})
-			}
+			},
+			//店铺详情
+			getMerchantData(){
+				request('API_GetInfo_BusinessSearch',{BusinessID: this.BusinessID,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
+					console.log(res)
+				})
+			},
+			//核销点详情
 		}
 	}
 </script>

@@ -85,6 +85,8 @@
 
 <style lang="less">
 .main{
+	width: 100%;
+	height: auto;
 	.goods-img{
 		width: 100%;
 		height: 750rpx;
@@ -100,7 +102,7 @@
 	
 	.goods-cont{
 		width: 100%;
-		height: 710rpx;
+		height: auto;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -173,6 +175,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			position: relative;
+			top: 20rpx;
 			
 			.goods-describe-content{
 				width: 670rpx;
@@ -183,6 +187,7 @@
 				
 				.goods-titile{
 					width:660rpx;
+					height: 60rpx;
 					font-size:28rpx;
 					font-family:PingFang TC;
 					font-weight:500;
@@ -203,6 +208,8 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			position: relative;
+			top: 70rpx;
 			
 			.goods-service-content{
 				width: 670rpx;
