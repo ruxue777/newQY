@@ -37,7 +37,9 @@ import {request} from '@/api/request.js'
 				LatItude:'',
 				LongItude:'',
 				//商品详情数据
-				GoodsData:[]
+				GoodsData:[],
+				//店铺数据
+				MerchantData:[]
 			};
 		},
 		onLoad(e){
@@ -58,8 +60,8 @@ import {request} from '@/api/request.js'
 			},
 			//店铺详情
 			getMerchantData(){
-				request('API_GetInfo_BusinessSearch',{BusinessID: this.BusinessID,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
-					console.log(res)
+				request('API_GetInfo_BusinessSearch',{BusinessID:this.BusinessID,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
+					this.MerchantData = res
 				})
 			},
 			//核销点详情
