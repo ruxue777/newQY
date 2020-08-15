@@ -55,6 +55,39 @@
 			</view>
 		</view>
 		
+		<view class="select-box">
+			<view class="content" v-if="isHigh == true">
+				<view class="high selected">高到低</view>
+				<view class="low" @click="isHigh = false">低到高</view>
+			</view>
+			<view class="content" v-else>
+				<view class="high" @click="isHigh = true">高到低</view>
+				<view class="low selected">低到高</view>
+			</view>
+		</view>
+		
+		<view class="rank">
+			<view class="content">
+				<view class="middle">
+					<view class="left">
+						<image src="../../static/image/NO_1.png"></image>
+						<view class="proxy-cont">
+							<view class="proxy-name">大余县</view>
+							<view class="proxy-client-amount">客户数量:1233</view>
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view class="content">
+				
+			</view>
+			
+			<view class="content">
+				
+			</view>
+		</view>
+
 		<!-- 反馈组件 -->
 		<u-calendar v-model="show" mode="range" :max-date='max_date' @change="change"></u-calendar>
 	</view>
@@ -67,6 +100,7 @@
 				time:`请选择时间`,
 				max_date:'2050-01-01',
 				show:false,
+				isHigh:true,
 				selectTime:false
 			};
 		},
@@ -79,8 +113,7 @@
 			},
 			change(e){
 				this.selectTime = true;
-				this.time = `${e.startDate} 至 ${e.endDate}`
-				
+				this.time = `${e.startDate} 至 ${e.endDate}`				
 			}
 		}
 	}
@@ -276,6 +309,91 @@
 			.btn{
 				position: relative;
 				left: 40rpx;	
+			}
+		}
+	}
+	
+	.select-box{
+		width: 100%;
+		height: 95rpx;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		border-bottom: 5rpx solid #fafafa;
+		
+		.content{
+			width: 280rpx;
+			height: 65rpx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			position: relative;
+			left: -20rpx;
+			
+			.high,.low{
+				width: 120rpx;
+				height: 50rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size:24rpx;
+				font-family:PingFang SC;
+				font-weight:400;
+				color:rgba(102,102,102,1);
+				line-height:12rpx;
+			}
+			.selected{
+				width: 120rpx;
+				height: 50rpx;
+				background:rgba(255,229,14,1);
+				border-radius:35rpx;
+				font-weight:600;
+				color:rgba(51,51,51,1);
+				line-height:12rpx;
+			}
+		}
+	}
+
+	.rank{
+		width: 100%;
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-items: center;
+		
+		.content{
+			width: 100%;
+			height: 100rpx;
+			border-bottom: 5rpx solid #fafafa;
+			
+			.middle{
+				width: 710rpx;
+				height: 80rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.left{
+					width: 250rpx;
+					height: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					image{
+						width: 50rpx;
+						height: 60rpx;
+					}
+					
+					.proxy-cont{
+						width: 175rpx;
+						height: 75rpx;
+						display: flex;
+						flex-direction: column;
+						justify-content: center;
+						align-items: center;
+					}
+				}
 			}
 		}
 	}
