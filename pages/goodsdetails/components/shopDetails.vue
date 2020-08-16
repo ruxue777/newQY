@@ -4,8 +4,8 @@
 		<view class="middle">
 			<view class="main-shop">
 				<view class="left">
-					<image src="../../../static/bankCard/BOC.png"></image>
-					<p>法国饰品店</p>
+					<image :src="MerchantData.ImgUrl"></image>
+					<p>{{MerchantData.BusinessName}}</p>
 				</view>
 				<view class="right">
 					进店逛逛 >
@@ -21,10 +21,10 @@
 				</view>
 				<view class="bottom">
 					<view class="shop-time">
-						<p>· 17:00-24:00</p>
+						<p>· {{MerchantData.BusinessTime}}</p>
 					</view>
 					<view class="shop-location">
-						<p>· 江西省赣州市章贡区80号</p>
+						<p>· {{MerchantData.Address}}</p>
 					</view>
 				</view>
 			</view>
@@ -34,6 +34,7 @@
 
 <script>
 	export default {
+		props:['MerchantData'],
 		data() {
 			return {
 				
@@ -75,8 +76,10 @@
 			align-items: center;
 			
 			.left{
+				width: 500rpx;
+				height: 100rpx;
 				display: flex;
-				justify-content: center;
+				justify-content: flex-start;
 				align-items: center;
 				image{
 					width: 60rpx;
@@ -93,7 +96,6 @@
 	
 		.write-off{
 			width: 100%;
-			
 			display: flex;
 			flex-direction: column;
 			justify-content: space-between;

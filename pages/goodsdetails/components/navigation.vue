@@ -1,16 +1,15 @@
 <template>
 	<view class="navigation">
 		<view class="left">
-			<view class="item">
+			<view class="item" @click="toIndex">
 				<image src="../../../static/image/toIndex.png"></image>
 				<view class="text u-line-1">首页</view>
 			</view>
-			<view class="item">
+			<view class="item" @click="call">
 				<image src="../../../static/image/call.png"></image>
 				<view class="text u-line-1">联系商家</view>
 			</view>
-			<view class="item">
-				<!-- <u-badge class="car-num" :count="9" type="error" :offset="[-3, -6]"></u-badge> -->
+			<view class="item" >
 				<image src="../../../static/image/share_it.png"></image>
 				<view class="text u-line-1">分享</view>
 			</view>
@@ -25,12 +24,23 @@
 
 <script>
 export default {
+	props:['ShopMobile'],
 	data() {
 		return {
 			customStyle:{
 				color: 'red'
 			}
 		};
+	},
+	methods:{
+		toIndex(){
+			uni.switchTab({url:'/pages/index/index'})
+		},
+		call(){
+			uni.makePhoneCall({
+				phoneNumber: this.ShopMobile
+			});
+		}
 	}
 };
 </script>

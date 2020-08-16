@@ -338,7 +338,9 @@ import {request} from "@/api/request.js"
 				})
 			},
 			toProxy(){
-				
+				uni.navigateTo({
+					url:'/pages/proxy/proxy'
+				})
 			},
 			toShopservice(){
 				this.$refs.uToast.show({

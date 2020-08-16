@@ -2,10 +2,10 @@
 	<view>
 		<topGoodsdetails :GoodsData="GoodsData"></topGoodsdetails>
 		<recommend></recommend>
-		<shopDetails></shopDetails>
+		<shopDetails :MerchantData="MerchantData"></shopDetails>
 		<goodsH5 :GoodsData="GoodsData"></goodsH5>
-		<moreGoods></moreGoods>
-		<navigation></navigation>
+		<moreGoods :MoreData="MoreData"></moreGoods>
+		<navigation :ShopMobile="Phone"></navigation>
 	</view>
 </template>
 
@@ -34,22 +34,31 @@ import {request} from '@/api/request.js'
 				id:'',
 				//商铺id
 				BusinessID:'',
+				CategoryID:'',
 				LatItude:'',
 				LongItude:'',
 				//商品详情数据
 				GoodsData:[],
 				//店铺数据
-				MerchantData:[]
+				MerchantData:[],
+				Phone:'',
+				//核销点数据
+				WriteoffData:[],
+				//更多商品数据
+				MoreData:[]
 			};
 		},
 		onLoad(e){
 			this.id = e.id;
 			this.BusinessID = e.BusinessID;
+			this.CategoryID= e.CategoryID
 			this.LatItude = e.LatItude;
 			this.LongItude = e.LongItude;
 			
 			this.getGoodsDatails()
 			this.getMerchantData()
+			this.getWriteoffData()
+			this.getMoreData()
 		},
 		methods:{
 			//商品详情
@@ -62,9 +71,21 @@ import {request} from '@/api/request.js'
 			getMerchantData(){
 				request('API_GetInfo_BusinessSearch',{BusinessID:this.BusinessID,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
 					this.MerchantData = res
+					this.Phone = res.Phone
 				})
 			},
 			//核销点详情
+			getWriteoffData(){
+				request('API_GetList_BusinessSearch_ForDetailCheckBusiness',{ProductID: this.id,Longitude:this.LongItude,Latitude:this.LatItude,pageSize: 10,index: 1}).then(res=>{
+					console.log(res)
+				})
+			},
+			getMoreData(){
+				request('API_GetList_BusinessProductSearch',{CategoryID:this.CategoryID,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:1,
+					IsFL:-1,IsBP:-1,pageSize:6,index:1}).then(res=>{
+						this.MoreData = res
+				})
+			}
 		}
 	}
 </script>
@@ -73,5 +94,6 @@ import {request} from '@/api/request.js'
 navigation{
 	position:fixed;
 	bottom:0;
+	z-index: 110;
 }
 </style>

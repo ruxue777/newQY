@@ -73,18 +73,98 @@
 						<image src="../../static/image/NO_1.png"></image>
 						<view class="proxy-cont">
 							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量:1233</view>
+							<view class="proxy-client-amount">客户数量: 1233</view>
 						</view>
+					</view>
+					
+					<view class="right">
+						<view class="lineProgress">
+							<u-line-progress percent="70" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥88881.99</text>
+						</view>
+						<u-icon name="arrow-right"></u-icon>
 					</view>
 				</view>
 			</view>
 			
 			<view class="content">
-				
+				<view class="middle">
+					<view class="left">
+						<image src="../../static/image/NO_2.png"></image>
+						<view class="proxy-cont">
+							<view class="proxy-name">大余县</view>
+							<view class="proxy-client-amount">客户数量: 1233</view>
+						</view>
+					</view>
+					
+					<view class="right">
+						<view class="lineProgress">
+							<u-line-progress percent="50" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥881.99</text>
+						</view>
+						<u-icon name="arrow-right"></u-icon>
+					</view>
+				</view>
 			</view>
 			
 			<view class="content">
-				
+				<view class="middle">
+					<view class="left">
+						<image src="../../static/image/NO_3.png"></image>
+						<view class="proxy-cont">
+							<view class="proxy-name">大余县</view>
+							<view class="proxy-client-amount">客户数量: 123</view>
+						</view>
+					</view>
+					
+					<view class="right">
+						<view class="lineProgress">
+							<u-line-progress percent="25" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥88881.99</text>
+						</view>
+						<u-icon name="arrow-right"></u-icon>
+					</view>
+				</view>
+			</view>
+			
+			<view class="content">
+				<view class="middle">
+					<view class="left">
+						<view class="rank-no">4</view>
+						<view class="proxy-cont">
+							<view class="proxy-name">大余县</view>
+							<view class="proxy-client-amount">客户数量: 123</view>
+						</view>
+					</view>
+					
+					<view class="right">
+						<view class="lineProgress">
+							<u-line-progress percent="10" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥88881.99</text>
+						</view>
+						<u-icon name="arrow-right"></u-icon>
+					</view>
+				</view>
+			</view>
+			
+			<view class="content">
+				<view class="middle">
+					<view class="left">
+						<view class="rank-no">5</view>
+						<view class="proxy-cont">
+							<view class="proxy-name">大余县</view>
+							<view class="proxy-client-amount">客户数量: 123</view>
+						</view>
+					</view>
+					
+					<view class="right">
+						<view class="lineProgress">
+							<u-line-progress percent="3" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥81.9</text>
+						</view>
+						<u-icon name="arrow-right"></u-icon>
+					</view>
+				</view>
 			</view>
 		</view>
 
@@ -364,7 +444,9 @@
 		.content{
 			width: 100%;
 			height: 100rpx;
-			border-bottom: 5rpx solid #fafafa;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			
 			.middle{
 				width: 710rpx;
@@ -380,6 +462,19 @@
 					justify-content: space-between;
 					align-items: center;
 					
+					.rank-no{
+						width: 50rpx;
+						height: 60rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						font-size:38rpx;
+						font-family:PingFang SC;
+						font-weight:600;
+						color:rgba(102,102,102,1);
+						line-height:28rpx;
+					}
+					
 					image{
 						width: 50rpx;
 						height: 60rpx;
@@ -387,11 +482,58 @@
 					
 					.proxy-cont{
 						width: 175rpx;
-						height: 75rpx;
+						height: 80rpx;
 						display: flex;
 						flex-direction: column;
-						justify-content: center;
-						align-items: center;
+						justify-content: space-around;
+						border-bottom: 5rpx solid #fafafa;
+						
+						.proxy-name{
+							font-size:28rpx;
+							font-family:PingFang SC;
+							font-weight:400;
+							color:rgba(51,51,51,1);
+							line-height:18rpx;
+						}
+						
+						.proxy-client-amount{
+							font-size:24rpx;
+							font-family:PingFang SC;
+							font-weight:400;
+							color:rgba(153,153,153,1);
+							line-height:18rpx;
+						}
+					}
+				}
+				
+				.right{
+					width: 460rpx;
+					height: 100%;
+					display: flex;
+					justify-content: flex-start;
+					align-items: center;
+					border-bottom: 5rpx solid #fafafa;
+					
+					.lineProgress{
+						width: 360rpx;
+						height: 100%;
+						position: relative;
+						left: 15rpx;
+						
+						.amount{
+							position: absolute;
+							top: 50rpx;
+							left: 115rpx;
+							font-size:24rpx;
+							font-family:PingFang SC;
+							font-weight:400;
+							color:rgba(245,66,78,1);
+							line-height:18rpx;
+						}
+					}
+					u-icon{
+						position: relative;
+						left: 70rpx;
 					}
 				}
 			}

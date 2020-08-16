@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path" : "pages/proxy/proxy",
-			"style" : {
-				"navigationStyle": "custom"
-			}
-		},
+		// {
+		// 	"path" : "pages/proxy/proxy",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -139,12 +139,12 @@
 				"backgroundTextStyle": "dark" 
 			}
         }
-   //      ,{
-   //          "path" : "pages/proxy/proxy",
-   //          "style" : {
-			// 	"navigationStyle": "custom"
-			// }
-   //      }
+        ,{
+            "path" : "pages/proxy/proxy",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -4,73 +4,19 @@
 			<p>更多好物</p>
 		</view>
 		<view class="middle">
-			<view class="moreGoods">
+			<view class="moreGoods" v-for="(item,index) in MoreData" :key="index">
 				<view class="goods-img">
-					<image src="../../../static/image/goodsimg.png"></image>
+					<image :src="item.BP_ImgUrl"></image>
 				</view>
 				
 				<view class="goodsDetails">
 					<view class="content">
-						<view class="title">户外必备驱蚊神器华东师实打实的收到收到是打的收到收到是打的收到收到是打的收到收到是123123打</view>
+						<view class="title">{{item.BP_Name}}</view>
 						
 						<view class="amount">
 							<p class="img">￥</p>
-							<p class="goods-amount">399.99</p>
-							<p class="payment">120人付款</p>
-						</view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="moreGoods">
-				<view class="goods-img">
-					<image src="../../../static/image/goodsimg.png"></image>
-				</view>
-				
-				<view class="goodsDetails">
-					<view class="content">
-						<view class="title">户外必备驱蚊神器华东师实打实的收到收到是打的收到收到是打的收到收到是打的收到收到是123123打</view>
-						
-						<view class="amount">
-							<p class="img">￥</p>
-							<p class="goods-amount">399.99</p>
-							<p class="payment">120人付款</p>
-						</view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="moreGoods">
-				<view class="goods-img">
-					<image src="../../../static/image/goodsimg.png"></image>
-				</view>
-				
-				<view class="goodsDetails">
-					<view class="content">
-						<view class="title">户外必备驱蚊神器华东师实打实的收到收到是打的收到收到是打的收到收到是打的收到收到是123123打</view>
-						
-						<view class="amount">
-							<p class="img">￥</p>
-							<p class="goods-amount">399.99</p>
-							<p class="payment">120人付款</p>
-						</view>
-					</view>
-				</view>
-			</view>
-			
-			<view class="moreGoods">
-				<view class="goods-img">
-					<image src="../../../static/image/goodsimg.png"></image>
-				</view>
-				
-				<view class="goodsDetails">
-					<view class="content">
-						<view class="title">户外必备驱蚊神器华东师实打实的收到收到是打的收到收到是打的收到收到是打的收到收到是123123打</view>
-						
-						<view class="amount">
-							<p class="img">￥</p>
-							<p class="goods-amount">399.99</p>
-							<p class="payment">120人付款</p>
+							<p class="goods-amount">{{item.BP_Amount}}</p>
+							<p class="payment">{{item.BP_OrderIsSell}}人付款</p>
 						</view>
 					</view>
 				</view>
@@ -82,6 +28,7 @@
 
 <script>
 	export default {
+		props:['MoreData'],
 		data() {
 			return {
 				

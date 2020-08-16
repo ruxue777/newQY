@@ -60,8 +60,8 @@
 								</view>
 							</view>
 							<view class="cont-right">
-								<view class="button">
-									<p>立即添加</p>
+								<view class="button" @click="show = true">
+									<p>立即联系</p>
 								</view>
 							</view>
 						</view>
@@ -69,6 +69,37 @@
 				</view>
 			</view>
 		</view>
+		
+		
+		<u-popup v-model="show" mode="center" border-radius="20">
+			<view class="help">
+				<view class="top-image">
+					<image src="../../../static/image/tips.png"></image>
+					<view class="message">
+						<image src="../../../static/image/message.png"></image>
+					</view>
+					<text>客服</text>
+				</view>
+				<view class="bottom-content">
+					<view class="title">
+						<text>点击“<text class="btn">拨打</text>”联系平台工作人员</text>
+					</view>
+					
+					<view class="mobile-box">
+						<view class="Customer-service">
+							<u-icon name="phone-fill"></u-icon>
+							<text>客服电话：07978185000</text>
+                            <view class="call" @click="call('07978185000')">拨打</view>    
+						</view>
+						<view class="manager">
+							<u-icon name="phone-fill"></u-icon>
+							<text>经理电话：15374361127</text>
+							<view class="call" @click="call('15374361127')">拨打</view>    
+						</view>
+					</view>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -77,8 +108,15 @@
 		props:['GoodsData'],
 		data() {
 			return {
-				
+				show:false
 			};
+		},
+		methods:{
+			call(mobile){
+				uni.makePhoneCall({
+					phoneNumber: mobile
+				});
+			}
 		}
 	}
 </script>
@@ -387,6 +425,109 @@
 						}
 					}
 					
+				}
+			}
+		}
+	}
+	
+	.help{
+		width: 600rpx;
+		height: 500rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		
+		.top-image{
+			width: 100%;
+			height: 175rpx;
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			image{
+				width: 100%;
+				height: 175rpx;
+				position: relative;
+				top: -2rpx;
+			}
+			.message{
+				width: 126rpx;
+				height: 126rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: absolute;
+				left: 41.5%;
+				
+				image{
+					width: 126rpx;
+					height: 126rpx;
+				}
+			}
+			text{
+				font-size:36rpx;
+				font-family:Microsoft YaHei;
+				font-weight:400;
+				color:rgba(0,0,0,1);
+				line-height:37rpx;
+				position: absolute;
+				top: 55rpx;
+				left: 46%;	
+			}
+		}
+		.bottom-content{
+			width: 100%;
+			height: 325rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+			
+			.title{
+				width: 100%;
+				height: 50rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.btn{
+					color: #FF0000;
+				}
+			}
+			
+			.mobile-box{
+				width: 100%;
+				height: 140rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+				align-items: center;
+				
+				.Customer-service,.manager{
+					width: 540rpx;
+					height: 60rpx;
+					display: flex;
+					justify-content: space-around;
+					align-items: center;
+					
+					text{
+						position: relative;
+						left: -15rpx;
+					}
+					
+					.call{
+						width:90rpx;
+						height:56rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						background:rgba(251,223,33,1);
+						border-radius:6rpx;
+						position: relative;
+						left: 25rpx;
+					}
 				}
 			}
 		}
