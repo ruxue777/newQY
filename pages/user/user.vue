@@ -147,12 +147,12 @@
 						<image src="../../static/image/lotter.png"></image>
 						<text class="name">我的卡券</text>
 					</view>
-					<view class="common-cont">
-						<image src="../../static/image/proxy.png" @click="toProxy"></image>
+					<view class="common-cont" @click="toProxy">
+						<image src="../../static/image/proxy.png"></image>
 						<text class="name">代理</text>
 					</view>
-					<view class="common-cont">
-						<image src="../../static/image/setting.png" @click="toSetting"></image>
+					<view class="common-cont" @click="toSetting">
+						<image src="../../static/image/setting.png"></image>
 						<text class="name">设置</text>
 					</view>
 					
@@ -174,7 +174,7 @@
 </template>
 
 <script>
-import {request} from "@/api/request.js"	
+import {request,wxRequest} from "@/api/request.js"	
 	export default {
 		data() {
 			return {
@@ -222,15 +222,22 @@ import {request} from "@/api/request.js"
 				})
 			},
 			getWxappQR(){
-				uni.request({
-					url:'https://api.xfgoo.com:60020/WxappService.asmx/API_GetWxappQR',
-					data:{
-						scene:this.userInfo.mobile,
-						page:"pages/user/signUp"
-					},
-					method:'GET',
-					header:{'content-type': 'application/x-www-form-urlencoded'},
-				}).then(res=>{
+				// uni.request({
+				// 	url:'https://api.xfgoo.com:60020/WxappService.asmx/API_GetWxappQR',
+				// 	data:{
+				// 		scene:this.userInfo.mobile,
+				// 		page:"pages/user/signUp"
+				// 	},
+				// 	method:'GET',
+				// 	header:{'content-type': 'application/x-www-form-urlencoded'},
+				// }).then(res=>{
+				// 	this.show = true
+					
+				// 	let data = res[1].data
+				// 	this.WxappQR = data.result_content
+				// })
+				
+				wxRequest('API_GetWxappQR',{scene:this.userInfo.mobile,page:"pages/user/signUp"}).then(res=>{
 					this.show = true
 					
 					let data = res[1].data
@@ -338,8 +345,20 @@ import {request} from "@/api/request.js"
 				})
 			},
 			toProxy(){
-				uni.navigateTo({
-					url:'/pages/proxy/proxy'
+				request('API_GetList_Agent_Info',{user_id:863,AeraID:0}).then(res=>{
+					if(res.length>0){
+						this.$refs.uToast.show({
+							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
+							type: 'success',
+							url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
+						})
+					}
+					else{
+						this.$refs.uToast.show({
+							title: '您还不是代理,暂时无法进入哦',
+							type: 'warning'
+						})
+					}
 				})
 			},
 			toShopservice(){
