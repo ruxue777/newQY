@@ -35,7 +35,7 @@
 						
 						<view class="amount"><text>{{proxyData[0].Agent_Total_All_Amount}}</text></view>
 						
-						<view class="tips"><text>截至{{proxyData[0].updateTime}}</text></view>
+						<view class="tips"><text>截至{{proxyData[0].updateTime}}日</text></view>
 					</view>
 					
 					<view class="right">
@@ -55,7 +55,7 @@
 			<view class="top">
 				<view class="area-content">
 					<image src="../../static/image/area.png"></image>
-					<text>{{}}</text>
+					<text>{{proxyDetails.Agent_Title}}</text>
 				</view>
 				
 				<view class="time-content">
@@ -79,14 +79,14 @@
 				<view class="left">
 					<view class="content">
 						<view class="title">期间收益总额</view>
-						<view class="amount">205,382.01</view>
+						<view class="amount">{{proxyDetails.Agent_Total_All_Amount}}</view>
 					</view>
 				</view>
 				
 				<view class="right btn">
 					<view class="content">
 						<view class="title">客户数量</view>
-						<view class="amount" style="color: rgba(24,23,23,1);">99900</view>
+						<view class="amount" style="color: rgba(24,23,23,1);">{{proxyDetails.Agent_UserNums}}</view>
 					</view>
 				</view>
 			</view>
@@ -95,114 +95,36 @@
 		<view class="select-box">
 			<view class="content" v-if="isHigh == true">
 				<view class="high selected">高到低</view>
-				<view class="low" @click="isHigh = false">低到高</view>
+				<view class="low" @click="isHigh = false,orderState=1">低到高</view>
 			</view>
 			<view class="content" v-else>
-				<view class="high" @click="isHigh = true">高到低</view>
+				<view class="high" @click="isHigh = true,orderState=0">高到低</view>
 				<view class="low selected">低到高</view>
 			</view>
 		</view>
 		
 		<view class="rank">
 			<view class="content">
-				<view class="middle" v-for="(item,index) in ">
+				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index">
 					<view class="left">
-						<image src="../../static/image/NO_1.png"></image>
+						<image v-if="index <=3" :src="getRankimgUrl(index+1)"></image>
+						<view v-else class="rank-no">{{index+1}}</view>
 						<view class="proxy-cont">
-							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量: 1233</view>
+							<view class="proxy-name">{{item.Aera_Name}}</view>
+							<view class="proxy-client-amount">客户数量: {{item.Agent_UserNums}}</view>
 						</view>
 					</view>
 					
 					<view class="right">
 						<view class="lineProgress">
-							<u-line-progress percent="70" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥88881.99</text>
+							<u-line-progress :percent="item.PercentAge" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<text class="amount">￥{{item.Agent_Total_All_Amount}}</text>
 						</view>
 						<u-icon name="arrow-right"></u-icon>
 					</view>
 				</view>
 			</view>
 			
-			<view class="content">
-				<view class="middle">
-					<view class="left">
-						<image src="../../static/image/NO_2.png"></image>
-						<view class="proxy-cont">
-							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量: 1233</view>
-						</view>
-					</view>
-					
-					<view class="right">
-						<view class="lineProgress">
-							<u-line-progress percent="50" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥881.99</text>
-						</view>
-						<u-icon name="arrow-right"></u-icon>
-					</view>
-				</view>
-			</view>
-			
-			<view class="content">
-				<view class="middle">
-					<view class="left">
-						<image src="../../static/image/NO_3.png"></image>
-						<view class="proxy-cont">
-							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量: 123</view>
-						</view>
-					</view>
-					
-					<view class="right">
-						<view class="lineProgress">
-							<u-line-progress percent="25" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥88881.99</text>
-						</view>
-						<u-icon name="arrow-right"></u-icon>
-					</view>
-				</view>
-			</view>
-			
-			<view class="content">
-				<view class="middle">
-					<view class="left">
-						<view class="rank-no">4</view>
-						<view class="proxy-cont">
-							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量: 123</view>
-						</view>
-					</view>
-					
-					<view class="right">
-						<view class="lineProgress">
-							<u-line-progress percent="10" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥88881.99</text>
-						</view>
-						<u-icon name="arrow-right"></u-icon>
-					</view>
-				</view>
-			</view>
-			
-			<view class="content">
-				<view class="middle">
-					<view class="left">
-						<view class="rank-no">5</view>
-						<view class="proxy-cont">
-							<view class="proxy-name">大余县</view>
-							<view class="proxy-client-amount">客户数量: 123</view>
-						</view>
-					</view>
-					
-					<view class="right">
-						<view class="lineProgress">
-							<u-line-progress percent="3" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥81.9</text>
-						</view>
-						<u-icon name="arrow-right"></u-icon>
-					</view>
-				</view>
-			</view>
 		</view>
 
 		<!-- 反馈组件 -->
@@ -219,6 +141,7 @@ import {request} from '@/api/request.js'
 				show:false,
 				isHigh:true,
 				selectTime:false,
+				orderState:0,
 				user_id:'',
 				proxyData:[],
 				proxyDetails:[],
@@ -237,7 +160,7 @@ import {request} from '@/api/request.js'
 			},
 			page_Init(){
 				request('API_GetList_Agent_Info_AeraInfo',{user_id:863,AeraID:this.proxyData[0].AeraID,BusinessID:'',
-					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:0,pageSize:10,index:1}).then(res=>{
+					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
 			},
@@ -251,6 +174,9 @@ import {request} from '@/api/request.js'
 			getMonth(){
 				//返回月份日期,2020-8-17
 				return `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+			},
+			getRankimgUrl(No){
+				return `/static/image/NO_${No}.png`
 			},
 			getHour(){
 				//取得当前时间的小时
@@ -655,6 +581,7 @@ import {request} from '@/api/request.js'
 			width: 100%;
 			height: 100rpx;
 			display: flex;
+			flex-wrap: wrap;
 			justify-content: center;
 			align-items: center;
 			
