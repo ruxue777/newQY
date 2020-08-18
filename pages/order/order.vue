@@ -619,7 +619,7 @@ page {
 	
 	.record{
 		width: 100%;
-		height: 210rpx;
+		height: 220rpx;
 		display: flex;
 		flex-direction: column;
 		

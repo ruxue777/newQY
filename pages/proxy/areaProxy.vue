@@ -55,7 +55,7 @@
 			<view class="top">
 				<view class="area-content">
 					<image src="../../static/image/area.png"></image>
-					<text>{{proxyDetails.Agent_Title}}</text>
+					<text>{{proxy_Init.Agent_Title}}</text>
 				</view>
 				
 				<view class="time-content">
@@ -79,14 +79,14 @@
 				<view class="left">
 					<view class="content">
 						<view class="title">期间收益总额</view>
-						<view class="amount">{{proxyDetails.Agent_Total_All_Amount}}</view>
+						<view class="amount">{{proxy_Init.Agent_Total_All_Amount}}</view>
 					</view>
 				</view>
 				
 				<view class="right btn">
 					<view class="content">
 						<view class="title">客户数量</view>
-						<view class="amount" style="color: rgba(24,23,23,1);">{{proxyDetails.Agent_UserNums}}</view>
+						<view class="amount" style="color: rgba(24,23,23,1);">{{proxy_Init.Agent_UserNums}}</view>
 					</view>
 				</view>
 			</view>
@@ -103,32 +103,30 @@
 			</view>
 		</view>
 		
-		<view class="rank">
-			<view class="content">
-				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index" @click="toshopProxy(item.BusinessID)">
-					<view class="left">
-						<image v-if="index <=2" :src="getRankimgUrl(index+1)"></image>
-						<view v-else class="rank-no">{{index+1}}</view>
-						<view class="proxy-cont">
-							<view class="proxy-name">{{item.Aera_Name}}</view>
-							<view class="proxy-client-amount">客户数量: {{item.Agent_UserNums}}</view>
-						</view>
-					</view>
-					
-					<view class="right">
-						<view class="lineProgress">
-							<u-line-progress :percent="Math.floor(item.PercentAge*100)" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
-							<text class="amount">￥{{item.Agent_Total_All_Amount}}</text>
-						</view>
-						<u-icon name="arrow-right"></u-icon>
+		<view class="rank_content">
+			<view class="middle" v-for="(item,index) in proxyList" :key="index" @click="toshopProxy(item.BusinessID)">
+				<view class="left">
+					<image v-if="index <=2" :src="getRankimgUrl(index+1)"></image>
+					<view v-else class="rank-no">{{index+1}}</view>
+					<view class="proxy-cont">
+						<view class="proxy-name">{{item.Aera_Name}}</view>
+						<view class="proxy-client-amount">客户数量: {{item.Agent_UserNums}}</view>
 					</view>
 				</view>
+				
+				<view class="right">
+					<view class="lineProgress">
+						<u-line-progress :percent="Math.floor(item.PercentAge*100)" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+						<text class="amount">￥{{item.Agent_Total_All_Amount}}</text>
+					</view>
+					<u-icon name="arrow-right"></u-icon>
+				</view>
 			</view>
-			
-		</view>
+		</view>		
 
 		<!-- 反馈组件 -->
 		<u-calendar v-model="show" mode="range" @change="change"></u-calendar>
+		<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus"  />
 	</view>
 </template>
 
@@ -141,14 +139,16 @@ import {request} from '@/api/request.js'
 				show:false,
 				isHigh:true,
 				selectTime:false,
+				loadStatus: 'loadmore',
 				orderState:0,
+				Index:1,
 				StartTiem:'',
 				EndTime:'',
 				AeraID:'',
 				user_id:'',
 				Aera_Name:'',
-				proxyDeta:[],
-				proxyDetails:[],
+				proxy_Init:[],
+				proxyList:[],
 				Welcome_Message:''
 			};
 		},
@@ -161,6 +161,20 @@ import {request} from '@/api/request.js'
 			this.page_Init()
 			this.getHour()
 		},
+		onReachBottom() {
+			if(this.proxyList.length<this.Index*10){
+				this.loadStatus = 'nomore';
+				return;
+			}else{
+				this.Index++;
+				this.loadStatus = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getProxyData();
+					this.loadStatus = 'loadmore';
+				}, 1000);
+			}
+		},
 		methods:{
 			getProxyShopData(){
 				request('API_GetList_Agent_Info',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:0}).then(res=>{
@@ -169,14 +183,22 @@ import {request} from '@/api/request.js'
 			},
 			page_Init(){
 				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
-					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
-						this.proxyDetails = res
+					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
+						this.proxy_Init = res
+						this.proxyList = res.DataList_Detail
 				})
 			},
-			getProxyData(){
+			getProxyData(callBack){
 				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
-					Start_SettlementTime:this.StartTiem,End_SettlementTime:this.EndTime,orderState:this.orderState,pageSize:10,index:1}).then(res=>{
-						this.proxyDetails = res
+					Start_SettlementTime:this.StartTiem,End_SettlementTime:this.EndTime,orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
+						
+						let proxyList = res.DataList_Detail
+						
+						if(proxyList<10){
+							this.loadStatus = 'nomore'
+						}
+						this.proxyList = [...this.proxyList,...proxyList]
+						callBack && callBack()
 				})
 			},
 			toshopProxy(BusinessID){
@@ -591,109 +613,109 @@ import {request} from '@/api/request.js'
 			}
 		}
 	}
-
-	.rank{
+		
+	.rank_content{
 		width: 100%;
 		display: flex;
-		flex-flow: row wrap;
+		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
 		
-		.content{
-			width: 100%;
+		.middle{
+			width: 710rpx;
 			height: 100rpx;
 			display: flex;
-			flex-wrap: wrap;
 			justify-content: center;
 			align-items: center;
 			
-			.middle{
-				width: 710rpx;
-				height: 80rpx;
+			.left{
+				width: 250rpx;
+				height: 100%;
 				display: flex;
-				justify-content: center;
+				justify-content: space-between;
 				align-items: center;
 				
-				.left{
-					width: 250rpx;
-					height: 100%;
+				.rank-no{
+					width: 50rpx;
+					height: 60rpx;
 					display: flex;
-					justify-content: space-between;
+					justify-content: center;
 					align-items: center;
-					
-					.rank-no{
-						width: 50rpx;
-						height: 60rpx;
-						display: flex;
-						justify-content: center;
-						align-items: center;
-						font-size:38rpx;
-						font-family:PingFang SC;
-						font-weight:600;
-						color:rgba(102,102,102,1);
-						line-height:28rpx;
-					}
-					
-					image{
-						width: 50rpx;
-						height: 60rpx;
-					}
-					
-					.proxy-cont{
-						width: 175rpx;
-						height: 80rpx;
-						display: flex;
-						flex-direction: column;
-						justify-content: space-around;
-						border-bottom: 5rpx solid #fafafa;
-						
-						.proxy-name{
-							font-size:28rpx;
-							font-family:PingFang SC;
-							font-weight:400;
-							color:rgba(51,51,51,1);
-							line-height:18rpx;
-						}
-						
-						.proxy-client-amount{
-							font-size:24rpx;
-							font-family:PingFang SC;
-							font-weight:400;
-							color:rgba(153,153,153,1);
-							line-height:18rpx;
-						}
-					}
+					font-size:38rpx;
+					font-family:PingFang SC;
+					font-weight:600;
+					color:rgba(102,102,102,1);
+					line-height:28rpx;
 				}
 				
-				.right{
-					width: 460rpx;
-					height: 100%;
+				image{
+					width: 50rpx;
+					height: 60rpx;
+				}
+				
+				.proxy-cont{
+					width: 180rpx;
+					height: 100rpx;
 					display: flex;
-					justify-content: flex-start;
-					align-items: center;
+					flex-direction: column;
+					justify-content: center;
 					border-bottom: 5rpx solid #fafafa;
 					
-					.lineProgress{
-						width: 360rpx;
-						height: 100%;
-						position: relative;
-						left: 15rpx;
-						
-						.amount{
-							position: absolute;
-							top: 50rpx;
-							left: 115rpx;
-							font-size:24rpx;
-							font-family:PingFang SC;
-							font-weight:400;
-							color:rgba(245,66,78,1);
-							line-height:18rpx;
-						}
+					.proxy-name{
+						width: 180rpx;
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(51,51,51,1);
+						text-overflow: ellipsis;
+						-webkit-line-clamp: 1;  //  两行限制的行数
+						-webkit-box-orient: vertical;
+						word-break: break-all;
+						overflow: hidden;
+						display: flex;
+						justify-content: flex-start;
+						align-items: center;
 					}
-					u-icon{
-						position: relative;
-						left: 70rpx;
+					
+					.proxy-client-amount{
+						font-size:22rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(153,153,153,1);
+						line-height:18rpx;
+						margin-top: 5rpx;
 					}
+				}
+			}
+			
+			.right{
+				width: 460rpx;
+				height: 100%;
+				display: flex;
+				justify-content: flex-start;
+				align-items: center;
+				border-bottom: 5rpx solid #fafafa;
+				
+				.lineProgress{
+					width: 360rpx;
+					height: 100%;
+					position: relative;
+					left: 15rpx;
+					
+					.amount{
+						position: absolute;
+						top: 50rpx;
+						left: 115rpx;
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(245,66,78,1);
+						line-height:18rpx;
+					}
+				}
+				u-icon{
+					position: relative;
+					left: 70rpx;
 				}
 			}
 		}

@@ -113,7 +113,7 @@
 						color:rgba(0,0,0,1);
 						line-height:32rpx;
 						text-overflow: ellipsis;
-						-webkit-line-clamp: 2;  //  两行。。。  限制的行数
+						-webkit-line-clamp: 2;  //  两行限制的行数
 						-webkit-box-orient: vertical;
 						word-break: break-all;
 						overflow: hidden;
