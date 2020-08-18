@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/proxy/proxy",
+		// 	"path" : "pages/proxy/shopProxy",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -146,8 +146,16 @@
 			}
         }
         ,{
-            "path" : "pages/proxy/cityProxy",
-            "style" : {}
+            "path" : "pages/proxy/areaProxy",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/proxy/shopProxy",
+            "style" : {
+				"navigationStyle": "custom"
+			}
         }
     ],
 	"globalStyle": {

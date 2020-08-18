@@ -10,7 +10,7 @@
 		</view>
 	
 		<view class="top-content">
-			<view class="proxy">{{proxyData[0].Aera_Name}}代理,{{Welcome_Message}}~</view>
+			<view class="proxy">{{proxyDeta[0].Aera_Name}}代理,{{Welcome_Message}}~</view>
 			<view class="proxy-img">
 				<image src="../../static/image/proxytopimg.png"></image>
 				<view class="top">
@@ -18,11 +18,11 @@
 						<image src="../../static/image/proxy-shop.png"></image>
 						<view class="shop-amount">
 							<text class="title">门店数量(家)</text>
-							<text class="amount">{{proxyData[0].Agent_BusinessNums}}</text>
+							<text class="amount">{{proxyDeta[0].Agent_BusinessNums}}</text>
 						</view>
 					</view>
 					<view class="right">
-						<text>累计客户数量 :{{proxyData[0].Agent_UserNums}}</text>
+						<text>累计客户数量 :{{proxyDeta[0].Agent_UserNums}}</text>
 					</view>
 				</view>
 				
@@ -33,9 +33,9 @@
 							<u-icon name="eye" style="margin-left: 20rpx;"></u-icon>
 						</view>
 						
-						<view class="amount"><text>{{proxyData[0].Agent_Total_All_Amount}}</text></view>
+						<view class="amount"><text>{{proxyDeta[0].Agent_Total_All_Amount}}</text></view>
 						
-						<view class="tips"><text>截至{{proxyData[0].updateTime}}日</text></view>
+						<view class="tips"><text>截至{{proxyDeta[0].updateTime}}日</text></view>
 					</view>
 					
 					<view class="right">
@@ -43,7 +43,7 @@
 							<text>当月收益</text>
 						</view>
 						
-						<view class="amount"><text style="color:rgba(255,56,66,1);">{{proxyData[0].Agent_Total_Now_Amount}}</text></view>
+						<view class="amount"><text style="color:rgba(255,56,66,1);">{{proxyDeta[0].Agent_Total_Now_Amount}}</text></view>
 						
 						<view class="tips"><text>当月至8月12日结算数据</text></view>
 					</view>
@@ -105,7 +105,7 @@
 		
 		<view class="rank">
 			<view class="content">
-				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index" @click="toareaProxy(item.AeraID)">
+				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index" @click="toshopProxy(item.BusinessID)">
 					<view class="left">
 						<image v-if="index <=2" :src="getRankimgUrl(index+1)"></image>
 						<view v-else class="rank-no">{{index+1}}</view>
@@ -117,7 +117,7 @@
 					
 					<view class="right">
 						<view class="lineProgress">
-							<u-line-progress :percent="item.PercentAge*100" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
+							<u-line-progress :percent="Math.floor(item.PercentAge*100)" striped="true" striped-active="true" active-color="#FF9900"></u-line-progress>
 							<text class="amount">￥{{item.Agent_Total_All_Amount}}</text>
 						</view>
 						<u-icon name="arrow-right"></u-icon>
@@ -142,34 +142,46 @@ import {request} from '@/api/request.js'
 				isHigh:true,
 				selectTime:false,
 				orderState:0,
+				StartTiem:'',
+				EndTime:'',
+				AeraID:'',
 				user_id:'',
-				proxyData:[],
+				Aera_Name:'',
+				proxyDeta:[],
 				proxyDetails:[],
 				Welcome_Message:''
 			};
 		},
 		onLoad(options) {
-			this.proxyData = JSON.parse(decodeURIComponent(options.proxyData));
+			this.AeraID = options.AeraID;
 			this.user_id = options.user_id;
+			this.Aera_Name = options.Aera_Name;
+			
+			this.getProxyShopData()
 			this.page_Init()
 			this.getHour()
 		},
 		methods:{
-			getProxyData(){
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:863,AeraID:this.proxyData[0].AeraID,BusinessID:'',
-					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
-						this.proxyDetails = res
+			getProxyShopData(){
+				request('API_GetList_Agent_Info',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:0}).then(res=>{
+					this.proxyDeta = res
 				})
 			},
 			page_Init(){
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:863,AeraID:this.proxyData[0].AeraID,BusinessID:'',
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
 					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
 			},
-			toareaProxy(AeraID){
+			getProxyData(){
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
+					Start_SettlementTime:this.StartTiem,End_SettlementTime:this.EndTime,orderState:this.orderState,pageSize:10,index:1}).then(res=>{
+						this.proxyDetails = res
+				})
+			},
+			toshopProxy(BusinessID){
 				uni.navigateTo({
-					url:`/pages/proxy/areaProxy?AeraID=${AeraID}&user_id=${863}`
+					url:`/pages/proxy/shopProxy?BusinessID=${BusinessID}&user_id=${this.user_id}`
 				})
 			},
 			back(){
@@ -177,7 +189,9 @@ import {request} from '@/api/request.js'
 			},
 			change(e){
 				this.selectTime = true;
-				this.time = `${e.startDate} 至 ${e.endDate}`				
+				this.time = `${e.startDate} 至 ${e.endDate}`
+
+				this.getProxyData()
 			},
 			getMonth(){
 				//返回月份日期,2020-8-17

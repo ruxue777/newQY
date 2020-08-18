@@ -345,7 +345,7 @@ import {request,wxRequest} from "@/api/request.js"
 				})
 			},
 			toProxy(){
-				request('API_GetList_Agent_Info',{user_id:863,AeraID:0}).then(res=>{
+				request('API_GetList_Agent_Info',{user_id:863,AeraID:0,BusinessID:0}).then(res=>{
 					if(res.length>0){
 						this.$refs.uToast.show({
 							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
