@@ -221,7 +221,7 @@ import {request} from "@/api/request.js"
 				justify-content: center;
 				align-items: center;
 				position: relative;
-				left: 70rpx;
+				left: 50rpx;
 				image{
 					width: 55rpx;
 					height: 50rpx;

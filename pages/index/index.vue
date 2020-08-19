@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<topSeek :LocationData="LocationData"></topSeek>
-		<topSwiper :swiperData="swiperData"></topSwiper>
+		<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
 		<centralNav :ShopListData="ShopListData"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->
 		<centGoods :HotListData="HotListData"></centGoods>
@@ -216,7 +216,8 @@ export default {
 					})
 				}
 			})
-		},		
+		},
+		//商品详情页面(商品id,商店id,类别id)		
 		toGoodsDetails(id,BusinessID,CategoryID){
 			uni.navigateTo({
 				url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&CategoryID=${CategoryID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`

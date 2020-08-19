@@ -45,7 +45,7 @@
 						
 						<view class="amount"><text style="color:rgba(255,56,66,1);">{{proxyData[0].Agent_Total_Now_Amount}}</text></view>
 						
-						<view class="tips"><text>当月至8月12日结算数据</text></view>
+						<view class="tips"><text>当月至{{Day}}结算数据</text></view>
 					</view>
 				</view> 
 			</view>
@@ -142,6 +142,7 @@ import {request} from '@/api/request.js'
 				isHigh:true,
 				selectTime:false,
 				orderState:0,
+				Day:'',
 				user_id:'',
 				proxyData:[],
 				proxyDetails:[],
@@ -153,6 +154,7 @@ import {request} from '@/api/request.js'
 			this.user_id = options.user_id;
 			this.page_Init()
 			this.getHour()
+			this.getDay()
 		},
 		methods:{
 			getProxyData(){
@@ -182,6 +184,9 @@ import {request} from '@/api/request.js'
 			getMonth(){
 				//返回月份日期,2020-8-17
 				return `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+			},
+			getDay(){
+				this.Day = `${new Date().getMonth()+1}月${new Date().getDate()}日`
 			},
 			getRankimgUrl(No){
 				return `/static/image/NO_${No}.png`

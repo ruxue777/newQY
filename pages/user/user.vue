@@ -43,7 +43,7 @@
 				<view class="navigation-bar-middle">
 					<view class="topbar-left">
 						<image class="v-img" src="../../static/image/v.png"></image>
-						<text class="left-title">消费合伙人</text>
+						<text class="left-title">{{userInfo.Grade}}</text>
 					</view>
 					<view class="topbar-middle">
 						<text class="title">会员尊享权益</text>
@@ -136,7 +136,7 @@
 						<text class="name">账单</text>
 					</view>
 					<view class="common-cont" @click="tobankCard">
-						<image src="../../static/image/bill.png"></image>
+						<image style="width: 80rpx;" src="../../static/image/bill.png"></image>
 						<text class="name">银行卡管理</text>
 					</view>
 					<view class="common-cont">
@@ -144,7 +144,7 @@
 						<text class="name">我的项目</text>
 					</view>
 					<view class="common-cont">
-						<image src="../../static/image/lotter.png"></image>
+						<image style="width: 80rpx;" src="../../static/image/lotter.png"></image>
 						<text class="name">我的卡券</text>
 					</view>
 					<view class="common-cont" @click="toProxy">
@@ -345,7 +345,7 @@ import {request,wxRequest} from "@/api/request.js"
 				})
 			},
 			toProxy(){
-				request('API_GetList_Agent_Info',{user_id:863,AeraID:0,BusinessID:0}).then(res=>{
+				request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:0,BusinessID:0}).then(res=>{
 					if(res.length>0){
 						this.$refs.uToast.show({
 							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
@@ -807,7 +807,7 @@ page{
 		justify-content: center;
 		align-items: center;
 		position: relative;
-		top: -210rpx;
+		top: -95rpx;
 		
 		.bottom-common{
 			width: 710rpx;

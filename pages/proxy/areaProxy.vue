@@ -10,7 +10,7 @@
 		</view>
 	
 		<view class="top-content">
-			<view class="proxy">{{proxyDeta[0].Aera_Name}}代理,{{Welcome_Message}}~</view>
+			<view class="proxy">{{proxyData[0].Aera_Name}}代理,{{Welcome_Message}}~</view>
 			<view class="proxy-img">
 				<image src="../../static/image/proxytopimg.png"></image>
 				<view class="top">
@@ -18,11 +18,11 @@
 						<image src="../../static/image/proxy-shop.png"></image>
 						<view class="shop-amount">
 							<text class="title">门店数量(家)</text>
-							<text class="amount">{{proxyDeta[0].Agent_BusinessNums}}</text>
+							<text class="amount">{{proxyData[0].Agent_BusinessNums}}</text>
 						</view>
 					</view>
 					<view class="right">
-						<text>累计客户数量 :{{proxyDeta[0].Agent_UserNums}}</text>
+						<text>累计客户数量 :{{proxyData[0].Agent_UserNums}}</text>
 					</view>
 				</view>
 				
@@ -33,9 +33,9 @@
 							<u-icon name="eye" style="margin-left: 20rpx;"></u-icon>
 						</view>
 						
-						<view class="amount"><text>{{proxyDeta[0].Agent_Total_All_Amount}}</text></view>
+						<view class="amount"><text>{{proxyData[0].Agent_Total_All_Amount}}</text></view>
 						
-						<view class="tips"><text>截至{{proxyDeta[0].updateTime}}日</text></view>
+						<view class="tips"><text>截至{{proxyData[0].updateTime}}日</text></view>
 					</view>
 					
 					<view class="right">
@@ -43,9 +43,9 @@
 							<text>当月收益</text>
 						</view>
 						
-						<view class="amount"><text style="color:rgba(255,56,66,1);">{{proxyDeta[0].Agent_Total_Now_Amount}}</text></view>
+						<view class="amount"><text style="color:rgba(255,56,66,1);">{{proxyData[0].Agent_Total_Now_Amount}}</text></view>
 						
-						<view class="tips"><text>当月至8月12日结算数据</text></view>
+						<view class="tips"><text>当月至{{Day}}结算数据</text></view>
 					</view>
 				</view> 
 			</view>
@@ -95,10 +95,10 @@
 		<view class="select-box">
 			<view class="content" v-if="isHigh == true">
 				<view class="high selected">高到低</view>
-				<view class="low" @click="isHigh = false,orderState=1,this.getProxyData()">低到高</view>
+				<view class="low" @click="isHigh = false,orderState=1,this.Init(),this.getProxyData()">低到高</view>
 			</view>
 			<view class="content" v-else>
-				<view class="high" @click="isHigh = true,orderState=0,this.getProxyData()">高到低</view>
+				<view class="high" @click="isHigh = true,orderState=0,this.Init(),this.getProxyData()">高到低</view>
 				<view class="low selected">低到高</view>
 			</view>
 		</view>
@@ -140,6 +140,7 @@ import {request} from '@/api/request.js'
 				isHigh:true,
 				selectTime:false,
 				loadStatus: 'loadmore',
+				Day:'',
 				orderState:0,
 				Index:1,
 				StartTiem:'',
@@ -148,6 +149,7 @@ import {request} from '@/api/request.js'
 				user_id:'',
 				Aera_Name:'',
 				proxy_Init:[],
+				proxyData:[],
 				proxyList:[],
 				Welcome_Message:''
 			};
@@ -160,6 +162,7 @@ import {request} from '@/api/request.js'
 			this.getProxyShopData()
 			this.page_Init()
 			this.getHour()
+			this.getDay()
 		},
 		onReachBottom() {
 			if(this.proxyList.length<this.Index*10){
@@ -178,7 +181,7 @@ import {request} from '@/api/request.js'
 		methods:{
 			getProxyShopData(){
 				request('API_GetList_Agent_Info',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:0}).then(res=>{
-					this.proxyDeta = res
+					this.proxyData = res
 				})
 			},
 			page_Init(){
@@ -203,7 +206,7 @@ import {request} from '@/api/request.js'
 			},
 			toshopProxy(BusinessID){
 				uni.navigateTo({
-					url:`/pages/proxy/shopProxy?BusinessID=${BusinessID}&user_id=${this.user_id}`
+					url:`/pages/proxy/shopProxy?BusinessID=${BusinessID}&AeraID=${this.AeraID}&user_id=${this.user_id}`
 				})
 			},
 			back(){
@@ -212,12 +215,24 @@ import {request} from '@/api/request.js'
 			change(e){
 				this.selectTime = true;
 				this.time = `${e.startDate} 至 ${e.endDate}`
-
+				
+				this.StartTiem = e.startDate
+				this.EndTime = e.endDate
+				
+				this.Init()
 				this.getProxyData()
+			},
+			//初始化方法
+			Init(){
+				this.Index = 1;
+				this.proxyList = []
 			},
 			getMonth(){
 				//返回月份日期,2020-8-17
 				return `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+			},
+			getDay(){
+				this.Day = `${new Date().getMonth()+1}月${new Date().getDate()}日`
 			},
 			getRankimgUrl(No){
 				return `/static/image/NO_${No}.png`
