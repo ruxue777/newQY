@@ -118,7 +118,7 @@
 					<view class="shop-accout">
 						<view class="left-cont" v-if="userInfo.IsBusinessMaster == 1">
 							<view class="accout-name">商家账户</view>
-							<view class="accout-amount">10119.7</view>
+							<view class="accout-amount">{{AccoutAmount.CreditAmount}}</view>
 						</view>
 					</view>
 				</view>
@@ -169,7 +169,12 @@
 			<view class="wxQRimg">
 				<image class="qr-img" :src="WxappQR"></image>
 			</view>
-		</u-popup>	
+		</u-popup>
+		<u-popup v-model="show" mode="center" border-radius="14" >
+			<view class="wxQRimg">
+				<image class="qr-img" :src="WxappQR"></image>
+			</view>
+		</u-popup>		
 	</view>
 </template>
 
@@ -346,7 +351,7 @@ import {request,wxRequest} from "@/api/request.js"
 			},
 			toProxy(){
 				request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:0,BusinessID:0}).then(res=>{
-					if(res.length>0){
+					if(res.length !=0){
 						this.$refs.uToast.show({
 							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
 							type: 'success',
@@ -355,9 +360,10 @@ import {request,wxRequest} from "@/api/request.js"
 					}
 					else{
 						this.$refs.uToast.show({
-							title: '您还不是代理,暂时无法进入哦',
+							title: '您还不是代理,请致电加入我们',
 							type: 'warning'
 						})
+						return;
 					}
 				})
 			},

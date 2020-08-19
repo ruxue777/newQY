@@ -158,20 +158,20 @@ import {request} from '@/api/request.js'
 		},
 		methods:{
 			getProxyData(){
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:863,AeraID:this.proxyData[0].AeraID,BusinessID:'',
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.proxyData[0].AeraID,BusinessID:'',
 					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
 			},
 			page_Init(){
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:863,AeraID:this.proxyData[0].AeraID,BusinessID:'',
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.proxyData[0].AeraID,BusinessID:'',
 					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
 			},
 			toareaProxy(AeraID){
 				uni.navigateTo({
-					url:`/pages/proxy/areaProxy?AeraID=${AeraID}&user_id=${863}`
+					url:`/pages/proxy/areaProxy?AeraID=${AeraID}&user_id=${this.user_id}`
 				})
 			},
 			back(){
