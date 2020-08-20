@@ -170,9 +170,13 @@
 				<image class="qr-img" :src="WxappQR"></image>
 			</view>
 		</u-popup>
-		<u-popup v-model="show" mode="center" border-radius="14" >
-			<view class="wxQRimg">
-				<image class="qr-img" :src="WxappQR"></image>
+		<u-popup v-model="proxyShow" mode="center" border-radius="14" >
+			<view class="proxy-popup">
+				<view class="content" v-for="(item,index) in proxyData" :key="index">
+					<view class="button">
+						<u-button type="primary" @click="selectProxy(item.AeraID,item.Aera_Name)">{{item.Aera_Name}}</u-button>
+					</view>
+				</view>
 			</view>
 		</u-popup>		
 	</view>
@@ -186,6 +190,8 @@ import {request,wxRequest} from "@/api/request.js"
 				userInfo:'',
 				AccoutAmount:[],
 				show:false,
+				proxyShow:false,
+				proxyData:[],
 				WxappQR:''
 			}
 		},
@@ -194,6 +200,10 @@ import {request,wxRequest} from "@/api/request.js"
 		},
 		onPullDownRefresh() {
 			this.getUserInfo()
+					
+			setTimeout(()=>{
+				uni.stopPullDownRefresh()
+			},1000)
 		},
 		methods:{
 			getUserInfo(){
@@ -309,6 +319,24 @@ import {request,wxRequest} from "@/api/request.js"
 					}
 				})
 			},
+			selectProxy(AeraID,Aera_Name){
+				if(Aera_Name.substr(Aera_Name.length-1,1) === '市'){
+					request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:AeraID,BusinessID:0}).then(res=>{
+						this.$refs.uToast.show({
+							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
+							type: 'success',
+							url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
+						})
+					})
+				}
+				else if(Aera_Name.substr(Aera_Name.length-1,1) === '区' || '县'){
+					this.$refs.uToast.show({
+						title: `尊贵的${Aera_Name}代理,欢迎您`,
+						type: 'success',
+						url: `/pages/proxy/areaProxy?user_id=${this.userInfo.user_id}&AeraID=${AeraID}&Aera_Name=${Aera_Name}`
+					})
+				}
+			},
 			toSetting(){
 				uni.navigateTo({
 					url:'../userSetting/setting'
@@ -351,12 +379,29 @@ import {request,wxRequest} from "@/api/request.js"
 			},
 			toProxy(){
 				request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:0,BusinessID:0}).then(res=>{
-					if(res.length !=0){
-						this.$refs.uToast.show({
-							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
-							type: 'success',
-							url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
-						})
+					if(res.length != 0){
+						if(res.length ==1){
+							//判断是市代理或者是区域代理
+							let Area_Name = res[0].Aera_Name
+							if(Area_Name.substr(Area_Name.length-1,1) === '市'){
+								this.$refs.uToast.show({
+									title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
+									type: 'success',
+									url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
+								})
+							}
+							else if(Area_Name.substr(Area_Name.length-1,1) === '区' || '县'){
+								this.$refs.uToast.show({
+									title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
+									type: 'success',
+									url: `/pages/proxy/areaProxy?user_id=${this.userInfo.user_id}&AeraID=${res.AeraID}&Aera_Name=${res.Aera_Name}`
+								})
+							}
+						}
+						else{
+							this.proxyShow = true;
+							this.proxyData = res
+						}
 					}
 					else{
 						this.$refs.uToast.show({
@@ -879,5 +924,13 @@ page{
 			width: 450rpx;
 			height: 450rpx;
 		}
+	}
+	.proxy-popup{
+		width: 400rpx;
+		height: 500rpx;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		align-items: center;
 	}
 </style>
