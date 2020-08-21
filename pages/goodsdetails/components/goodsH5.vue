@@ -24,8 +24,6 @@
 
 <style lang="less">
 .main{
-	position: relative;
-	top: -60rpx;
 	.title{
 		display: flex;
 		justify-content: center;

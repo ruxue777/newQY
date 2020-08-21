@@ -5,64 +5,34 @@
 				<p>推荐商品</p>
 			</view>
 			<view class="bottom-content">
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
+				<view class="goods-cont" v-if="BusinessData.length>1" v-for="(item,index) in BusinessData" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
+					<image :src="item.BP_ImgUrl"></image>
 					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
+						<view class="goods-details">{{item.BP_Name}}</view>
+						<view class="goods-price">￥{{item.BP_Amount}}</view>
 					</view>
 				</view>
 				
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
-					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
-					</view>
-				</view>
-				
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
-					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
-					</view>
-				</view>
-				
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
-					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
-					</view>
-				</view>
-				
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
-					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
-					</view>
-				</view>
-				
-				<view class="goods-cont">
-					<image src="../../../static/image/goodsimg.png"></image>
-					<view class="goods-data">
-						<view class="goods-details">日本进口洗面奶非常好用的洗面奶，美....</view>
-						<view class="goods-price">￥50.88</view>
-					</view>
-				</view>
+				<view class="goods-cont" v-if="BusinessData.length == 2"></view>
 			</view>
-		</view>
+		</view> 
 	</view>
 </template>
 
 <script>
 	export default {
+		props:['BusinessData',"LatItude" ,"LongItude"],
 		data() {
 			return {
 				
 			};
+		},
+		methods:{
+			toGoodsDetails(id,BusinessID,CategoryID){
+				uni.navigateTo({
+					url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&CategoryID=${CategoryID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			}
 		}
 	}
 </script>
@@ -70,14 +40,12 @@
 <style lang="less">
 .main{
 	width: 100%;
-	height: 820rpx;
 	margin-top: 60rpx;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	.middle{
 		width: 670rpx;
-		height: 760rpx;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
@@ -102,12 +70,10 @@
 		
 		.bottom-content{
 			width: 100%;
-			height: 680rpx;
 			display: flex;
 			flex-wrap: wrap;
 			flex-direction: row;
-			justify-content: space-around;
-			
+			justify-content: space-between;
 			.goods-cont{
 				width: 200rpx;
 				height: 330rpx;
@@ -115,6 +81,8 @@
 				flex-direction: column;
 				justify-content: space-around;
 				align-items: center;
+				align-content: flex-start;
+				
 				
 				image{
 					width: 200rpx;

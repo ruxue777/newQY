@@ -105,7 +105,7 @@
 		
 		<view class="rank">
 			<view class="content">
-				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index" @click="toareaProxy(item.AeraID)">
+				<view class="middle" v-for="(item,index) in proxyDetails.DataList_Detail" :key="index" @click="toproxy(item.AeraID)">
 					<view class="left">
 						<image v-if="index <=2" :src="getRankimgUrl(index+1)"></image>
 						<view v-else class="rank-no">{{index+1}}</view>
@@ -185,9 +185,9 @@ import {request} from '@/api/request.js'
 			requestTime(time){
 				return `${time}-01`
 			},
-			toareaProxy(AeraID){
+			toproxy(AeraID){
 				uni.navigateTo({
-					url:`/pages/proxy/areaProxy?AeraID=${AeraID}&user_id=${this.user_id}`
+					url:`/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.user_id}`
 				})
 			},
 			back(){

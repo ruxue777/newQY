@@ -124,7 +124,6 @@
 <style lang="less">
 .main{
 	width: 100%;
-	height: auto;
 	.goods-img{
 		width: 100%;
 		height: 750rpx;
@@ -246,8 +245,7 @@
 			display: flex;
 			justify-content: center;
 			align-items: center;
-			position: relative;
-			top: 70rpx;
+			margin-top: 70rpx;
 			
 			.goods-service-content{
 				width: 670rpx;
@@ -258,8 +256,6 @@
 				justify-content: center;
 				flex-direction: column;
 				align-items: center;
-				// position: relative;
-				// top: -20rpx;
 				-moz-box-shadow:0px 0px 10rpx #e4e4e4;
 				-webkit-box-shadow:0px 0px 10rpx #e4e4e4;
 				box-shadow:0px 0px 10rpx #e4e4e4;

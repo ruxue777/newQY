@@ -1,7 +1,7 @@
 <template>
 	<view>
 		<topGoodsdetails :GoodsData="GoodsData"></topGoodsdetails>
-		<recommend></recommend>
+		<recommend v-if="BusinessData.length>1" :BusinessData="BusinessData" :LatItude="LatItude" :LongItude="LongItude"></recommend>
 		<shopDetails :MerchantData="MerchantData"></shopDetails>
 		<goodsH5 :GoodsData="GoodsData"></goodsH5>
 		<moreGoods :MoreData="MoreData"></moreGoods>
@@ -41,6 +41,8 @@ import {request} from '@/api/request.js'
 				GoodsData:[],
 				//店铺数据
 				MerchantData:[],
+				//店铺商品详情
+				BusinessData:[],
 				Phone:'',
 				//核销点数据
 				WriteoffData:[],
@@ -57,6 +59,7 @@ import {request} from '@/api/request.js'
 			
 			this.getGoodsDatails()
 			this.getMerchantData()
+			this.getBusinessData()
 			this.getWriteoffData()
 			this.getMoreData()
 		},
@@ -72,6 +75,13 @@ import {request} from '@/api/request.js'
 				request('API_GetInfo_BusinessSearch',{BusinessID:this.BusinessID,Longitude:this.LongItude,Latitude:this.LatItude}).then(res=>{
 					this.MerchantData = res
 					this.Phone = res.Phone
+				})
+			},
+			//店铺商品详情
+			getBusinessData(){
+				request('API_GetList_BusinessProductSearch',{CategoryID:0,BusinessID:this.BusinessID,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,
+					orderState:0,IsFL:'',IsBP:'',pageSize:6,index:1}).then(res=>{
+					this.BusinessData = res
 				})
 			},
 			//核销点详情

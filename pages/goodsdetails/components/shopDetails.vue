@@ -51,8 +51,6 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	position: relative;
-	top: -80rpx;
 	
 	.line{
 		width: 100%;

@@ -44,8 +44,6 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	position: relative;
-	top: -30rpx;
 	
 	.top-title{
 		width: 100%;
@@ -66,7 +64,7 @@
 		width: 100%;
 		display: flex;
 		flex-wrap: wrap;
-		justify-content: center;
+		justify-content: space-between;
 		align-items: center;
 		
 		.moreGoods{

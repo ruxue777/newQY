@@ -30,7 +30,6 @@
 					<view class="left">
 						<view class="top-cont">
 							<text>累计收益</text>
-							<u-icon name="eye" style="margin-left: 20rpx;"></u-icon>
 						</view>
 						
 						<view class="amount"><text>{{proxyData[0].Agent_Total_All_Amount}}</text></view>
@@ -59,18 +58,19 @@
 				</view>
 				
 				<view class="time-content">
+					<view class="time-title">时间选择:</view>
+						
 					<view class="time-select">
-						<text class="title">时间选择 :</text>
-						<view class="time" @click="show = true">
-							
-							<view v-if="selectTime == false">
-								{{time}}<u-icon name="arrow-down-fill" size="32"></u-icon>
-							</view>
-							
-							<view v-else>
-								<text class="time-style">{{time}}</text>
-							</view>
-							
+						<view class="left" @click="show_0 = true">
+							{{StartTime}}
+							<u-icon style="margin-left: 5rpx;" name="arrow-down-fill"></u-icon>
+						</view>
+						<view class="time-span">
+							{{timeSpan}}
+						</view>
+						<view class="right" @click="show_1 = true">
+							{{EndTime}}
+							<u-icon style="margin-left: 5rpx;" name="arrow-down-fill"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -106,8 +106,7 @@
 		<view class="rank_content">
 			<view class="middle" v-for="(item,index) in proxyList" :key="index" @click="toshopProxy(item.BusinessID)">
 				<view class="left">
-					<image v-if="index <=2" :src="getRankimgUrl(index+1)"></image>
-					<view v-else class="rank-no">{{index+1}}</view>
+					<image  :src="item.ImgUrl"></image>
 					<view class="proxy-cont">
 						<view class="proxy-name">{{item.Aera_Name}}</view>
 						<view class="proxy-client-amount">客户数量: {{item.Agent_UserNums}}</view>
@@ -125,7 +124,8 @@
 		</view>		
 
 		<!-- 反馈组件 -->
-		<u-calendar v-model="show" mode="range" @change="change"></u-calendar>
+		<u-picker mode="time" v-model="show_0" :params="params" @confirm="confirm_0"></u-picker>
+		<u-picker mode="time" v-model="show_1" :params="params" @confirm="confirm_1"></u-picker>
 		<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus"  />
 	</view>
 </template>
@@ -136,15 +136,24 @@ import {request} from '@/api/request.js'
 		data() {
 			return {
 				time:`请选择时间`,
-				show:false,
+				show_0:false,
+				show_1:false,
 				isHigh:true,
-				selectTime:false,
 				loadStatus: 'loadmore',
 				Day:'',
 				orderState:0,
 				Index:1,
-				StartTiem:'',
-				EndTime:'',
+				StartTime:"2020-08",
+				EndTime:"2020-08",
+				params:{
+					year: true,
+					month: true,
+					day: false,
+					hour: false,
+					minute: false,
+					second: false
+				},
+				timeSpan:'1月',
 				AeraID:'',
 				user_id:'',
 				Aera_Name:'',
@@ -185,15 +194,17 @@ import {request} from '@/api/request.js'
 				})
 			},
 			page_Init(){
+				this.EndTime = `${new Date().getFullYear()}-${new Date().getMonth()+1}`
+				this.StartTime = `${new Date().getFullYear()}-${new Date().getMonth()+1}`
 				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
-					Start_SettlementTime:this.getMonth(),End_SettlementTime:'',orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
+					Start_SettlementTime:this.getMonth(),End_SettlementTime:this.getMonth(),orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
 						this.proxy_Init = res
 						this.proxyList = res.DataList_Detail
 				})
 			},
 			getProxyData(callBack){
 				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID,BusinessID:'',
-					Start_SettlementTime:this.StartTiem,End_SettlementTime:this.EndTime,orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
+					Start_SettlementTime:this.requestTime(this.StartTime),End_SettlementTime:this.requestTime(this.EndTime),orderState:this.orderState,pageSize:10,index:this.Index}).then(res=>{
 						
 						let proxyList = res.DataList_Detail
 						
@@ -204,6 +215,9 @@ import {request} from '@/api/request.js'
 						callBack && callBack()
 				})
 			},
+			requestTime(time){
+				return `${time}-01`
+			},
 			toshopProxy(BusinessID){
 				uni.navigateTo({
 					url:`/pages/proxy/shopProxy?BusinessID=${BusinessID}&AeraID=${this.AeraID}&user_id=${this.user_id}`
@@ -212,15 +226,37 @@ import {request} from '@/api/request.js'
 			back(){
 				uni.navigateBack()
 			},
-			change(e){
-				this.selectTime = true;
-				this.time = `${e.startDate} 至 ${e.endDate}`
+			confirm_0(e){
 				
-				this.StartTiem = e.startDate
-				this.EndTime = e.endDate
+				this.StartTime = `${e.year}-${e.month}`
+				let moment_0 = this.StartTime.split('-');
+				let date1 = parseInt(moment_0[0]) * 12 + parseInt(moment_0[1]);
 				
-				this.Init()
-				this.getProxyData()
+				let moment_1 = this.EndTime.split('-');	
+				let	date2 = parseInt(moment_1[0]) * 12 + parseInt(moment_1[1]);
+					
+				let m = Math.abs(date1 - date2); 
+				this.timeSpan = `${m}月`
+				
+				this.Init()			
+				this.getProxyData()			
+				
+			},
+			confirm_1(e){
+				this.EndTime = `${e.year}-${e.month}`		
+				
+				let moment_0 = this.StartTime.split('-');
+				let date1 = parseInt(moment_0[0]) * 12 + parseInt(moment_0[1]);
+				
+				let moment_1 = this.EndTime.split('-');	
+				let	date2 = parseInt(moment_1[0]) * 12 + parseInt(moment_1[1]);
+					
+				let m = Math.abs(date1 - date2); 
+				
+				this.timeSpan = `${m}月`
+				
+				this.Init()	
+				this.getProxyData()	
 			},
 			//初始化方法
 			Init(){
@@ -233,9 +269,6 @@ import {request} from '@/api/request.js'
 			},
 			getDay(){
 				this.Day = `${new Date().getMonth()+1}月${new Date().getDate()}日`
-			},
-			getRankimgUrl(No){
-				return `/static/image/NO_${No}.png`
 			},
 			getHour(){
 				//取得当前时间的小时
@@ -489,48 +522,58 @@ import {request} from '@/api/request.js'
 					line-height:12rpx;
 				}
 			}
-		
+				
 			.time-content{
 				width: 500rpx;
 				height: 60rpx;
 				display: flex;
-				justify-content: center;
+				justify-content: space-between;
 				align-items: center;
+				position: relative;
+				left: 20rpx;
 				
-				.time-select{
-					width: 480rpx;
-					height: 100%;
+				.time-title{
+					width: 120rpx;
+					height: 60rpx;
 					display: flex;
 					justify-content: center;
 					align-items: center;
+					font-size:24rpx;
+					font-family:PingFang SC;
+					font-weight:600;
+					color:rgba(102,102,102,1);
+					line-height:13rpx;
+				}
 				
-					.title{
-						font-size:24rpx;
-						font-family:PingFang SC;
-						font-weight:600;
-						color:rgba(102,102,102,1);
-						line-height:12rpx;
-						position: relative;
-						right: -20rpx;
-					}
+				.time-select{
+					width: 380rpx;
+					height: 60rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
 					
-					.time{
-						width: 350rpx;
-						height: 50rpx;
+					.left,.right{
+						width:140rpx;
+						height:55rpx;
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						position: relative;
-						left: 30rpx;
-						border-radius: 50rpx;
-						background-color: RGBA(237, 237, 237, 1);
-						
-						.time-style{
-							font-size: 24rpx;
-						}
-						u-icon{
-							margin-left: 35rpx;
-						}
+						background:rgba(238,238,238,1);
+						border-radius:20rpx;
+						font-size:24rpx;
+						font-family:PingFang SC;
+						font-weight:400;
+						color:rgba(102,102,102,1);
+						line-height:13rpx;
+					}
+					
+					.time-span{
+						width: 100rpx;
+						height: 60rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						border-bottom: 2rpx solid #eeeeee;
 					}
 				}
 			}
@@ -664,8 +707,9 @@ import {request} from '@/api/request.js'
 				}
 				
 				image{
-					width: 50rpx;
+					width: 60rpx;
 					height: 60rpx;
+					border-radius: 50%;
 				}
 				
 				.proxy-cont{

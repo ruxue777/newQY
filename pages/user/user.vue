@@ -170,12 +170,10 @@
 				<image class="qr-img" :src="WxappQR"></image>
 			</view>
 		</u-popup>
-		<u-popup v-model="proxyShow" mode="center" border-radius="14" >
+		<u-popup v-model="proxyShow" mode="bottom" border-radius="14" >
 			<view class="proxy-popup">
-				<view class="content" v-for="(item,index) in proxyData" :key="index">
-					<view class="button">
-						<u-button type="primary" @click="selectProxy(item.AeraID,item.Aera_Name)">{{item.Aera_Name}}</u-button>
-					</view>
+				<view class="button" v-for="(item,index) in proxyData" :key="index">
+					<u-button type="primary" @click="selectProxy(item.AeraID,item.Aera_Name)">{{item.Aera_Name}}</u-button>
 				</view>
 			</view>
 		</u-popup>		
@@ -327,6 +325,17 @@ import {request,wxRequest} from "@/api/request.js"
 							type: 'success',
 							url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
 						})
+						return;
+					})
+				}
+				else if(Aera_Name.substr(Aera_Name.length-1,1) === '省' ){
+					request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:AeraID,BusinessID:0}).then(res=>{
+						this.$refs.uToast.show({
+							title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
+							type: 'success',
+							url: `/pages/proxy/provinceProxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
+						})
+						return;
 					})
 				}
 				else if(Aera_Name.substr(Aera_Name.length-1,1) === '区' || '县'){
@@ -335,7 +344,9 @@ import {request,wxRequest} from "@/api/request.js"
 						type: 'success',
 						url: `/pages/proxy/areaProxy?user_id=${this.userInfo.user_id}&AeraID=${AeraID}&Aera_Name=${Aera_Name}`
 					})
+					return;
 				}
+				
 			},
 			toSetting(){
 				uni.navigateTo({
@@ -926,11 +937,15 @@ page{
 		}
 	}
 	.proxy-popup{
-		width: 400rpx;
-		height: 500rpx;
+		height: 450rpx;
 		display: flex;
-		flex-direction: column;
-		justify-content: space-around;
+		justify-content: center;
 		align-items: center;
+		flex-direction: column;
+		
+		.button{
+			width: 700rpx;
+			margin: 20rpx;
+		}
 	}
 </style>
