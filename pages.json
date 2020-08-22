@@ -4,9 +4,9 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/proxy/proxy",
+		// 	"path" : "pages/order/submitOrders",
 		// 	"style" : {
-		// 		"navigationStyle": "custom"
+		// 		"navigationBarTitleText": "填写订单"
 		// 	}
 		// },
 		{
@@ -162,6 +162,12 @@
             "style":{
             	"navigationStyle": "custom"
             }
+        }
+        ,{
+            "path" : "pages/order/submitOrders",
+            "style" : {
+				"navigationBarTitleText": "填写订单"
+			}
         }
     ],
 	"globalStyle": {

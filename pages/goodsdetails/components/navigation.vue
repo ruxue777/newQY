@@ -16,7 +16,7 @@
 		</view>
 		<view class="right">
 			<view class="btn">
-				<u-button shape="circle" ripple="true" type="warning">马上购买</u-button>
+				<u-button shape="circle" ripple="true" type="warning" @click="toSubmitOrders">马上购买</u-button>
 			</view>
 		</view>
 	</view>
@@ -24,11 +24,12 @@
 
 <script>
 export default {
-	props:['ShopMobile'],
+	props:['ShopMobile','GoodsData'],
 	data() {
 		return {
 			customStyle:{
-				color: 'red'
+				color: 'red',
+				userInfo:[]
 			}
 		};
 	},
@@ -40,6 +41,35 @@ export default {
 			uni.makePhoneCall({
 				phoneNumber: this.ShopMobile
 			});
+		},
+		toSubmitOrders(){			
+			const userInfo = uni.getStorageSync("globalUser");
+			if(!userInfo){
+				uni.showModal({
+					title:'您还没有登录哦',
+					confirmText:'去登录',
+					success:function(res){
+						if(res.cancel)
+						{
+							return
+						}
+						else if(res.confirm)
+						{
+							uni.navigateTo({
+								url:'./signIn'
+							})
+						}
+					}
+				})
+			}
+			else{
+				this.userInfo = userInfo;
+				uni.navigateTo({
+					url:`/pages/order/submitOrders?GoodsDatails=${encodeURIComponent(JSON.stringify(this.GoodsData))}`
+				});
+				
+				return;
+			}
 		}
 	}
 };

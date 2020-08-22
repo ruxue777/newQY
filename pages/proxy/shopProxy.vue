@@ -37,8 +37,8 @@
 						<view class="shop-top-img">
 							<image :src="shopDatails.ImgUrl"></image>
 							<view class="bottom-img">
-								<u-icon name="phone-fill" size="42" color="RGBA(255, 229, 14, 1)"></u-icon>
-								<u-icon name="car-fill" size="42" color="RGBA(255, 229, 14, 1)"></u-icon>
+								<u-icon name="phone-fill" size="42" color="RGBA(255, 229, 14, 1)" @click="call(shopDatails.Phone)"></u-icon>
+								<u-icon name="car-fill" size="42" color="RGBA(255, 229, 14, 1)" @click="navigation(shopDatails.BusinessName,shopDatails.Latitude,shopDatails.Longitude)"></u-icon>
 							</view>
 						</view>
 					</view>
@@ -140,7 +140,9 @@
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request} from '@/api/request.js';
+import {location} from '@/api/location.js'
+import QQMap_SDK from '@/SDK/qqmap-wx-jssdk.min.js'	
 	export default {
 		data() {
 			return {
@@ -247,6 +249,53 @@ import {request} from '@/api/request.js'
 			},
 			getDay(){
 				this.Day = `${new Date().getMonth()+1}月${new Date().getDate()}日`
+			},
+			call(phoneNumber){
+				uni.makePhoneCall({
+					phoneNumber: phoneNumber
+				});
+			},
+			navigation(name,Latitude,Longitude){				
+				let locationData = location(Latitude,Longitude)
+				
+				const QQMapWx = new QQMap_SDK({
+					key:'FXCBZ-4H36W-FBDR5-O6E6O-KGQ27-MHB6U'
+				})
+				
+				QQMapWx.reverseGeocoder({
+					location: {
+						latitude: locationData.lats,
+						longitude: locationData.lngs
+					},
+					success:(res)=>{
+						//市
+						let city =res.result.address_component.city
+						//区
+						let district = res.result.address_component.district
+						
+						const addr = `${city}${district}${name}`;
+						
+						wx.getLocation({
+							type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+							success: function (res) {
+								wx.openLocation({
+									latitude: locationData.lats,
+									longitude: locationData.lngs,
+									scale: 20,
+									name: "当前位置", //打开后显示的地址名称
+									address:addr
+								})
+							}
+						})
+					},
+					fail: function(res) {
+						uni.showToast({
+							title: '定位失败',
+							duration: 2000,
+							icon: "none"
+						})
+					}
+				})
 			},
 			back(){
 				uni.navigateBack()

@@ -5,7 +5,7 @@
 		<shopDetails :MerchantData="MerchantData"></shopDetails>
 		<goodsH5 :GoodsData="GoodsData"></goodsH5>
 		<moreGoods :MoreData="MoreData"></moreGoods>
-		<navigation :ShopMobile="Phone"></navigation>
+		<navigation :ShopMobile="Phone" :GoodsData="GoodsData"></navigation>
 	</view>
 </template>
 

@@ -13,10 +13,10 @@
 			</view>
 			<view class="write-off">
 				<view class="top">
-					<view class="shop-name">法国饰品店</view>
+					<view class="shop-name">{{MerchantData.BusinessName}}</view>
 					<view class="img">
-						<image class="phone-img" src="../../../static/image/phone_1.png"></image>
-						<image src="../../../static/image/navigation.png"></image>
+						<image class="phone-img" src="../../../static/image/phone_1.png" @click="call(MerchantData.Phone)"></image>
+						<image src="../../../static/image/navigation.png" @click="navigation(MerchantData.BusinessName,MerchantData.Latitude,MerchantData.Longitude)"></image>
 					</view>
 				</view>
 				<view class="bottom">
@@ -33,12 +33,63 @@
 </template>
 
 <script>
+import {location} from '@/api/location.js'
+import QQMap_SDK from '@/SDK/qqmap-wx-jssdk.min.js'		
 	export default {
 		props:['MerchantData'],
 		data() {
 			return {
 				
 			};
+		},
+		methods:{
+			call(phoneNumber){
+				uni.makePhoneCall({
+					phoneNumber: phoneNumber
+				});
+			},
+			navigation(name,Latitude,Longitude){
+				let locationData = location(Latitude,Longitude)
+				
+				const QQMapWx = new QQMap_SDK({
+					key:'FXCBZ-4H36W-FBDR5-O6E6O-KGQ27-MHB6U'
+				})
+				
+				QQMapWx.reverseGeocoder({
+					location: {
+						latitude: locationData.lats,
+						longitude: locationData.lngs
+					},
+					success:(res)=>{
+						//市
+						let city =res.result.address_component.city
+						//区
+						let district = res.result.address_component.district
+						
+						const addr = `${city}${district}${name}`;
+						
+						wx.getLocation({
+							type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+							success: function (res) {
+								wx.openLocation({
+									latitude: locationData.lats,
+									longitude: locationData.lngs,
+									scale: 20,
+									name: "当前位置", //打开后显示的地址名称
+									address:addr
+								})
+							}
+						})
+					},
+					fail: function(res) {
+						uni.showToast({
+							title: '定位失败',
+							duration: 2000,
+							icon: "none"
+						})
+					}
+				})
+			}
 		}
 	}
 </script>
@@ -108,9 +159,12 @@
 				align-items: center;
 				
 				.shop-name{
-					width:200rpx;
-					height:30rpx;
-					font-size:30rpx;
+					width:300rpx;
+					height:75rpx;
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					font-size:26rpx;
 					font-family:PingFang SC;
 					font-weight:400;
 					color:rgba(0,0,0,1);
