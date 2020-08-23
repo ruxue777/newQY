@@ -111,12 +111,31 @@
 			</view>
 			
 			<view class="button">
-				<u-button type="warning" shape="circle" ripple="true">提交订单</u-button>
+				<u-button type="warning" shape="circle" ripple="true" @click="show = true">提交订单</u-button>
 			</view>
 		</view>
 		
 		<!-- 反馈组件 -->
 		<u-toast ref="uToast" />
+		<u-popup v-model="show" mode="bottom" border-radius="15" closeable="true" close-icon-pos="top-left">
+			<view class="popup-content">
+				<view class="top">
+					<text class="top-title">付款详情</text>
+					<text class="pay-amount">实付:<text class="btn">￥100.00</text> </text>
+				</view>
+				
+				<view class="middle">
+					<view class="subsidy"></view>
+					<view class="payment-method"></view>
+				</view>
+				
+				<view class="bottom">
+					<view class="button">
+						<u-button shape="circle" ripple="true" @click="show = true">提交订单</u-button>
+					</view>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -135,6 +154,8 @@ import {request} from '@/api/request.js'
 				subSwitch: true,
 				//是否禁用抵扣开关
 				isSub:false,
+				//支付框开关
+				show:false,
 				list: [
 					{
 						name: '到店自取',
@@ -593,6 +614,54 @@ import {request} from '@/api/request.js'
 			
 			u-button{
 				margin-left: 30rpx;
+			}
+		}
+	}
+	
+	.popup-content{
+		width: 100%;
+		height: 1000rpx;
+		background-color: #fff;
+		
+		.top{
+			width: 100%;
+			height: 210rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		
+		.middle{
+			width: 100%;
+			height:  580rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			
+			.subsidy{
+				width: 100%;
+				height: 80rpx;
+			}
+			
+			.payment-method{
+				width: 100%;
+				height: 500rpx;
+			}
+			
+		}
+		
+		.bottom{
+			width: 100%;
+			height: 200rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			.button{
+				width: 670rpx;
+				height: 100rpx;
 			}
 		}
 	}
