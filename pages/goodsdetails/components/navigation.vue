@@ -24,7 +24,7 @@
 
 <script>
 export default {
-	props:['ShopMobile','GoodsData'],
+	props:['ShopMobile','GoodsData','LatItude','LongItude'],
 	data() {
 		return {
 			customStyle:{
@@ -65,7 +65,7 @@ export default {
 			else{
 				this.userInfo = userInfo;
 				uni.navigateTo({
-					url:`/pages/order/submitOrders?GoodsDatails=${encodeURIComponent(JSON.stringify(this.GoodsData))}`
+					url:`/pages/order/submitOrders?GoodsDatails=${encodeURIComponent(JSON.stringify(this.GoodsData))}&user_id=${userInfo.user_id}&LongItude=${this.LongItude}&LatItude=${this.LatItude}`
 				});
 				
 				return;

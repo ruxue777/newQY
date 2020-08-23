@@ -27,7 +27,7 @@
 							<!-- <view class="demo-tag-owner">自营</view>
 							<view class="demo-tag-text">放心购</view> -->
 							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
-								<span class="jintie">津贴</span>
+								<span class="jintie">补贴</span>
 								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
 							</view>
 						</view>
@@ -50,7 +50,7 @@
 						</view>
 						<view class="demo-tag">
 							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
-								<span class="jintie">津贴</span>
+								<span class="jintie">补贴</span>
 								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
 							</view>
 						</view>
