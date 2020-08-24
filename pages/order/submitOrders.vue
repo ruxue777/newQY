@@ -35,9 +35,9 @@
 				<view class="goods-list">
 					<text>商品列表</text>
 					<view class="list">
-						<view class="giveaway-name">大鸡蛋</view>
+						<view class="giveaway-name">{{GoodsList[0].BPD_Name}}</view>
 						<view class="giveaway-list">
-							<text>每月可领1个</text>
+							<text>每月可领{{GoodsList[0].BPD_TotalCount}}{{GoodsList[0].BPD_Unit}}</text>
 						</view>
 					</view>
 				</view>
@@ -89,15 +89,15 @@
 				<view class="post">
 					<view class="contact-person">
 						<text>联系人:</text>
-						<input placeholder="请输入联系人姓名"/>
+						<input placeholder="请输入联系人姓名" v-model="name"/>
 					</view>
 					<view class="call">
 						<text>电话:</text>
-						<input placeholder="请输入联系人电话"/>
+						<input placeholder="请输入联系人电话" v-model="callphone"/>
 					</view>
 					<view class="post-location">
 						<text>地址:</text>
-						<input placeholder="请输入联系人地址"/>
+						<input placeholder="请输入联系人地址" v-model="location"/>
 					</view>
 				</view>
 			</view>
@@ -111,7 +111,7 @@
 			</view>
 			
 			<view class="button">
-				<u-button type="warning" shape="circle" ripple="true" @click="show = true">提交订单</u-button>
+				<u-button type="warning" shape="circle" ripple="true" @click="submitOrder">提交订单</u-button>
 			</view>
 		</view>
 		
@@ -121,19 +121,104 @@
 			<view class="popup-content">
 				<view class="top">
 					<text class="top-title">付款详情</text>
-					<text class="pay-amount">实付:<text class="btn">￥100.00</text> </text>
+					<text class="pay-amount">实付:￥<text class="btn">{{popup_Amount}}</text></text>
 				</view>
 				
 				<view class="middle">
-					<view class="subsidy"></view>
-					<view class="payment-method"></view>
+					<view class="subsidy">
+						<view class="left-cont">
+							<image src="../../static/image/coupon.png"></image>
+							<text>{{DeductionTips}}</text>
+							<view class="title">补贴抵扣</view>
+						</view>
+						<view class="right-cont">
+							<u-switch v-model="deductionSwitch" size='40' active-color="#fa3534" :disabled="isDeduction"></u-switch>
+						</view>
+					</view>
+					
+					<view class="payment-method">
+						<view class="payment-method-title">选择付款方式</view>
+						<view class="payment-method-content">
+							
+							<view class="jt-account Selected" v-if="payment_Method === 0" >
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_moneyred.png"></image>
+									<text>津贴账户</text>
+								</view>
+								<view class="right">
+									<view class="account-amount">{{AccoutAmount.ProfitAmount}}</view>
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>
+							</view>
+							<view class="jt-account" v-else @click="select_Payment(0)">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_money.png"></image>
+									<text>津贴账户</text>
+								</view>
+								<view class="right">
+									<view class="account-amount">{{AccoutAmount.ProfitAmount}}</view>
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>
+							</view>
+							
+							
+							<view class="bt-account Selected" v-if="payment_Method === 1">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_homered.png"></image>
+									<text>补贴账户</text>
+								</view>
+								<view class="right">
+									<view class="account-amount">{{AccoutAmount.RechargeAmount}}</view>
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>								
+							</view>
+							<view class="bt-account" v-else @click="select_Payment(1)">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_home.png"></image>
+									<text>补贴账户</text>
+								</view>
+								<view class="right">
+									<view class="account-amount">{{AccoutAmount.RechargeAmount}}</view>
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>								
+							</view>
+							
+							
+							<view class="wx-account Selected" v-if="payment_Method === 2">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_wxred.png"></image>
+									<text>微信支付</text>
+								</view>
+								<view class="right">
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>		
+							</view>
+							<view class="wx-account" v-else @click="select_Payment(2)">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_wx.png"></image>
+									<text>微信支付</text>
+								</view>
+								<view class="right">
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>		
+							</view>
+						</view>
+					</view>
 				</view>
 				
 				<view class="bottom">
-					<view class="button">
-						<u-button shape="circle" ripple="true" @click="show = true">提交订单</u-button>
+					<view class="button" @click="Pay()">
+						立即支付
 					</view>
 				</view>
+			</view>
+		</u-popup>
+		<u-popup v-model="Pay_popup" mode="center" border-radius="15" closeable="true" close-icon-pos="top-left">
+			<view class="cont">
+				<text class="title">请输入支付密码</text>
+				<input type="password" v-model="Psd"/>
+				<text class="mini">忘记支付密码</text>
+				<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="Pay">确认支付</u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -166,6 +251,9 @@ import {request} from '@/api/request.js'
 						disabled: false
 					}
 				],
+				deductionSwitch:true,
+				isDeduction:false,
+				payment_Method:0,
 				value: '到店自取',
 				//补贴提示语
 				subTips:'此商品不支持补贴',
@@ -178,10 +266,22 @@ import {request} from '@/api/request.js'
 				AccoutAmount:[],
 				//使用津贴最大购买数量
 				max_SubAmount:0,
+				DeductionTips:'',
 				//商品实际付款金额
 				payment_Amount:0.00,
+				//弹窗显示金额
+				popup_Amount:0.00,
 				//核销点详情
 				GoodsWriteOffData:[],
+				//商品列表
+				GoodsList:[],
+				name:'',
+				callphone:'',
+				location:'',
+				//领取方式
+				ReceiveType:0,
+				//支付弹窗
+				Pay_popup:false
 			};
 		},
 		watch: {
@@ -192,11 +292,20 @@ import {request} from '@/api/request.js'
 					
 					this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount).toFixed(2)
 				}else{
-					this.subTips = `可用${Math.floor(this.GoodsDatails.BP_IntegralConsumeAmount)}补贴权益抵扣${Math.floor(this.GoodsDatails.BP_IntegralConsumeAmount)}元`
+					this.subTips = `可用${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}补贴权益抵扣${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}元`
 				
 					this.currentAmount()			
 				}
-			}			
+			},
+			deductionSwitch(val){
+				if(val == false){
+					this.subTips = "不使用抵扣"
+					
+				 	this.popup_Amount =  this.payment_Amount 
+				}else{
+					this.submitOrder()		
+				}
+			}									
 		},		
 		onLoad(e) {
 			this.GoodsDatails = JSON.parse(decodeURIComponent(e.GoodsDatails));
@@ -206,8 +315,51 @@ import {request} from '@/api/request.js'
 			
 			this.page_Init()
 			this.getGoodsWriteOff()
+			this.getGoodsList()
 		},		
 		methods:{
+			Pay(){
+				request('API_AddBusinessProduct_V4',{user_id:this.user_id,ProductID:this.GoodsDatails.id,Count:this.amount,UserName:this.name,
+					Mobile:this.callphone,Address:this.location,ReceiveType:this.collection_Method(),IsIntegralConsume:this.isSubmit()}).then(res=>{
+						if(res.result_code === "SUCCESS"){
+							
+							switch(this.payment_Method){
+								case 0:
+									this.Pay_popup = true
+								break;
+								case 1:
+									this.Pay_popup = true
+								break;
+								case 2:
+									
+								break;
+							} 
+							
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error',
+							})
+							return;
+						}
+				})
+			},
+			//是否参加积分消费
+			isSubmit(){
+				if(this.subSwitch == true && this.isSub == false){
+					return 1;
+				}else{
+					return 0;
+				}
+			},
+			//判断领取方式
+			collection_Method(){
+				if(this.value === '到店自取'){
+					return 0;
+				}else{
+					return 1;
+				}
+			},
 			//页面初始化
 			page_Init(){
 				//初始化当前数量、最低购买数量
@@ -220,7 +372,7 @@ import {request} from '@/api/request.js'
 				
 					//判断是否支持抵扣 
 					if(this.GoodsDatails.BP_IsIntegralConsume != 0){
-						this.subTips = `可用${Math.floor(this.GoodsDatails.BP_IntegralConsumeAmount)}补贴权益抵扣${Math.floor(this.GoodsDatails.BP_IntegralConsumeAmount)}元`
+						this.subTips = `可用${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}补贴权益抵扣${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}元`
 						
 						this.max_SubAmount = Math.floor(this.AccoutAmount.IntegralAmount/this.GoodsDatails.BP_IntegralConsumeAmount) 
 						
@@ -242,6 +394,11 @@ import {request} from '@/api/request.js'
 					this.GoodsWriteOffData = res
 				})
 			},
+			getGoodsList(){
+				request('API_GetList_BusinessProductDetail',{ProductID:this.GoodsDatails.id}).then(res=>{
+					this.GoodsList = res
+				})
+			},
 			radioGroupChange(e){},
 			radioChange(e) {
 				console.log(e);
@@ -259,9 +416,40 @@ import {request} from '@/api/request.js'
 					this.currentAmount()
 				}
 			},
+			//选择支付方式
+			select_Payment(e){
+				this.payment_Method = e
+			},
+			submitOrder(){
+				if(this.GoodsDatails.IsOffset == 1 ){
+					
+					let max_Deduction = this.AccoutAmount.RechargeAmount/this.GoodsDatails.BPR_OffsetAmount; 					
+					if(this.amount > max_Deduction){
+						
+						// = 当前金额 - 最大抵扣数量 * 单件抵扣金额
+						this.popup_Amount = (this.payment_Amount - max_Deduction * this.GoodsDatails.BPR_OffsetAmount).toFixed(2);
+						this.DeductionTips = `补贴账户已抵扣￥${max_Deduction * this.amount}`
+						this.show = true
+					}
+					else{
+						// = 当前金额 - 数量 * 单件抵扣金额
+						this.popup_Amount = (this.payment_Amount - this.amount * this.GoodsDatails.BPR_OffsetAmount).toFixed(2);
+						this.DeductionTips = `补贴账户已抵扣￥${this.GoodsDatails.BPR_OffsetAmount * this.amount}`
+						this.show = true
+					}
+					
+				}
+				else{
+					this.DeductionTips = '此商品暂不支持抵扣';
+					this.popup_Amount = this.payment_Amount
+					//禁用抵扣按键
+					this.isDeduction = true
+					this.show = true
+				}
+			},
 			//当前实际付款金额
 			currentAmount(){
-				//判断是否开启抵扣
+				//判断是否开启补贴
 				if(this.subSwitch == true && this.isSub == false){
 					//判断是否大于最大抵扣份数
 					if(this.amount > this.max_SubAmount){
@@ -628,28 +816,170 @@ import {request} from '@/api/request.js'
 			height: 210rpx;
 			display: flex;
 			flex-direction: column;
-			justify-content: center;
+			justify-content: space-around;
 			align-items: center;
+			
+			.top-title{
+				font-size:36rpx;
+				font-family:PingFang SC;
+				font-weight:500;
+				color:rgba(0,0,0,1);
+			}
+			
+			.pay-amount{
+				font-size:30rpx;
+				font-family:PingFang SC;
+				font-weight:500;
+				color:rgba(0,0,0,1);
+				
+				.btn{
+					font-size:50rpx;
+					font-family:PingFang SC;
+					font-weight:500;
+					color:rgba(0,0,0,1);
+				}
+			}
 		}
 		
 		.middle{
 			width: 100%;
-			height:  580rpx;
+			height: 580rpx;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			align-items: center;
+			border-radius:20px;
+			-moz-box-shadow:0px 0px 10px #e1e1e1; -webkit-box-shadow:0px 0px 10px #e1e1e1; box-shadow:0px 0px 10px #e1e1e1;
 			
 			.subsidy{
-				width: 100%;
+				width: 670rpx;
 				height: 80rpx;
+				border-bottom: 4rpx solid rgba(250, 250, 250, 1);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.left-cont{
+					width: 520rpx;
+					height: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					image{
+						width: 40rpx;
+						height: 30rpx;
+					}
+					
+					text{
+						font-size:28rpx;
+						font-family:PingFang SC;
+						font-weight:300;
+						color:rgba(255,48,0,1);
+						line-height:46rpx;
+					}
+					
+					.title{
+						width:90rpx;
+						height:25rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						background:rgba(255,104,104,1);
+						border-radius:5rpx 5rpx 5rpx 0rpx;						
+						font-size:20rpx;
+						font-family:Adobe Heiti Std;
+						font-weight:normal;
+						color:rgba(255,255,255,1);
+						line-height:40rpx;
+					}
+				}
+				
+				.right-cont{
+					width: 150rpx;
+					height: 100%;
+					display: flex;
+					justify-content: flex-end;
+					align-items: center;
+				}
 			}
 			
 			.payment-method{
-				width: 100%;
+				width: 670rpx;
 				height: 500rpx;
-			}
+				
+				.payment-method-title{
+					width: 100%;
+					height: 80rpx;
+					display: flex;
+					align-items: center;
+					font-size:30rpx;
+					font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+					font-weight:500;
+					color:rgba(51,51,51,1);
+				}
+				
+				.payment-method-content{
+					width: 100%;
+					height: 420rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-around;
+					align-items: center;
+					image{
+						width: 40rpx;
+						height: 40rpx;
+					}
+					
+					.jt-account,.bt-account,.wx-account{
+						width:670rpx;
+						height:80rpx;
+						border:3rpx solid rgba(225,225,225,1);
+						border-radius:40rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						
+						.left{
+							width: 215rpx;
+							height: 40rpx;
+							display: flex;
+							justify-content: space-around;
+							align-items: center;
+							border-right: 2rpx solid #efefef;
+						}
+						
+						.right{
+							width: 360rpx;
+							height: 50rpx;
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							position: relative;
+							
+							.account-amount{
+								position: absolute;
+								left: 20rpx;
+								font-size:26rpx;
+								font-family:PingFang SC;
+								font-weight:400;
+								color:rgba(102,102,102,1);
+								line-height:40rpx;
+							}
+							
+							.btn{
+								position: absolute;
+								right: 0;
+							}
+						}
+					}
 			
+					.Selected{
+						border:3rpx solid rgba(255, 48, 0, 1);
+						color:rgba(255, 48, 0, 1);
+					}
+				}
+			}
 		}
 		
 		.bottom{
@@ -661,8 +991,52 @@ import {request} from '@/api/request.js'
 			
 			.button{
 				width: 670rpx;
-				height: 100rpx;
+				height: 80rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background:rgba(255,229,14,1);
+				border-radius:40rpx;
+				font-size:36rpx;
+				font-family:PingFang SC;
+				font-weight:600;
+				color:rgba(51,51,51,1);
 			}
+		}
+	}
+	.cont{
+		width: 500rpx;
+		height: 500rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+		.title{
+			width: 480rpx;
+			height: 120rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 32rpx;
+			font-weight: bold;
+		}
+		input{
+			width: 380rpx;
+			height: 80rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			border: 1rpx solid #999999;
+			font-size: 30rpx;
+		}
+		.mini{
+			width: 480rpx;
+			height: 120rpx;
+			font-size: 24rpx;
+			color: red;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	}
 }

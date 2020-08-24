@@ -152,6 +152,7 @@ import {request} from '@/api/request.js'
 					minute: false,
 					second: false
 				},
+				AeraID:'',
 				timeSpan:'1月',
 				Day:'',
 				user_id:'',
@@ -163,13 +164,15 @@ import {request} from '@/api/request.js'
 		onLoad(options) {
 			this.proxyData = JSON.parse(decodeURIComponent(options.proxyData));
 			this.user_id = options.user_id;
+			this.AeraID = options.AeraID
+			
 			this.page_Init()
 			this.getHour()
 			this.getDay()
 		},
 		methods:{
 			getProxyData(){
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.proxyData[0].AeraID,BusinessID:'',
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID_in(),BusinessID:'',
 					Start_SettlementTime:this.requestTime(this.StartTime),End_SettlementTime:this.requestTime(this.EndTime),orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
@@ -177,13 +180,20 @@ import {request} from '@/api/request.js'
 			page_Init(){				
 				this.EndTime = `${new Date().getFullYear()}-${new Date().getMonth()+1}`
 				this.StartTime = `${new Date().getFullYear()}-${new Date().getMonth()+1}`
-				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.proxyData[0].AeraID,BusinessID:'',
+				request('API_GetList_Agent_Info_AeraInfo',{user_id:this.user_id,AeraID:this.AeraID_in(),BusinessID:'',
 					Start_SettlementTime:this.requestTime(this.StartTime),End_SettlementTime:this.requestTime(this.EndTime),orderState:this.orderState,pageSize:10,index:1}).then(res=>{
 						this.proxyDetails = res
 				})
 			},
 			requestTime(time){
 				return `${time}-01`
+			},
+			AeraID_in(){
+				if(this.AeraID == "" || this.AeraID == undefined){
+					return this.proxyData[0].AeraID
+				}else{
+					return this.AeraID
+				}
 			},
 			toareaProxy(AeraID){
 				uni.navigateTo({

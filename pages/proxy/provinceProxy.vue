@@ -186,8 +186,10 @@ import {request} from '@/api/request.js'
 				return `${time}-01`
 			},
 			toproxy(AeraID){
-				uni.navigateTo({
-					url:`/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.user_id}`
+				request('API_GetList_Agent_Info',{user_id:this.user_id,AeraID:AeraID,BusinessID:0}).then(res=>{
+					uni.navigateTo({
+						url:`/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.user_id}&AeraID=${AeraID}`
+					})
 				})
 			},
 			back(){
