@@ -225,7 +225,8 @@
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request} from '@/api/request.js';
+import {wxRequest} from '@/api/request.js'
 	export default {
 		data() {
 			return {
@@ -331,7 +332,7 @@ import {request} from '@/api/request.js'
 									this.Pay_popup = true
 								break;
 								case 2:
-									
+									this.wx_Payment(res.OrderId);
 								break;
 							} 
 							
@@ -467,7 +468,47 @@ import {request} from '@/api/request.js'
 				else{
 					this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount ).toFixed(2)
 				}
-			}			
+			},
+			//微信支付方法
+			wx_Payment(OrderId){
+				uni.login({
+					success:(e=>{
+						let code = e.code
+						wxRequest('API_GetOpenid',{code:code}).then(result=>{
+							wxRequest('API_GetWxpayTradeInfo_DepositOrder_Json',{OrderId:OrderId,openid:result.openid}).then(pay=>{
+								let obj = JSON.parse(pay.RequestStr);
+								const {appId,timeStamp,nonceStr,paySign} = obj
+								const Zpackage = obj.package
+								
+								let md5Data = md5Libs.md5(`appId=${appId}&nonceStr=${nonceStr}&package=${Zpackage}&signType=MD5
+									&timeStamp=${timeStamp}&key=78fe4b2343ec3cc7fa3a46e858e5e7bf`).toUpperCase();
+								uni.requestPayment({
+									provider:'wxpay',
+									timeStamp:timeStamp,
+									nonceStr:nonceStr,
+									package:Zpackage,
+									signType:'MD5',
+									paySign:paySign,
+									success:(success) => {
+										this.$refs.uToast.show({
+											title:'充值成功',
+											type: 'success'
+										})
+										return;
+									},
+									fail:(err) => {
+										this.$refs.uToast.show({
+											title:'充值失败',
+											type: 'error'
+										})
+										return;
+									}
+								})
+							})
+						})
+					}) 
+				})
+			}
 		}
 	}
 </script>
