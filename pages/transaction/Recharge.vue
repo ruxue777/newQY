@@ -315,8 +315,8 @@ import {request} from "@/api/request.js"
 		justify-content: center;
 		align-items: center;
 		.cont{
-			width: 480rpx;
-			height: 480rpx;
+			width: 500rpx;
+			height: 500rpx;
 			display: flex;
 			flex-direction: column;
 			align-items: center;

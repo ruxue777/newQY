@@ -226,7 +226,8 @@
 
 <script>
 import {request} from '@/api/request.js';
-import {wxRequest} from '@/api/request.js'
+import {wxRequest} from '@/api/request.js';
+import md5Libs from "uview-ui/libs/function/md5";
 	export default {
 		data() {
 			return {
@@ -282,14 +283,16 @@ import {wxRequest} from '@/api/request.js'
 				//领取方式
 				ReceiveType:0,
 				//支付弹窗
-				Pay_popup:false
+				Pay_popup:false,
+				//订单详情
+				orderData:[]
 			};
 		},
 		watch: {
 			//监听用户是否关闭抵扣开关
 			subSwitch(val) {
 				if(val == false){
-					this.subTips = "不使用抵扣"
+					this.subTips = "不使用补贴"
 					
 					this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount).toFixed(2)
 				}else{
@@ -300,11 +303,13 @@ import {wxRequest} from '@/api/request.js'
 			},
 			deductionSwitch(val){
 				if(val == false){
-					this.subTips = "不使用抵扣"
+					this.DeductionTips = '不使用抵扣'
 					
-				 	this.popup_Amount =  this.payment_Amount 
+				 	this.popup_Amount =  this.payment_Amount
 				}else{
-					this.submitOrder()		
+					
+					this.DeductionTips = `补贴账户已抵扣￥${this.amount * this.orderData.BPR_OffsetAmount}`;
+					this.popup_Amount =  (this.orderData.BPR_AppAmount - this.orderData.BPR_OffsetAmount).toFixed(2); 		
 				}
 			}									
 		},		
@@ -320,30 +325,17 @@ import {wxRequest} from '@/api/request.js'
 		},		
 		methods:{
 			Pay(){
-				request('API_AddBusinessProduct_V4',{user_id:this.user_id,ProductID:this.GoodsDatails.id,Count:this.amount,UserName:this.name,
-					Mobile:this.callphone,Address:this.location,ReceiveType:this.collection_Method(),IsIntegralConsume:this.isSubmit()}).then(res=>{
-						if(res.result_code === "SUCCESS"){
-							
-							switch(this.payment_Method){
-								case 0:
-									this.Pay_popup = true
-								break;
-								case 1:
-									this.Pay_popup = true
-								break;
-								case 2:
-									this.wx_Payment(res.OrderId);
-								break;
-							} 
-							
-						}else{
-							this.$refs.uToast.show({
-								title: res.result_content,
-								type: 'error',
-							})
-							return;
-						}
-				})
+				switch(this.payment_Method){
+					case 0:
+						this.Pay_popup = true
+					break;
+					case 1:
+						this.Pay_popup = true
+					break;
+					case 2:
+						this.wx_Payment(this.orderData.OrderId);
+					break;
+				} 
 			},
 			//是否参加积分消费
 			isSubmit(){
@@ -402,7 +394,7 @@ import {wxRequest} from '@/api/request.js'
 			},
 			radioGroupChange(e){},
 			radioChange(e) {
-				console.log(e);
+				
 			},
 			//修改数量
 			valChange(){
@@ -421,32 +413,16 @@ import {wxRequest} from '@/api/request.js'
 			select_Payment(e){
 				this.payment_Method = e
 			},
-			submitOrder(){
-				if(this.GoodsDatails.IsOffset == 1 ){
-					
-					let max_Deduction = this.AccoutAmount.RechargeAmount/this.GoodsDatails.BPR_OffsetAmount; 					
-					if(this.amount > max_Deduction){
+			submitOrder(){		
+				request('API_AddBusinessProduct_V4',{user_id:this.user_id,ProductID:this.GoodsDatails.id,Count:this.amount,UserName:this.name,
+					Mobile:this.callphone,Address:this.location,ReceiveType:this.collection_Method(),IsIntegralConsume:this.isSubmit()}).then(res=>{
 						
-						// = 当前金额 - 最大抵扣数量 * 单件抵扣金额
-						this.popup_Amount = (this.payment_Amount - max_Deduction * this.GoodsDatails.BPR_OffsetAmount).toFixed(2);
-						this.DeductionTips = `补贴账户已抵扣￥${max_Deduction * this.amount}`
+						this.popup_Amount = (res.BPR_AppAmount - res.BPR_OffsetAmount).toFixed(2); 							
+						this.orderData = res;
+						
+						this.isDeductions()
 						this.show = true
-					}
-					else{
-						// = 当前金额 - 数量 * 单件抵扣金额
-						this.popup_Amount = (this.payment_Amount - this.amount * this.GoodsDatails.BPR_OffsetAmount).toFixed(2);
-						this.DeductionTips = `补贴账户已抵扣￥${this.GoodsDatails.BPR_OffsetAmount * this.amount}`
-						this.show = true
-					}
-					
-				}
-				else{
-					this.DeductionTips = '此商品暂不支持抵扣';
-					this.popup_Amount = this.payment_Amount
-					//禁用抵扣按键
-					this.isDeduction = true
-					this.show = true
-				}
+				})	
 			},
 			//当前实际付款金额
 			currentAmount(){
@@ -469,13 +445,23 @@ import {wxRequest} from '@/api/request.js'
 					this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount ).toFixed(2)
 				}
 			},
+			//判断是否开启抵扣
+			isDeductions(){
+				if(this.deductionSwitch == true && this.isDeduction == false){
+					this.DeductionTips = `补贴账户已抵扣￥${this.amount * this.orderData.BPR_OffsetAmount}`
+					return 1;
+				}else{
+					this.DeductionTips = `不使用抵扣`
+					return 0;
+				}
+			},
 			//微信支付方法
 			wx_Payment(OrderId){
 				uni.login({
 					success:(e=>{
 						let code = e.code
 						wxRequest('API_GetOpenid',{code:code}).then(result=>{
-							wxRequest('API_GetWxpayTradeInfo_DepositOrder_Json',{OrderId:OrderId,openid:result.openid}).then(pay=>{
+							wxRequest('API_GetWxpayTradeInfo_BusinessProductRecord_V2_Json',{OrderId:OrderId,openid:result.openid,IsOffset:this.isDeductions()}).then(pay=>{
 								let obj = JSON.parse(pay.RequestStr);
 								const {appId,timeStamp,nonceStr,paySign} = obj
 								const Zpackage = obj.package
@@ -491,14 +477,14 @@ import {wxRequest} from '@/api/request.js'
 									paySign:paySign,
 									success:(success) => {
 										this.$refs.uToast.show({
-											title:'充值成功',
+											title:'支付成功',
 											type: 'success'
 										})
 										return;
 									},
 									fail:(err) => {
 										this.$refs.uToast.show({
-											title:'充值失败',
+											title:'支付失败',
 											type: 'error'
 										})
 										return;

@@ -163,7 +163,7 @@ export default {
 			})
 		},
 		getHotGoodsListData(callBack){
-			request('API_GetList_BusinessProductSearch',{CategoryID:0,BusinessID:0,Keywords:'',
+			request('API_GetList_BusinessProductSearch_V2',{CircleID:0,CategoryID:0,BusinessID:0,Keywords:'',
 						Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:1,IsBP:-1,
 							pageSize:10,index:this.Index})	
 			.then(res=>{
