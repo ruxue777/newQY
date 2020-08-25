@@ -12,7 +12,7 @@
 			<u-col span="12" >
 				<view class="seek">
 					<view class="left">
-						<u-icon name="scan" size="40"></u-icon>
+						<u-icon name="scan" size="40" @click="scanCode()"></u-icon>
 					</view>
 					
 					<view class="right" @click="to_Search()">
@@ -37,6 +37,36 @@
 			}
 		},
 		methods: {
+			scanCode(){
+				uni.scanCode({
+					success: (res) => {
+			
+						let moment = res.result.replace(/[^a-zA-Z]/g,'')
+						
+						let BusinessID = parseInt(res.result)
+						
+						if(moment == "FixedCashier"){
+							uni.navigateTo({
+								url:`/pages/pay/scanCodePay?BusinessID=${BusinessID}`
+							})
+						}
+						else if(moment == "TempCashier")
+						{
+							console.log(res)
+							// uni.navigateTo({
+							// 	url:'/pages/Pay/SYSPay?Temporary=' + encodeURIComponent(JSON.stringify(res))
+							// })
+						}
+						else{
+							uni.showToast({
+								title:'暂不支持识别外部二维码',
+								icon:'none'
+							})
+							return
+						}
+					 }
+				})
+			},
 			to_Search(){
 				console.log('去搜索页面')
 			}

@@ -216,17 +216,16 @@
 		<u-popup v-model="Pay_popup" mode="center" border-radius="15" closeable="true" close-icon-pos="top-left">
 			<view class="cont">
 				<text class="title">请输入支付密码</text>
-				<input type="password" v-model="Psd"/>
+				<input type="password" v-model="PayPwd"/>
 				<text class="mini">忘记支付密码</text>
-				<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="Pay">确认支付</u-button>
+				<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
 			</view>
 		</u-popup>
 	</view>
 </template>
 
 <script>
-import {request} from '@/api/request.js';
-import {wxRequest} from '@/api/request.js';
+import {request,wxRequest,payment} from '@/api/request.js';
 import md5Libs from "uview-ui/libs/function/md5";
 	export default {
 		data() {
@@ -255,7 +254,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 				],
 				deductionSwitch:true,
 				isDeduction:false,
-				payment_Method:0,
+				payment_Method:4,
 				value: '到店自取',
 				//补贴提示语
 				subTips:'此商品不支持补贴',
@@ -273,6 +272,12 @@ import md5Libs from "uview-ui/libs/function/md5";
 				payment_Amount:0.00,
 				//弹窗显示金额
 				popup_Amount:0.00,
+				//虚拟银行支付账户类别
+				AmountType:'',
+				//账户中文名称
+				AmountTypeCh:'',
+				//虚拟银行支付密码
+				PayPwd:'',
 				//核销点详情
 				GoodsWriteOffData:[],
 				//商品列表
@@ -303,7 +308,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 			},
 			deductionSwitch(val){
 				if(val == false){
-					this.DeductionTips = '不使用抵扣'
+					this.DeductionTips = '不使用或不支持抵扣'
 					
 				 	this.popup_Amount =  this.payment_Amount
 				}else{
@@ -325,17 +330,29 @@ import md5Libs from "uview-ui/libs/function/md5";
 		},		
 		methods:{
 			Pay(){
-				switch(this.payment_Method){
-					case 0:
-						this.Pay_popup = true
-					break;
-					case 1:
-						this.Pay_popup = true
-					break;
-					case 2:
-						this.wx_Payment(this.orderData.OrderId);
-					break;
-				} 
+				if(this.payment_Method != 4){
+					switch(this.payment_Method){
+						case 0:
+							this.AmountType = 'Profit';
+							this.AmountTypeCh = '津贴账户'
+							this.Pay_popup = true
+						break;
+						case 1:
+							this.AmountType = 'Recharge';
+							this.AmountTypeCh = '补贴账户'
+							this.Pay_popup = true
+						break;
+						case 2:
+							this.wx_Payment(this.orderData.OrderId);
+						break;
+					} 
+				}else{
+					this.$refs.uToast.show({
+						title: `请选择支付方式`,
+						type: 'error',
+					})
+				}
+				
 			},
 			//是否参加积分消费
 			isSubmit(){
@@ -420,8 +437,14 @@ import md5Libs from "uview-ui/libs/function/md5";
 						this.popup_Amount = (res.BPR_AppAmount - res.BPR_OffsetAmount).toFixed(2); 							
 						this.orderData = res;
 						
-						this.isDeductions()
-						this.show = true
+						if(res.BPR_OffsetAmount == 0){
+							this.DeductionTips = '不使用或不支持抵扣'
+							this.isDeduction = true
+							this.show = true
+						}else{
+							this.isDeductions()
+							this.show = true
+						}
 				})	
 			},
 			//当前实际付款金额
@@ -451,8 +474,36 @@ import md5Libs from "uview-ui/libs/function/md5";
 					this.DeductionTips = `补贴账户已抵扣￥${this.amount * this.orderData.BPR_OffsetAmount}`
 					return 1;
 				}else{
-					this.DeductionTips = `不使用抵扣`
+					this.DeductionTips = `不使用或不支持抵扣`
 					return 0;
+				}
+			},
+			virtual_Payment(){
+				if(this.PayPwd != '' && this.PayPwd.length != 0){
+					payment('API_Payment_BusinessProductRecord_V2_Json',{OrderId:this.orderData.OrderId,AmountType:this.AmountType,PayPwd:this.PayPwd,IsOffset:this.isDeductions()}).then(res=>{
+						if(res.result_code === 'SUCCESS'){
+							this.$refs.uToast.show({
+								title: `支付成功`,
+								type: 'success',
+								url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderData.OrderId}&BusinessName=${this.GoodsDatails.BusinessName}`
+							})
+							return;
+						}
+						else
+						{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+							return;
+						}
+					})
+				}else{
+					this.$refs.uToast.show({
+						title: `请输入支付密码`,
+						type: 'error',
+					})
+					return;
 				}
 			},
 			//微信支付方法

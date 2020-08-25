@@ -4,9 +4,9 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/order/submitOrders",
+		// 	"path" : "pages/pay/scanCodePay",
 		// 	"style" : {
-		// 		"navigationBarTitleText": "填写订单"
+		// 		"navigationBarTitleText": "付款"
 		// 	}
 		// },
 		{
@@ -167,6 +167,18 @@
             "path" : "pages/order/submitOrders",
             "style" : {
 				"navigationBarTitleText": "填写订单"
+			}
+        }
+        ,{
+            "path" : "pages/pay/paySuccess",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/pay/scanCodePay",
+            "style" : {
+				"navigationBarTitleText": "付款"
 			}
         }
     ],
