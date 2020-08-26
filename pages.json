@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		// {
-		// 	"path" : "pages/pay/scanCodePay",
-		// 	"style" : {
-		// 		"navigationBarTitleText": "付款"
-		// 	}
-		// },
+		{
+			"path" : "pages/shopdetails/shopdetails",
+			"style" : {
+				"navigationStyle": "custom"
+			}
+		},
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -180,6 +180,20 @@
             "style" : {
 				"navigationBarTitleText": "付款"
 			}
+        }
+   //      ,{
+   //          "path" : "pages/shopdetails/shopdetails",
+   //          "style" : {
+			// 	"navigationStyle": "custom"
+			// }
+   //      }
+        ,{
+            "path" : "pages/shopdetails/components/topShopImg",
+            "style" : {}
+        }
+        ,{
+            "path" : "pages/shopdetails/components/shopGoods",
+            "style" : {}
         }
     ],
 	"globalStyle": {
