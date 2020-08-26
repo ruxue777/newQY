@@ -11,8 +11,8 @@
 		<u-row gutter="12">
 			<u-col span="12" >
 				<view class="seek">
-					<view class="left">
-						<u-icon name="scan" size="40" @click="scanCode()"></u-icon>
+					<view class="left" @click="scanCode()">
+						<u-icon name="scan" size="40"></u-icon>
 					</view>
 					
 					<view class="right" @click="to_Search()">
@@ -229,7 +229,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 							
 							if(Title == "FixedCashier"){
 								uni.navigateTo({
-									url:`/pages/pay/scanCodePay?BusinessID=${Int}`
+									url:`/pages/pay/scanCodePay?BusinessID=${Int}&user_id=${this.userInfo.user_id}`
 								})
 							}
 							else if(Title == "TempCashier")

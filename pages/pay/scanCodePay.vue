@@ -13,7 +13,7 @@
 		
 		<view class="bottom-content">
 			<view class="button">
-				<u-button type="error" shape="circle" ripple="true" ripple-bg-color="#bdbdbd" @click="Pay">确定</u-button>
+				<u-button type="error" shape="circle" ripple="true" ripple-bg-color="#bdbdbd" @click="subOrder">确定</u-button>
 			</view>			
 		</view>
 		
@@ -42,6 +42,25 @@
 					<view class="payment-method-title">选择付款方式</view>
 					<view class="payment-method-content">
 						
+						<view class="wx-account Selected" v-if="payment_Method === 2">
+							<view class="left">
+								<image class="left-img-0" src="../../static/image/pop_wxred.png"></image>
+								<text>微信支付</text>
+							</view>
+							<view class="right">
+								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+							</view>		
+						</view>
+						<view class="wx-account" v-else @click="select_Payment(2)">
+							<view class="left">
+								<image class="left-img-0" src="../../static/image/pop_wx.png"></image>
+								<text>微信支付</text>
+							</view>
+							<view class="right">
+								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+							</view>		
+						</view>
+						
 						<view class="jt-account Selected" v-if="payment_Method === 0" >
 							<view class="left">
 								<image class="left-img-0" src="../../static/image/pop_moneyred.png"></image>
@@ -62,7 +81,6 @@
 								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
 							</view>
 						</view>
-						
 						
 						<view class="bt-account Selected" v-if="payment_Method === 1">
 							<view class="left">
@@ -85,25 +103,6 @@
 							</view>								
 						</view>
 						
-						
-						<view class="wx-account Selected" v-if="payment_Method === 2">
-							<view class="left">
-								<image class="left-img-0" src="../../static/image/pop_wxred.png"></image>
-								<text>微信支付</text>
-							</view>
-							<view class="right">
-								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
-							</view>		
-						</view>
-						<view class="wx-account" v-else @click="select_Payment(2)">
-							<view class="left">
-								<image class="left-img-0" src="../../static/image/pop_wx.png"></image>
-								<text>微信支付</text>
-							</view>
-							<view class="right">
-								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
-							</view>		
-						</view>
 					</view>
 				</view>
 			</view>
@@ -127,10 +126,12 @@
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request,wxRequest,payment} from '@/api/request.js';
+import md5Libs from "uview-ui/libs/function/md5";	
 	export default {
 		data() {
 			return {
+				//支付金额
 				price:'',
 				//商铺详情
 				shopDetails:[],				
@@ -139,18 +140,186 @@ import {request} from '@/api/request.js'
 				//弹窗金额
 				popup_Amount:0.00,
 				//支付方式
-				payment_Method:4
+				payment_Method:4,
+				//商铺id
+				BusinessID:0,
+				user_id:'',
+				//订单详情
+				orderDetails:[],
+				//抵扣开关
+				deductionSwitch:true,
+				//抵扣禁用开关
+				isDeduction:false,
+				//抵扣提示
+				DeductionTips:'',
+				//虚拟银行支付账户类别
+				AmountType:'',
+				//账户中文名称
+				AmountTypeCh:'',
+				//支付弹窗
+				Pay_popup:false,
+				//支付密码
+				PayPwd:''
 			};
 		},
 		onLoad(e) {
 			this.BusinessID = e.BusinessID
+			this.user_id = e.user_id
 			this.getShopDetails()
+		},
+		watch:{
+			deductionSwitch(val){
+				if(val == false){
+					this.DeductionTips = '不使用或不支持抵扣'
+					
+				 	this.popup_Amount =  this.orderDetails.CR_AppAmount
+				}else{
+					
+					this.DeductionTips = `补贴账户已抵扣￥${this.orderDetails.CR_OffsetAmount}`;
+					
+					this.popup_Amount = (this.orderDetails.CR_AppAmount - this.orderDetails.CR_OffsetAmount).toFixed(2)
+				}
+			}	
 		},
 		methods:{
 			Pay(){
-				this.popup_Amount = this.price;
-				this.show = true
-				
+				if(this.payment_Method !== 4){				
+					switch(this.payment_Method){
+						case 0:
+							this.AmountType = 'Profit';
+							this.AmountTypeCh = '津贴账户'
+							this.Pay_popup = true
+						break;
+						case 1:
+							this.AmountType = 'Recharge';
+							this.AmountTypeCh = '补贴账户'
+							this.Pay_popup = true
+						break;
+						case 2:
+							this.wx_Payment(this.orderDetails.OrderId);
+						break;
+					} 				 
+				}else{
+					this.$refs.uToast.show({
+						title: `请选择支付方式~`,
+						type: 'warning',
+					})
+					return;
+				}
+			},
+			subOrder(){
+				if(this.price !== 0 && this.price !== ''){
+					this.popup_Amount = this.price;
+					this.submit_Order()
+					
+				}else{
+					this.$refs.uToast.show({
+						title: `请输入支付金额`,
+						type: 'warning',
+					})				
+				}
+			},
+			//提交订单
+			async submit_Order(){
+				await request('API_AddCashierRecord_QRCode_V2',{BusinessID:this.BusinessID,user_id:this.user_id,Amount:this.price}).then(res=>{
+					this.orderDetails = res
+					
+					if(res.CR_OffsetAmount == 0){
+						this.isDeduction = true;
+						this.DeductionTips = '不使用或不支持抵扣';
+						
+						this.popup_Amount = (res.CR_AppAmount * 1).toFixed(2);
+						this.show = true
+					}else{
+						this.DeductionTips = `补贴账户已抵扣￥${res.CR_OffsetAmount}`;
+						
+						this.popup_Amount = (res.CR_AppAmount - res.CR_OffsetAmount).toFixed(2);
+						this.show = true
+					}
+				})
+			},
+			//虚拟用户支付
+			virtual_Payment(){
+				if(this.PayPwd != '' && this.PayPwd.length != 0){
+					payment('API_Payment_CashierQRCode_V2_Json',{OrderId:this.orderDetails.OrderId,AmountType:this.AmountType,PayPwd:this.PayPwd,IsOffset:this.isDeductions()}).then(res=>{
+						if(res.result_code === 'SUCCESS'){
+							this.$refs.uToast.show({
+								title: `支付成功`,
+								type: 'success',
+								url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderDetails.OrderId}&BusinessName=${this.shopDetails.BusinessName}`
+							})
+							return;
+						}
+						else
+						{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+							return;
+						}
+					})
+				}else{
+					this.$refs.uToast.show({
+						title: `请输入支付密码`,
+						type: 'error',
+					})
+					return;
+				}
+			},
+			wx_Payment(OrderId){
+				uni.login({
+					success:(e=>{
+						let code = e.code
+						wxRequest('API_GetOpenid',{code:code}).then(result=>{
+							wxRequest('API_GetWxpayTradeInfo_CashierQRPayment_V2_Json',{OrderId:OrderId,openid:result.openid,IsOffset:this.isDeductions()}).then(pay=>{
+								let obj = JSON.parse(pay.RequestStr);
+								const {appId,timeStamp,nonceStr,paySign} = obj
+								const Zpackage = obj.package
+								
+								let md5Data = md5Libs.md5(`appId=${appId}&nonceStr=${nonceStr}&package=${Zpackage}&signType=MD5
+									&timeStamp=${timeStamp}&key=78fe4b2343ec3cc7fa3a46e858e5e7bf`).toUpperCase();
+								uni.requestPayment({
+									provider:'wxpay',
+									timeStamp:timeStamp,
+									nonceStr:nonceStr,
+									package:Zpackage,
+									signType:'MD5',
+									paySign:paySign,
+									success:(success) => {
+										this.$refs.uToast.show({
+											title:'支付成功',
+											type: 'success',
+											url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderDetails.OrderId}&BusinessName=${this.shopDetails.BusinessName}`
+										})
+										this.page_Init()
+										return;
+									},
+									fail:(err) => {
+										this.$refs.uToast.show({
+											title:'支付失败',
+											type: 'error'
+										})
+										return;
+									}
+								})
+							})
+						})
+					}) 
+				})
+			},
+			isDeductions(){
+				if(this.deductionSwitch == true && this.isDeduction == false){
+					return 1;
+				}else{
+					return 0;
+				}
+			},
+			page_Init(){
+				this.show = false;
+				this.Pay_popup = false;
+				this.orderDetails = [];
+				this.PayPwd = '';
 			},
 			getShopDetails(){
 				request('API_GetInfo_BusinessSearch',{BusinessID:this.BusinessID,Longitude:'',Latitude:''}).then(res=>{
@@ -199,7 +368,7 @@ import {request} from '@/api/request.js'
 		
 		.amount{
 			width: 640rpx;
-			height: 60rpx;
+			height: 80rpx;
 			border-bottom: 5rpx solid #cbcbcb;
 			display: flex;
 			justify-content: flex-start;
@@ -207,6 +376,7 @@ import {request} from '@/api/request.js'
 			font-size: 50rpx;
 			
 			input{
+				height: 80rpx;
 				position: relative;
 				left: 20rpx;
 			}

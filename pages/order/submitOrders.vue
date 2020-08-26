@@ -140,6 +140,25 @@
 						<view class="payment-method-title">选择付款方式</view>
 						<view class="payment-method-content">
 							
+							<view class="wx-account Selected" v-if="payment_Method === 2">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_wxred.png"></image>
+									<text>微信支付</text>
+								</view>
+								<view class="right">
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>		
+							</view>
+							<view class="wx-account" v-else @click="select_Payment(2)">
+								<view class="left">
+									<image class="left-img-0" src="../../static/image/pop_wx.png"></image>
+									<text>微信支付</text>
+								</view>
+								<view class="right">
+									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+								</view>		
+							</view>
+							
 							<view class="jt-account Selected" v-if="payment_Method === 0" >
 								<view class="left">
 									<image class="left-img-0" src="../../static/image/pop_moneyred.png"></image>
@@ -160,7 +179,6 @@
 									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
 								</view>
 							</view>
-							
 							
 							<view class="bt-account Selected" v-if="payment_Method === 1">
 								<view class="left">
@@ -183,25 +201,6 @@
 								</view>								
 							</view>
 							
-							
-							<view class="wx-account Selected" v-if="payment_Method === 2">
-								<view class="left">
-									<image class="left-img-0" src="../../static/image/pop_wxred.png"></image>
-									<text>微信支付</text>
-								</view>
-								<view class="right">
-									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
-								</view>		
-							</view>
-							<view class="wx-account" v-else @click="select_Payment(2)">
-								<view class="left">
-									<image class="left-img-0" src="../../static/image/pop_wx.png"></image>
-									<text>微信支付</text>
-								</view>
-								<view class="right">
-									<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
-								</view>		
-							</view>
 						</view>
 					</view>
 				</view>

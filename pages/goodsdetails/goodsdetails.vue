@@ -4,7 +4,7 @@
 		<recommend v-if="BusinessData.length>1" :BusinessData="BusinessData" :LatItude="LatItude" :LongItude="LongItude"></recommend>
 		<shopDetails :MerchantData="MerchantData"></shopDetails>
 		<goodsH5 :GoodsData="GoodsData"></goodsH5>
-		<moreGoods :MoreData="MoreData"></moreGoods>
+		<moreGoods :MoreData="MoreData" :BusinessData="BusinessData" :LatItude="LatItude" :LongItude="LongItude"></moreGoods>
 		<navigation :ShopMobile="Phone" :GoodsData="GoodsData" :LatItude="LatItude" :LongItude="LongItude"></navigation>
 	</view>
 </template>

@@ -4,7 +4,7 @@
 			<p>更多好物</p>
 		</view>
 		<view class="middle">
-			<view class="moreGoods" v-for="(item,index) in MoreData" :key="index">
+			<view class="moreGoods" v-for="(item,index) in MoreData" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
 				<view class="goods-img">
 					<image :src="item.BP_ImgUrl"></image>
 				</view>
@@ -28,11 +28,18 @@
 
 <script>
 	export default {
-		props:['MoreData'],
+		props:['MoreData','BusinessData',"LatItude" ,"LongItude"],
 		data() {
 			return {
 				
 			};
+		},
+		methods:{
+			toGoodsDetails(id,BusinessID,CategoryID){
+				uni.navigateTo({
+					url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&CategoryID=${CategoryID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			}
 		}
 	}
 </script>

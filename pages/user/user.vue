@@ -400,13 +400,25 @@ import {request,wxRequest} from "@/api/request.js"
 									type: 'success',
 									url: `/pages/proxy/proxy?proxyData=${encodeURIComponent(JSON.stringify(res))}&user_id=${this.userInfo.user_id}`
 								})
+								return;
+							}
+							else if(Area_Name.substr(Area_Name.length-1,1) === '省' ){
+								request('API_GetList_Agent_Info',{user_id:this.userInfo.user_id,AeraID:AeraID,BusinessID:0}).then(result=>{
+									this.$refs.uToast.show({
+										title: `尊贵的${res[0].Area_Name}代理,欢迎您`,
+										type: 'success',
+										url: `/pages/proxy/provinceProxy?proxyData=${encodeURIComponent(JSON.stringify(result))}&user_id=${this.userInfo.user_id}`
+									})
+									return;
+								})
 							}
 							else if(Area_Name.substr(Area_Name.length-1,1) === '区' || '县'){
 								this.$refs.uToast.show({
 									title: `尊贵的${res[0].Aera_Name}代理,欢迎您`,
 									type: 'success',
-									url: `/pages/proxy/areaProxy?user_id=${this.userInfo.user_id}&AeraID=${res.AeraID}&Aera_Name=${res.Aera_Name}`
+									url: `/pages/proxy/areaProxy?user_id=${this.userInfo.user_id}&AeraID=${res[0].AeraID}&Aera_Name=${res[0].Aera_Name}`
 								})
+								return;
 							}
 						}
 						else{
