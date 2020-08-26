@@ -169,18 +169,18 @@
 				"navigationBarTitleText": "填写订单"
 			}
         }
-   //      ,{
-   //          "path" : "pages/pay/paySuccess",
-   //          "style" : {
-			// 	"navigationStyle": "custom"
-			// }
-   //      }
-   //      ,{
-   //          "path" : "pages/pay/scanCodePay",
-   //          "style" : {
-			// 	"navigationBarTitleText": "付款"
-			// }
-   //      }
+        ,{
+            "path" : "pages/pay/paySuccess",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/pay/scanCodePay",
+            "style" : {
+				"navigationBarTitleText": "付款"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

@@ -349,7 +349,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 				}else{
 					this.$refs.uToast.show({
 						title: `请选择支付方式`,
-						type: 'error',
+						type: 'warning',
 					})
 				}
 				

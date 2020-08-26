@@ -134,7 +134,8 @@
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request,wxRequest,payment} from '@/api/request.js';
+import md5Libs from "uview-ui/libs/function/md5";
 	export default {
 		props:['LocationData'],
 		data() {
@@ -154,7 +155,15 @@ import {request} from '@/api/request.js'
 				//支付金额
 				popup_Amount:'',
 				//抵扣提示
-				DeductionTips:''
+				DeductionTips:'',
+				//虚拟银行支付账户类别
+				AmountType:'',
+				//账户中文名称
+				AmountTypeCh:'',
+				//密码弹窗
+				Pay_popup:false,
+				//虚拟银行密码
+				PayPwd:''
 			}
 		},
 		watch:{
@@ -165,13 +174,38 @@ import {request} from '@/api/request.js'
 				 	this.popup_Amount =  this.orderDetails.CR_AppAmount
 				}else{
 					
-					this.DeductionTips = `补贴账户已抵扣￥${res.CR_OffsetAmount}`;
+					this.DeductionTips = `补贴账户已抵扣￥${this.orderDetails.CR_OffsetAmount}`;
 					
-					this.popup_Amount = (res.CR_AppAmount - res.CR_OffsetAmount).toFixed(2)
+					this.popup_Amount = (this.orderDetails.CR_AppAmount - this.orderDetails.CR_OffsetAmount).toFixed(2)
 				}
 			}	
 		},
 		methods: {
+			Pay(){
+				if(this.payment_Method !== 4){				
+					switch(this.payment_Method){
+						case 0:
+							this.AmountType = 'Profit';
+							this.AmountTypeCh = '津贴账户'
+							this.Pay_popup = true
+						break;
+						case 1:
+							this.AmountType = 'Recharge';
+							this.AmountTypeCh = '补贴账户'
+							this.Pay_popup = true
+						break;
+						case 2:
+							this.wx_Payment(this.orderDetails.OrderId);
+						break;
+					} 				 
+				}else{
+					this.$refs.uToast.show({
+						title: `请选择支付方式~`,
+						type: 'warning',
+					})
+					return;
+				}
+			},
 			//扫码方法
 			scanCode(){
 				const userInfo = uni.getStorageSync("globalUser");
@@ -230,9 +264,85 @@ import {request} from '@/api/request.js'
 						
 						this.popup_Amount = (res.CR_AppAmount - res.CR_OffsetAmount).toFixed(2)
 						this.show = true
-					}		
-					
+					}						
 				})
+			},
+			//虚拟银行支付
+			virtual_Payment(){
+				if(this.PayPwd != '' && this.PayPwd.length != 0){
+					payment('API_Payment_CashierQRCode_V2_Json',{OrderId:this.orderDetails.OrderId,AmountType:this.AmountType,PayPwd:this.PayPwd,IsOffset:this.isDeductions()}).then(res=>{
+						if(res.result_code === 'SUCCESS'){
+							this.$refs.uToast.show({
+								title: `支付成功`,
+								type: 'success',
+								url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderDetails.OrderId}&BusinessName=商家账户`
+							})
+							return;
+						}
+						else
+						{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error'
+							})
+							return;
+						}
+					})
+				}else{
+					this.$refs.uToast.show({
+						title: `请输入支付密码`,
+						type: 'error',
+					})
+					return;
+				}
+			},
+			wx_Payment(OrderId){
+				uni.login({
+					success:(e=>{
+						let code = e.code
+						wxRequest('API_GetOpenid',{code:code}).then(result=>{
+							wxRequest('API_GetWxpayTradeInfo_CashierQRPayment_V2_Json',{OrderId:OrderId,openid:result.openid,IsOffset:this.isDeductions()}).then(pay=>{
+								let obj = JSON.parse(pay.RequestStr);
+								const {appId,timeStamp,nonceStr,paySign} = obj
+								const Zpackage = obj.package
+								
+								let md5Data = md5Libs.md5(`appId=${appId}&nonceStr=${nonceStr}&package=${Zpackage}&signType=MD5
+									&timeStamp=${timeStamp}&key=78fe4b2343ec3cc7fa3a46e858e5e7bf`).toUpperCase();
+								uni.requestPayment({
+									provider:'wxpay',
+									timeStamp:timeStamp,
+									nonceStr:nonceStr,
+									package:Zpackage,
+									signType:'MD5',
+									paySign:paySign,
+									success:(success) => {
+										this.$refs.uToast.show({
+											title:'支付成功',
+											type: 'success',
+											url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderDetails.OrderId}&BusinessName=商家账户`
+										})
+										this.page_Init()
+										return;
+									},
+									fail:(err) => {
+										this.$refs.uToast.show({
+											title:'支付失败',
+											type: 'error'
+										})
+										return;
+									}
+								})
+							})
+						})
+					}) 
+				})
+			},
+			isDeductions(){
+				if(this.deductionSwitch == true && this.isDeduction == false){
+					return 1;
+				}else{
+					return 0;
+				}
 			},
 			//获得账户金额
 			getAccoutAmount(){
@@ -246,6 +356,12 @@ import {request} from '@/api/request.js'
 			},
 			to_Search(){
 				console.log('去搜索页面')
+			},
+			page_Init(){
+				this.show = false;
+				this.Pay_popup = false;
+				this.orderDetails = [];
+				this.PayPwd = '';
 			}
 		}
 	}
