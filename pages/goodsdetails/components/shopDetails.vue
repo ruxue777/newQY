@@ -7,7 +7,7 @@
 					<image :src="MerchantData.ImgUrl"></image>
 					<p>{{MerchantData.BusinessName}}</p>
 				</view>
-				<view class="right">
+				<view class="right" @click="toShopDetails(MerchantData.id)">
 					进店逛逛 >
 				</view>
 			</view>
@@ -36,7 +36,7 @@
 import {location} from '@/api/location.js'
 import QQMap_SDK from '@/SDK/qqmap-wx-jssdk.min.js'		
 	export default {
-		props:['MerchantData'],
+		props:['MerchantData',"LatItude" ,"LongItude"],
 		data() {
 			return {
 				
@@ -47,6 +47,12 @@ import QQMap_SDK from '@/SDK/qqmap-wx-jssdk.min.js'
 				uni.makePhoneCall({
 					phoneNumber: phoneNumber
 				});
+			},
+			//商铺详情页
+			toShopDetails(id){
+				uni.navigateTo({
+					url:`/pages/shopdetails/shopdetails?BusinessID=${this.MerchantData.id}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
 			},
 			navigation(name,Latitude,Longitude){
 				let locationData = location(Latitude,Longitude)

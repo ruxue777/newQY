@@ -198,7 +198,7 @@
 						display: flex;
 						justify-content: center;
 						align-items: center;
-						width: 300rpx;
+						width: 310rpx;
 						font-size:24rpx;
 						font-family:PingFang SC;
 						font-weight:500;
