@@ -12,7 +12,7 @@
 			<u-col span="12" >
 				<view class="seek">
 					<view class="left" @click="scanCode()">
-						<u-icon name="scan" size="40"></u-icon>
+						<u-icon name="scan" size="48"></u-icon>
 					</view>
 					
 					<view class="right" @click="to_Search()">
@@ -137,7 +137,7 @@
 import {request,wxRequest,payment} from '@/api/request.js';
 import md5Libs from "uview-ui/libs/function/md5";
 	export default {
-		props:['LocationData'],
+		props:['LocationData','LatItude','LongItude'],
 		data() {
 			return {
 				//支付弹窗
@@ -355,7 +355,9 @@ import md5Libs from "uview-ui/libs/function/md5";
 				this.payment_Method = e
 			},
 			to_Search(){
-				console.log('去搜索页面')
+				uni.navigateTo({
+					url:`/pages/seek/seek?LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
 			},
 			page_Init(){
 				this.show = false;

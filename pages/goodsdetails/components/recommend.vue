@@ -12,8 +12,7 @@
 						<view class="goods-price">￥{{item.BP_Amount}}</view>
 					</view>
 				</view>
-				
-				<view class="goods-cont" v-if="BusinessData.length == 2"></view>
+				<view class="goods-cont" v-if="BusinessData.length == 2 || BusinessData.length == 5"></view>
 			</view>
 		</view> 
 	</view>

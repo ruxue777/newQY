@@ -8,7 +8,7 @@
 				</view>
 				
 				<view class="shop">
-					<image class="shop-img"></image>
+					<image class="shop-img" src="../../../static/image/AllShop.png"></image>
 					<text class="shop-name">全部商铺</text>
 				</view>
 			

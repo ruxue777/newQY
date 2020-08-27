@@ -276,7 +276,7 @@ export default {
 					name: '已完成'
 				}
 			],
-			current: 0,
+			current: 2,
 			swiperCurrent: 0,
 			tabsHeight: 0,
 			dx: 0,

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<topSeek :LocationData="LocationData"></topSeek>
+		<topSeek :LocationData="LocationData" :LatItude="LatItude" :LongItude="LongItude"></topSeek>
 		<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
 		<centralNav :ShopListData="ShopListData"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->

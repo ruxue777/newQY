@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/shopdetails/shopdetails",
+		// 	"path" : "pages/seek/searchResults",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -20,7 +20,7 @@
 	    ,{
             "path" : "pages/mall/mall",
             "style":{
-				"navigationBarTitleText": "399专区"
+				"navigationBarTitleText": "补贴专区"
 			}
         }
         ,{
@@ -187,7 +187,24 @@
 				"navigationStyle": "custom"
 			}
         }
-
+        ,{
+            "path" : "pages/shopList/shopList",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/seek/seek",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/seek/searchResults",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
