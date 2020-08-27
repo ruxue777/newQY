@@ -17,36 +17,76 @@
 		<view class="btt"></view>
 		
 		<view class="shop-list">
-			<view class="content">
+			<view class="content" v-for="(item,index) in ShopCategoryList" :key="index">
 				<view class="left-img">
-					<image src="../../static/image/img4.jpg"></image>
+					<image :src="item.ImgUrl"></image>
 				</view>
 				
 				<view class="right-shopdetails">
-					<view class="shop-name">水上乐园哈哈哈</view>
-					<view class="shop-type">夏日乐园</view>
+					<view class="shop-name">{{item.BusinessName}}</view>
+					<view class="shop-type">{{item.T_Name}}</view>
 					
 					<view class="shop-location">
-						<text class="left">江西省赣州市章贡区水南大道</text>
-						<text class="right">2.8km</text>
+						<text class="left">{{item.Address}}</text>
+						<text class="right">{{(item.Distance*1).toFixed(2)}}km</text>
 					</view>
 					
 					<view class="shop-time">
-						<text class="left">营业时间:12：00-22：00</text>
-						<text class="right">已售 79</text>
+						<text class="left">营业时间:{{item.BusinessTime}}</text>
+						<text class="right btn">已售: {{item.OrderIsSell_Total}}</text>
 					</view>
 				</view>
 			</view>
 		</view>
+	
+	<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
 	</view>
 </template>
 
 <script>
+import {request} from '@/api/request.js'	
 	export default {
 		data() {
 			return {
-				
+				T_Name:'',
+				LatItude:'',
+				LongItude:'',
+				Index:1,
+				ShopCategoryList:[]
 			};
+		},
+		onLoad(e){
+			this.T_Name = e.T_Name;
+			this.LatItude = e.LatItude;
+			this.LongItude = e.LongItude;
+			
+			this.getShopCategory()
+		},
+		methods:{
+			getShopCategory(callBack)
+			{
+				request('API_GetList_BusinessSearch',{TradeID:0,Keywords:this.Keywords(),Longitude:this.LongItude,Latitude:this.LatItude,orderState:0,pageSize:10,index:this.Index}).then(res=>{
+					
+					this.ShopCategoryList = [...this.ShopCategoryList,...res]
+				
+					callBack && callBack()
+					
+					if(this.ShopCategoryList.length==0)
+					{
+						uni.showToast({
+							title:'暂无此店铺',
+							icon:'none'
+						})
+					}
+				})	
+			},
+			Keywords(){
+				if(this.T_Name === "全部商铺"){
+					return "";
+				}else{
+					return this.T_Name;
+				}
+			}
 		}
 	}
 </script>
@@ -155,7 +195,7 @@
 				display: flex;
 				flex-direction: column;
 				justify-content: space-around;
-				//align-items: center;
+				margin-left: 10rpx;
 				
 				.shop-name{
 					font-size: 30rpx;
@@ -163,14 +203,28 @@
 				}
 				
 				.shop-type{
-					width: 200rpx;
-					height: 50rpx;
+					width: 120rpx;
+					height: 40rpx;
+					font-size: 26rpx;
 					display: flex;
 					justify-content: center;
 					align-items: center;
-					border-radius: 20rpx;
-					background-color: #ff9900;
+					border-radius: 15rpx;
+					background: linear-gradient(to right,#f9ac0f,#f39231);
 					color: #FFFFFF;
+				}
+				
+				.shop-location,.shop-time{
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					font-size: 26rpx;
+					color: #acacac;
+					
+					.btn{
+						color: #ee1e1e;
+						font-weight: bold;
+					}
 				}
 			}
 		}

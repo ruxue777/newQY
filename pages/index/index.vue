@@ -2,7 +2,7 @@
 	<view>
 		<topSeek :LocationData="LocationData" :LatItude="LatItude" :LongItude="LongItude"></topSeek>
 		<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
-		<centralNav :ShopListData="ShopListData"></centralNav>
+		<centralNav :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->
 		<centGoods :HotListData="HotListData"></centGoods>
 		<indexImage></indexImage>

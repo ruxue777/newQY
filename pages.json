@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/seek/searchResults",
+		// 	"path" : "pages/shopList/shopList",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -18,9 +18,9 @@
 			}
 		}
 	    ,{
-            "path" : "pages/mall/mall",
+            "path" : "pages/mall/shangcheng",
             "style":{
-				"navigationBarTitleText": "补贴专区"
+				"navigationStyle": "custom"
 			}
         }
         ,{
@@ -220,10 +220,10 @@
 			"text": "首页"
 		},
 		{
-			"pagePath": "pages/mall/mall",
+			"pagePath": "pages/mall/shangcheng",
 			"iconPath": "static/image/not_store.png",
 			"selectedIconPath": "static/image/in_store.png",
-			"text": "399专区"
+			"text": "补贴专区"
 		},
 		{
 			"pagePath": "pages/order/order",

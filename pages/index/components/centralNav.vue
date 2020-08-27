@@ -2,12 +2,12 @@
 	<view class="main">
 		<view class="cent">
 			<view class="cent-top" >
-				<view class="shop" v-for="(item,index) in ShopListData" :key="index">
+				<view class="shop" v-for="(item,index) in ShopListData" :key="index" @click="toShopList(ShopListData[index].T_Name)">
 					<image class="shop-img" :src="item.T_ImgUrl"></image>
 					<text class="shop-name">{{item.T_Name}}</text>
 				</view>
 				
-				<view class="shop">
+				<view class="shop" @click="toShopList('全部商铺')">
 					<image class="shop-img" src="../../../static/image/AllShop.png"></image>
 					<text class="shop-name">全部商铺</text>
 				</view>
@@ -19,11 +19,19 @@
 
 <script>
 	export default {
-		props:['ShopListData'],
+		props:['ShopListData','LatItude','LongItude'],
 		data() {
 			return {
 				
 			};
+		},
+		methods:{
+			toShopList(name){
+				console.log(123)
+				uni.navigateTo({
+					url:`/pages/shopList/shopList?T_Name=${name}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			}
 		}
 	}
 </script>
