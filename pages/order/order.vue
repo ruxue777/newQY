@@ -3,6 +3,9 @@
 		<view class="top-title">
 			<text class="cont">订单列表</text>
 		</view>
+		
+		<view class="btnn"></view>
+		
 		<view class="wrap">
 			<view class="u-tabs-box">
 				<u-tabs-swiper activeColor="#f29100" ref="tabs" :list="list" :current="current" @change="change" :is-scroll="false" swiperWidth="750"></u-tabs-swiper>
@@ -52,7 +55,7 @@
 									</view>
 									
 									<view class="buttom">
-										<u-button type="default" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">取消订单</u-button>
+										<u-button type="default" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="closeOrder">取消订单</u-button>
 										<u-button type="error" size="mini" shape="circle" :ripple="true" ripple-bg-color="#abafb6" @click="test">立即付款</u-button>
 									</view>
 								</view>
@@ -91,12 +94,12 @@
 								<view class="item">
 									<view class="left"><image :src="item.BP_ImgUrl" mode="aspectFill"></image></view>
 									<view class="content">
-										<view class="title u-line-2">{{ item.BP_Desc }}</view>
+										<view class="title u-line-2">{{item.BP_Name}}</view>
 									</view>
 									<view class="right-1">
 										<view class="price">
 											￥{{ priceInt(item.BPR_AppAmount) }}
-											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount) }}</text>
+											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount)}}</text>
 										</view>
 										<view class="number">x{{ item.BPR_Count }}</view>
 									</view>
@@ -115,20 +118,20 @@
 									<view class="cont">
 										<text class="name">品名</text>
 										<text class="number">
-											<p>{{ item.BP_Name }}</p>
+											{{item.BP_Desc}}
 										</text>
 									</view>
 									<view class="cont">
 										<text class="name">总数</text>
-										<text class="number_1">{{priceInt(item.BPR_Count)}}</text>
+										<text class="number_1">{{item.BPR_Count}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">未领取</text>
-										<text class="number_2">1</text>
+										<text class="number_2">{{item.DataList_Detail[0].BPRD_ValidCount}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">预约领取</text>
-										<u-button type="warning" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="test">立即预约</u-button>
+										<u-button type="warning" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="reservation">立即预约</u-button>
 									</view>
 								</view>
 							
@@ -162,17 +165,17 @@
 										<view class="store">{{item.BusinessName}}</view>
 										<u-icon name="arrow-right" color="rgb(203,203,203)" :size="26"></u-icon>
 									</view>
-									<view class="right">等待核销</view>
+									<view class="right">已完成</view>
 								</view>
 								<view class="item">
 									<view class="left"><image :src="item.BP_ImgUrl" mode="aspectFill"></image></view>
 									<view class="content">
-										<view class="title u-line-2">{{ item.BP_Desc }}</view>
+										<view class="title u-line-2">{{ item.BP_Name }}</view>
 									</view>
 									<view class="right-2">
 										<view class="price">
 											￥{{ priceInt(item.BPR_AppAmount) }}
-											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount) }}</text>
+											<text class="decimal">.{{ priceDecimal(item.BPR_AppAmount)}}</text>
 										</view>
 										<view class="number">x{{ item.BPR_Count }}</view>
 									</view>
@@ -190,15 +193,15 @@
 								<view class="reservation">
 									<view class="cont">
 										<text class="name">品名</text>
-										<text class="number">测试发布</text>
+										<text class="number">{{item.DataList_Detail[0].BPD_Name}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">总数</text>
-										<text class="number_1">1</text>
+										<text class="number_1">{{parseInt(item.DataList_Detail[0].BPD_TotalCount)}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">未领取</text>
-										<text class="number_2">1</text>
+										<text class="number_2">{{parseInt(item.DataList_Detail[0].BPRD_NoReceiveCount)}}</text>
 									</view>
 									<view class="cont">
 										<text class="name">预约领取</text>
@@ -226,7 +229,7 @@
 										</view>
 										<view class="cont">
 											<text class="name">数量:</text>
-											<view class="number">{{priceInt(res.BPRDL_OrderCount)}}</view>
+											<view class="number">{{priceInt(res.BPRDL_OrderCount)}}个</view>
 										</view>
 										<view class="cont">
 											<text class="name">订单号:</text>
@@ -255,6 +258,62 @@
 				</swiper-item>	
 			</swiper>
 		</view>
+			
+		<!-- 反馈组件 -->
+		<u-toast ref="uToast" />
+		<u-calendar v-model="calendar" mode="date" @change="change" z-index="11000"></u-calendar>
+		<u-select v-model="address" :list="addresList" z-index="11000"></u-select>
+		<u-popup v-model="reservationPopup" mode="bottom" border-radius="20" closeable="true" close-icon-pos="top-left">
+			<view class="popup-content">
+				<view class="middle">
+					<view class="top-title-1">预约</view>
+					<view class="goods-name">
+						<text class="title">商品名称</text>
+						<view class="name">测试hhh哈哈哈123</view>
+					</view>
+					<view class="unaccalimed">
+						<text class="title">未领取总数量</text>
+						<view class="name">1</view>
+					</view>
+					<view class="maxamount">
+						<text class="title">可领最大数量</text>
+						<view class="name">1/月</view>
+					</view>
+					<view class="remaining">
+						<text class="title">剩余可领数量</text>
+						<view class="name">1</view>
+					</view>
+					<view class="Number-of-appointments">
+						<text class="title">预约领取数量</text>
+						<view class="name">
+							<u-number-box v-model="value" @change="valChange" min=1></u-number-box>
+						</view>
+					</view>
+					<view class="appointment">
+						<text class="title">领取时间</text>
+						<view class="name" @click="calendar = true">
+							<text>2020-8-28-星期五</text>
+							<u-icon name="arrow-down-fill" style="position: absolute;right: 0;"></u-icon>
+						</view>
+					</view>
+					<view class="address">
+						<text class="title">领取地点选择</text>
+						<view class="location" @click="address = true">
+							<text>测试123</text>
+							<u-icon name="arrow-down-fill" style="position: absolute;right: 0;"></u-icon>
+						</view>
+					</view>
+					<view class="button">
+						<view class="button-content">
+							<u-button @click="reservationPopup = false">取消</u-button>
+						</view>
+						<view class="button-content">
+							<u-button type="warning">预约</u-button>
+						</view>
+					</view>
+				</view>
+			</view>
+		</u-popup>
 	</view>
 </template>
 
@@ -286,7 +345,26 @@ export default {
 			loadStatus_1: 'loadmore',
 			loadStatus_2: 'loadmore',
 			userInfo:[],
-			Index:[1,1,1]
+			Index:[1,1,1],
+			//预约弹窗
+			reservationPopup:false,
+			//日历弹窗
+			calendar:false,
+			//预约地址弹窗
+			address:false,
+			//预约数量
+			value: 1,
+			//预约地址列表
+			addresList:[
+				{
+					value: '1',
+					label: '测试123'
+				},
+				{
+					value: '2',
+					label: '测试456'
+				}
+			]
 		};
 	},
 	onLoad() {
@@ -378,6 +456,12 @@ export default {
 				this.userInfo = userInfo;
 			}
 		},
+		closeOrder(){
+			this.$refs.uToast.show({
+				title: '24小时后订单自动取消',
+				type: 'warning'
+			})
+		},
 		test(){
 			console.log('按键点击')
 		},
@@ -429,22 +513,13 @@ export default {
 				url:'../index/index'
 			})
 		},
-		// 总价
-		totalPrice(item) {
-			let price = 0;
-			item.map(val => {
-				price += parseFloat(val.price);
-			});
-			return price.toFixed(2);
+		//预约
+		reservation(){
+			this.reservationPopup = true
 		},
-		// 总件数
-		totalNum(item) {
-			let num = 0;
-			item.map(val => {
-				num += val.number;
-			});
-			return num;
-		},	
+		valChange(e) {
+			console.log('当前值为: ' + e.value)
+		},
 		// tab栏切换
 		change(index) {
 			this.swiperCurrent = index;
@@ -476,8 +551,7 @@ page {
 	height: 130rpx;
 	display: flex;
 	align-items: center;
-	position: relative;
-	left: 0;
+	position: fixed;
 	top: 0;
 	z-index: 100;
 	
@@ -629,7 +703,7 @@ page {
 			}
 			
 			.number{
-				width: 200rpx;
+				width: 180rpx;
 				height: 50rpx;
 				display: flex;
 				justify-content: center;
@@ -638,11 +712,7 @@ page {
 				white-space:nowrap;
 				text-overflow:ellipsis;
 				color: #fa3534;
-				p{
-					display: flex;
-					justify-content: flex-start;
-					align-items: center;
-				}
+				line-height:30rpx;
 			}
 			.number_1,.number_2{
 				display: flex;
@@ -755,16 +825,102 @@ page {
 		background: linear-gradient(270deg, rgba(249, 116, 90, 1) 0%, rgba(255, 158, 1, 1) 100%);
 	}
 }
+.btnn{
+	width: 100%;
+	height: 130rpx;
+	
+}
+
 .wrap {
 	display: flex;
 	flex-direction: column;
 	height: calc(100vh - var(--window-top));
 	width: 100%;
+	
 }
 .swiper-box {
 	flex: 1;
 }
 .swiper-item {
 	height: 100%;
+}
+
+.popup-content{
+	width: 100%;
+	height: 1000rpx;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	.middle{
+		width: 690rpx;
+		height: 970rpx;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		
+		.top-title-1{
+			width: 100%;
+			height: 90rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 34rpx;
+			font-weight: 550;
+		}
+		
+		.goods-name,.unaccalimed,.maxamount,.remaining,.Number-of-appointments,.appointment{
+			width: 100%;
+			height: 100rpx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1rpx solid #dddddd;
+			font-size: 28rpx;
+			
+			.name{
+				width: 300rpx;
+				height: 40rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+				left: -10rpx;
+			}
+		}
+		.address{
+			width: 100%;
+			height: 140rpx;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			border-bottom: 1rpx solid #dddddd;
+			font-size: 28rpx;
+			
+			.location{
+				width: 300rpx;
+				height: 40rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				position: relative;
+				left: -10rpx;
+			}
+		}
+		.button{
+			width: 100%;
+			height: 130rpx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			position: relative;
+			top: 20rpx; 
+			
+			.button-content{
+				width: 300rpx;
+				height: 100rpx;
+			}
+		}
+	}
 }
 </style>
