@@ -11,9 +11,9 @@
 				
 				<!-- 待付款 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box" v-if="orderList[0].length != 0">
-							<view class="order" v-for="(item, index) in orderList[0]" :key="index">
+					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom_0">
+						<view class="page-box" v-if="orderList_0.length != 0">
+							<view class="order" v-for="(item, index) in orderList_0" :key="index">
 								<view class="top">
 									<view class="left">
 										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
@@ -57,7 +57,7 @@
 									</view>
 								</view>
 							</view>
-							<u-loadmore :status="loadStatus[0]" bgColor="#ffffff"></u-loadmore>
+							<u-loadmore :status="loadStatus_0" bgColor="#ffffff"></u-loadmore>
 						</view>
 						
 						<view class="page-box" v-else>
@@ -77,9 +77,9 @@
 				
 				<!-- 待核销 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box" v-if="orderList[1].length != 0">
-							<view class="order" v-for="(item, index) in  orderList[1]" :key="index">
+					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom_1">
+						<view class="page-box" v-if="orderList_1.length != 0">
+							<view class="order" v-for="(item, index) in  orderList_1" :key="index">
 								<view class="top">
 									<view class="left">
 										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
@@ -133,7 +133,7 @@
 								</view>
 							
 							</view>
-							<u-loadmore  :status="loadStatus[1]" bgColor="#f2f2f2"></u-loadmore>
+							<u-loadmore  :status="loadStatus_1" bgColor="#f2f2f2"></u-loadmore>
 						</view>
 					
 						<view class="page-box" v-else>
@@ -153,9 +153,9 @@
 				
 				<!-- 已完成 -->
 				<swiper-item class="swiper-item">
-					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom">
-						<view class="page-box" v-if="orderList[1].length != 0">
-							<view class="order" v-for="(item, index) in  orderList[2]" :key="index">
+					<scroll-view scroll-y style="height: 100%;width: 100%;" @scrolltolower="reachBottom_2">
+						<view class="page-box" v-if="orderList_2.length != 0">
+							<view class="order" v-for="(item, index) in  orderList_2" :key="index">
 								<view class="top">
 									<view class="left">
 										<u-icon name="home" :size="30" color="rgb(94,94,94)"></u-icon>
@@ -181,7 +181,7 @@
 									共{{ item.BPR_Count }}件商品 合计:
 									<text class="total-price">
 										￥{{ priceInt(item.BPR_AppAmount) }}.
-										<text class="decimal">{{ priceDecimal(item.BPR_AppAmount) }}</text>
+										<text class="decimal">{{ priceDecimal(item.BPR_AppAmount)}}</text>
 									</text>
 								</view>
 								
@@ -236,7 +236,7 @@
 									</u-collapse-item>
 								</u-collapse>
 							</view>
-							<u-loadmore  :status="loadStatus[1]" bgColor="#f2f2f2"></u-loadmore>
+							<u-loadmore  :status="loadStatus_2" bgColor="#f2f2f2"></u-loadmore>
 						</view>
 											
 						<view class="page-box" v-else>
@@ -264,7 +264,9 @@ import {request} from '@/api/request.js'
 export default {
 	data() {
 		return {
-			orderList: [[], [], []],
+			orderList_0:[],
+			orderList_1:[],
+			orderList_2:[],
 			list: [
 				{
 					name: '待付款'
@@ -276,19 +278,22 @@ export default {
 					name: '已完成'
 				}
 			],
-			current: 2,
+			current: 0,
 			swiperCurrent: 0,
 			tabsHeight: 0,
 			dx: 0,
-			loadStatus: ['loadmore','loadmore','loadmore','loadmore'],
-			userInfo:[]
+			loadStatus_0: 'loadmore',
+			loadStatus_1: 'loadmore',
+			loadStatus_2: 'loadmore',
+			userInfo:[],
+			Index:[1,1,1]
 		};
 	},
 	onLoad() {
 		this.getUserInfo()
-		this.getOrderList(0);
-		this.getOrderList(1);
-		this.getOrderList(2);
+		this.getOrderList_0();
+		this.getOrderList_1();
+		this.getOrderList_2();
 	},
 	computed: {
 		// 价格小数
@@ -307,12 +312,47 @@ export default {
 		}
 	},
 	methods: {
-		reachBottom() {
-			// 此tab为空数据		
-			this.loadStatus.splice(this.current,1,"loading")
-			setTimeout(() => {
-				this.getOrderList(this.current);
-			}, 1200);		
+		reachBottom_0() {
+			if(this.orderList_0.length<this.Index[0]*10){
+				this.loadStatus_0 = 'nomore';
+				return;
+			}else{
+				this.Index[0]++;
+				this.loadStatus_0 = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getOrderList_0();
+					this.loadStatus_0 = 'loadmore';
+				}, 1000);
+			}		
+		},
+		reachBottom_1() {
+			if(this.orderList_1.length<this.Index[1]*10){
+				this.loadStatus_1 = 'nomore';
+				return;
+			}else{
+				this.Index[1]++;
+				this.loadStatus_1 = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getOrderList_1();
+					this.loadStatus_1 = 'loadmore';
+				}, 1000);
+			}			
+		},
+		reachBottom_2() {
+			if(this.orderList_2.length<this.Index[2]*10){
+				this.loadStatus_2 = 'nomore';
+				return;
+			}else{
+				this.Index[2]++;
+				this.loadStatus_2 = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getOrderList_2();
+					this.loadStatus_2 = 'loadmore';
+				}, 1000);
+			}	
 		},
 		getUserInfo(){
 			const userInfo = uni.getStorageSync("globalUser");
@@ -342,51 +382,47 @@ export default {
 			console.log('按键点击')
 		},
 		// 页面数据
-		getOrderList(idx) {
-			switch(idx){
-				case 0:
-					request('API_GetList_BusinessProductRecord',{
-						user_id:this.userInfo.user_id,
-						state:0,
-						pageSize:10,
-						index:1
-					}).then(res=>{
-						this.loadStatus.splice(this.current,1,"loadmore")
-						
-						for(let i=0;i<res.length;i++){
-							this.orderList[idx].push(res[i]);
-						}
-					})
-				break;
-				case 1:
-					request('API_GetList_BusinessProductRecord',{
-						user_id:this.userInfo.user_id,
-						state:1,
-						pageSize:10,
-						index:1
-					}).then(res=>{
-						this.loadStatus.splice(this.current,1,"loadmore")
-						
-						for(let i=0;i<res.length;i++){
-							this.orderList[idx].push(res[i]);
-						}
-					})
-				break;
-				case 2:
-					request('API_GetList_BusinessProductRecord',{
-						user_id:this.userInfo.user_id,
-						state:3,
-						pageSize:10,
-						index:1
-					}).then(res=>{
-						this.loadStatus.splice(this.current,1,"loadmore")
-						
-						for(let i=0;i<res.length;i++){
-							this.orderList[idx].push(res[i]);
-						}
-					})
-				break;
-			}
+		getOrderList_0(callBack) {		
+			request('API_GetList_BusinessProductRecord',{
+				user_id:this.userInfo.user_id,
+				state:0,
+				pageSize:10,
+				index:this.Index[0]
+			}).then(res=>{
+				if(res.length<10){
+					this.loadStatus_0 = 'nomore'
+				}
+				this.orderList_0 = [...this.orderList_0,...res]
+				callBack && callBack()	
+			})		
+		},
+		getOrderList_1(callBack){
+			request('API_GetList_BusinessProductRecord',{
+				user_id:this.userInfo.user_id,
+				state:1,
+				pageSize:10,
+				index:this.Index[1]
+			}).then(res=>{			
+				if(res.length<10){
+					this.loadStatus_1 = 'nomore'
+				}
+				this.orderList_1 = [...this.orderList_1,...res]
+				callBack && callBack()			
+			})
+		},
+		getOrderList_2(callBack){
+			request('API_GetList_BusinessProductRecord',{
+				user_id:this.userInfo.user_id,
+				state:3,
+				pageSize:10,
+				index:this.Index[2]
+			}).then(res=>{
+				if(res.length<10){
+					this.loadStatus_2 = 'nomore'
+				}
+				this.orderList_2 = [...this.orderList_2,...res]
+				callBack && callBack()	
+			})
 		},
 		toIndex(){
 			uni.switchTab({
@@ -412,7 +448,6 @@ export default {
 		// tab栏切换
 		change(index) {
 			this.swiperCurrent = index;
-			this.getOrderList();
 		},
 		transition({ detail: { dx } }) {
 			this.$refs.tabs.setDx(dx);

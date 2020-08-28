@@ -3,11 +3,11 @@
 		<view class="top-title">
 			<view class="shoplist-name">
 				<view class="title">全部商铺</view>
-				<u-icon name="arrow-left" size="40"></u-icon>
+				<u-icon name="arrow-left" size="40" @click="back"></u-icon>
 			</view>
 			
 			<view class="top-seek">
-				<view class="seek-content">
+				<view class="seek-content" @click="toSeek()">
 					<u-icon name="search" size="40"></u-icon>
 					<view class="title">搜索店铺</view>
 				</view>
@@ -52,7 +52,8 @@ import {request} from '@/api/request.js'
 				LatItude:'',
 				LongItude:'',
 				Index:1,
-				ShopCategoryList:[]
+				ShopCategoryList:[],
+				loadStatus: 'loadmore'
 			};
 		},
 		onLoad(e){
@@ -62,10 +63,28 @@ import {request} from '@/api/request.js'
 			
 			this.getShopCategory()
 		},
+		onReachBottom() {
+			if(this.ShopCategoryList.length<this.Index*10){
+				this.loadStatus = 'nomore';
+				return;
+			}else{
+				this.Index++;
+				this.loadStatus = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getShopCategory();
+					this.loadStatus = 'loadmore';
+				}, 1000);
+			}
+		},
 		methods:{
 			getShopCategory(callBack)
 			{
 				request('API_GetList_BusinessSearch',{TradeID:0,Keywords:this.Keywords(),Longitude:this.LongItude,Latitude:this.LatItude,orderState:0,pageSize:10,index:this.Index}).then(res=>{
+					
+					if(res.length<10){
+						this.loadStatus = 'nomore'
+					}
 					
 					this.ShopCategoryList = [...this.ShopCategoryList,...res]
 				
@@ -79,6 +98,14 @@ import {request} from '@/api/request.js'
 						})
 					}
 				})	
+			},
+			toSeek(){
+				uni.navigateTo({
+					url:`/pages/seek/seek?LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			},
+			back(){
+				uni.navigateBack()
 			},
 			Keywords(){
 				if(this.T_Name === "全部商铺"){
