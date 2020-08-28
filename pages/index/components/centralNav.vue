@@ -27,7 +27,6 @@
 		},
 		methods:{
 			toShopList(name){
-				console.log(123)
 				uni.navigateTo({
 					url:`/pages/shopList/shopList?T_Name=${name}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
 				})

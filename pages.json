@@ -204,7 +204,13 @@
             "style" : {
 				"navigationStyle": "custom"
 			}
-        }
+        },
+		{
+			"path":"pages/web/web",
+			"style":{
+				"navigationStyle": "custom"
+			}
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

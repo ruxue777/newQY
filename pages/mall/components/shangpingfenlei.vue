@@ -31,7 +31,7 @@
 		methods:{
 			toShopdetail(id){
 				uni.navigateTo({
-					url:`/pages/dianpuleibie/dianpu?BusinessID=${id}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+					url:`/pages/shopdetails/shopdetails?BusinessID=${id}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`,
 				})				
 			},
 			toAll_Shop(){
