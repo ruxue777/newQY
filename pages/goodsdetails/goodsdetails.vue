@@ -51,11 +51,21 @@ import {request} from '@/api/request.js'
 			};
 		},
 		onLoad(e){
-			this.id = e.id;
-			this.BusinessID = e.BusinessID;
-			this.CategoryID= e.CategoryID
-			this.LatItude = e.LatItude;
-			this.LongItude = e.LongItude;
+			let scene = decodeURIComponent(e.scene);
+			if(null != scene && '' != scene && undefined != scene && scene != 'undefined'){
+				var array = scene.split(',');
+				this.id = array[0];
+				this.BusinessID = array[1];
+				this.CategoryID= array[2]
+				this.LatItude = array[3];
+				this.LongItude = array[4];
+			}else{
+				this.id = e.id;
+				this.BusinessID = e.BusinessID;
+				this.CategoryID= e.CategoryID
+				this.LatItude = e.LatItude;
+				this.LongItude = e.LongItude;
+			}
 			
 			this.getGoodsDatails()
 			this.getMerchantData()

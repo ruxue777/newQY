@@ -131,7 +131,8 @@
 									</view>
 									<view class="cont">
 										<text class="name">预约领取</text>
-										<u-button type="warning" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="reservation">立即预约</u-button>
+										<u-button type="warning" v-if="item.DataList_Detail[0].btn_DetailOrder == 1" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="reservation(item.BPR_OrderId)">立即预约</u-button>
+										<u-button type="primary" v-if="item.DataList_Detail[0].btn_DetailCheck == 1" size="mini" shape="square" :ripple="true" ripple-bg-color="#abafb6" @click="receive(item.DataList_Detail[0].id)">立即领取</u-button>
 									</view>
 								</view>
 							
@@ -261,45 +262,45 @@
 			
 		<!-- 反馈组件 -->
 		<u-toast ref="uToast" />
-		<u-calendar v-model="calendar" mode="date" @change="change" z-index="11000"></u-calendar>
-		<u-select v-model="address" :list="addresList" z-index="11000"></u-select>
+		<u-calendar v-model="calendar" mode="date" @change="selectionTime" z-index="11000" :min-date="disableTime()" max-date="2050-01-01"></u-calendar>
+		<u-select v-model="address" :list="addresList" z-index="11000" @confirm="confirm"></u-select>
 		<u-popup v-model="reservationPopup" mode="bottom" border-radius="20" closeable="true" close-icon-pos="top-left">
 			<view class="popup-content">
 				<view class="middle">
 					<view class="top-title-1">预约</view>
 					<view class="goods-name">
 						<text class="title">商品名称</text>
-						<view class="name">测试hhh哈哈哈123</view>
+						<view class="name">{{reservationPopupDetails.BPD_Name}}</view>
 					</view>
 					<view class="unaccalimed">
 						<text class="title">未领取总数量</text>
-						<view class="name">1</view>
+						<view class="name">{{parseInt(reservationPopupDetails.BPRD_NoReceiveCount)}}</view>
 					</view>
 					<view class="maxamount">
 						<text class="title">可领最大数量</text>
-						<view class="name">1/月</view>
+						<view class="name">{{parseInt(reservationPopupDetails.BPD_PerCount)}}/月</view>
 					</view>
 					<view class="remaining">
 						<text class="title">剩余可领数量</text>
-						<view class="name">1</view>
+						<view class="name">{{parseInt(reservationPopupDetails.BPRD_ValidCount)}}</view>
 					</view>
 					<view class="Number-of-appointments">
 						<text class="title">预约领取数量</text>
 						<view class="name">
-							<u-number-box v-model="value" @change="valChange" min=1></u-number-box>
+							<u-number-box v-model="value" @change="valChange" min=1 :disabled="numberBox"></u-number-box>
 						</view>
 					</view>
 					<view class="appointment">
 						<text class="title">领取时间</text>
 						<view class="name" @click="calendar = true">
-							<text>2020-8-28-星期五</text>
+							<text>{{popTime}}</text>
 							<u-icon name="arrow-down-fill" style="position: absolute;right: 0;"></u-icon>
 						</view>
 					</view>
 					<view class="address">
 						<text class="title">领取地点选择</text>
 						<view class="location" @click="address = true">
-							<text>测试123</text>
+							<text>{{addresName}}</text>
 							<u-icon name="arrow-down-fill" style="position: absolute;right: 0;"></u-icon>
 						</view>
 					</view>
@@ -308,7 +309,7 @@
 							<u-button @click="reservationPopup = false">取消</u-button>
 						</view>
 						<view class="button-content">
-							<u-button type="warning">预约</u-button>
+							<u-button type="warning" @click="reservationConfirm">预约</u-button>
 						</view>
 					</view>
 				</view>
@@ -337,6 +338,7 @@ export default {
 					name: '已完成'
 				}
 			],
+			day:["日", "一", "二", "三", "四", "五", "六"],
 			current: 0,
 			swiperCurrent: 0,
 			tabsHeight: 0,
@@ -348,23 +350,30 @@ export default {
 			Index:[1,1,1],
 			//预约弹窗
 			reservationPopup:false,
+			//预约弹窗数据
+			reservationPopupDetails:[],
+			//数量步进禁用
+			numberBox:false,
+			//弹窗当前时间
+			popTime:'',
 			//日历弹窗
 			calendar:false,
 			//预约地址弹窗
 			address:false,
 			//预约数量
 			value: 1,
+			//预约地址显示
+			addresName:'',
 			//预约地址列表
 			addresList:[
 				{
-					value: '1',
-					label: '测试123'
-				},
-				{
-					value: '2',
-					label: '测试456'
+					value: '',
+					label: '',
+					extra:''
 				}
-			]
+			],
+			//预约商家ID
+			res_BusinessID:'',
 		};
 	},
 	onLoad() {
@@ -513,9 +522,78 @@ export default {
 				url:'../index/index'
 			})
 		},
+		//领取订单
+		receive(OrderId){
+			uni.navigateTo({
+				url:`/pages/receive/receive?orderId=${OrderId}`
+			})
+		},
 		//预约
-		reservation(){
+		reservation(OrderId){
+			request('API_GetList_BusinessProductRecordDetailByOrderId',{user_id:this.userInfo.user_id,BPR_OrderId:OrderId}).then(res=>{
+				this.getMonth()
+				this.reservationPopupDetails = res[0]
+				this.getDetailCheck(res[0].id)
+				if(res[0].BPRD_ValidCount == 1){
+					this.numberBox = true
+				}
+			})
 			this.reservationPopup = true
+		},
+		//预约确认
+		reservationConfirm(){
+			request('API_AddBusinessProductRecordDetailLogs',{ID:this.reservationPopupDetails.id,OrderCount:this.value,OrderTime:this.orderTime(this.popTime),BusinessID:this.res_BusinessID}).then(res=>{
+				if(res.result_code === 'SUCCESS'){
+					this.$refs.uToast.show({
+						title: '预约成功',
+						type: 'success'
+					})
+					this.reservationPopup = false;
+					return;
+				}else{
+					this.$refs.uToast.show({
+						title: res.result_content ,
+						type: 'error'
+					})
+					return;
+				}	
+			})
+		},
+		//领取地址
+		getDetailCheck(id){
+			request('API_GetList_BusinessForDetailCheck',{ID:id}).then(res=>{
+				let momentData = []
+				for(var i = 0;i<res.length;i++){
+					momentData.push({value:`${i}`,extra:res[i].id,label:res[i].BusinessName})
+				}
+				this.addresName = momentData[0].label
+				this.res_BusinessID = momentData[0].extra
+				this.addresList = momentData
+			})
+		},
+		//当前时间
+		getMonth(){
+			const week = new Date().getDay(); 
+			//返回日期格式,2020-8-29 周六
+			this.popTime = `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()} 星期${this.day[week]}`
+		},
+		//预约时间选择
+		selectionTime(e){
+			this.popTime = `${e.result} 星期${this.day[(new Date(`${e.result}`)).getDay()]}`
+		},
+		//预约订单时间
+		orderTime(s){
+			return s.substring(0, s.length-3)
+		},
+		//禁用当前日期之前
+		disableTime(){
+			//锁定预约日期
+			return `${new Date().getFullYear()}-${new Date().getMonth()+1}-${new Date().getDate()}`
+		},
+		//预约地址选择
+		confirm(e){
+			this.res_BusinessID = JSON.parse(JSON.stringify(e))[0].extra;
+			this.addresName = JSON.parse(JSON.stringify(e))[0].label;
 		},
 		valChange(e) {
 			console.log('当前值为: ' + e.value)

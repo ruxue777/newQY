@@ -77,7 +77,7 @@
 					background-color: #E18D63;
 				}
 				.shop-name{
-					width: 98rpx;
+					width: 120rpx;
 					height: 20rpx;
 					font-size:24rpx;
 					display: flex;

@@ -230,7 +230,7 @@ import {request} from '@/api/request.js'
 				}
 				
 				.shop-type{
-					width: 120rpx;
+					width: 140rpx;
 					height: 40rpx;
 					font-size: 26rpx;
 					display: flex;
