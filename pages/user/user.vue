@@ -116,7 +116,7 @@
 					</view>
 					
 					<view class="shop-accout">
-						<view class="left-cont" v-if="userInfo.IsBusinessMaster == 1">
+						<view class="left-cont" v-if="userInfo.IsBusinessMaster == 1" @click="toCredit">
 							<view class="accout-name">商家账户</view>
 							<view class="accout-amount">{{AccoutAmount.CreditAmount}}</view>
 						</view>
@@ -193,7 +193,7 @@ import {request,wxRequest} from "@/api/request.js"
 				WxappQR:''
 			}
 		},
-		onLoad() {
+		onShow() {
 			this.getUserInfo()
 		},
 		onPullDownRefresh() {
@@ -381,6 +381,11 @@ import {request,wxRequest} from "@/api/request.js"
 			toSubsidy(){
 				uni.navigateTo({
 					url:`/pages/userAccout/Subsidy?AccountAmount=${encodeURIComponent(JSON.stringify(this.AccoutAmount))}`
+				})
+			},
+			toCredit(){
+				uni.navigateTo({
+					url:`/pages/userAccout/Credit?user_id=${this.userInfo.user_id}&accoutAmount=${this.AccoutAmount.CreditAmount}`
 				})
 			},
 			tobankCard(){
@@ -847,7 +852,7 @@ page{
 					align-items: center;
 					
 					.left-cont{
-						width: 195rpx;
+						width: 100%;
 						height: 100%;
 						display: flex;
 						flex-direction: column;
