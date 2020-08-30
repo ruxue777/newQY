@@ -17,7 +17,7 @@
 		<view class="btt"></view>
 		
 		<view class="shop-list">
-			<view class="content" v-for="(item,index) in ShopCategoryList" :key="index">
+			<view class="content" v-for="(item,index) in ShopCategoryList" :key="index" @click="toShopDetails(item.id)">
 				<view class="left-img">
 					<image :src="item.ImgUrl"></image>
 				</view>
@@ -98,6 +98,11 @@ import {request} from '@/api/request.js'
 						})
 					}
 				})	
+			},
+			toShopDetails(id){
+				uni.navigateTo({
+					url:`/pages/shopdetails/shopdetails?BusinessID=${id}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
 			},
 			toSeek(){
 				uni.navigateTo({

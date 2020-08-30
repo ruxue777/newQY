@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/shopList/shopList",
+		// 	"path" : "pages/recommend/recommend",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -217,6 +217,12 @@
 				"navigationStyle": "custom"
 			}
         }
+        ,{
+            "path" : "pages/recommend/recommend",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
@@ -250,5 +256,10 @@
 			"text": "我的"
 		}
 		]
-	}
+	},
+	"permission":{
+	   "scope.userLocation":{
+	     "desc":"将获得您的位置用于定位"
+	   }
+	 }
 } 

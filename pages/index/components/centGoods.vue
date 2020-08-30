@@ -2,12 +2,12 @@
 	<view class="main">
 		<view class="content" >
 			<view class="left">
-				<image class="left-img" :src="HotListData[0].ADR_ImgUrl"></image>
+				<image class="left-img" :src="HotListData[0].ADR_ImgUrl" @click="toRecommend(0)"></image>
 			</view>
 			
 			<view class="right">
 				<view class="top">
-					<image class="top-img" :src="HotListData[1].ADR_ImgUrl"></image>
+					<image class="top-img" :src="HotListData[1].ADR_ImgUrl" @click="toRecommend(1)"></image>
 				</view>
 				
 				<view class="bottom">
@@ -25,11 +25,18 @@
 
 <script>
 	export default {
-		props:['HotListData'],
+		props:['HotListData',"LatItude" ,"LongItude"],
 		data() {
 			return {
 				
-			};
+			}; 
+		},
+		methods:{
+			toRecommend(pageType){
+				uni.navigateTo({
+					url:`/pages/recommend/recommend?pageType=${pageType}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			}
 		}
 	}
 </script>

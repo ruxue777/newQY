@@ -4,7 +4,7 @@
 		<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
 		<centralNav :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->
-		<centGoods :HotListData="HotListData"></centGoods>
+		<centGoods :HotListData="HotListData" :LatItude="LatItude" :LongItude="LongItude"></centGoods>
 		<indexImage></indexImage>
 		 
 		<!-- 瀑布流不支持组件形式 -->

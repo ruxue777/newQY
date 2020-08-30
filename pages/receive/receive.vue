@@ -37,7 +37,7 @@
 					<text class="left">商家地址</text>
 					<view class="right">{{OrderDetails.Address}}</view> 
 				</view>
-				<view class="orderdetails">
+				<view class="orderdetails" @click="call(OrderDetails.Phone)">
 					<text class="left">商家电话</text>
 					<view class="right">
 						{{OrderDetails.Phone}}
@@ -92,6 +92,11 @@ import Qr from '@/SDK/wxqrcode.js';
 					this.OrderDetails = res
 					this.QrCode = Qr.createQrCodeImg(`${res.id},RecordDetailLogs`)
 				})
+			},
+			call(phoneNumber){
+				uni.makePhoneCall({
+					phoneNumber: phoneNumber
+				});
 			},
 			back(){
 				uni.navigateBack()

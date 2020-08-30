@@ -13,7 +13,7 @@
 				
 				<view v-if="isGoods == true" class="select">
 					<view class="seek-goods btn">商品</view>
-					<view class="seek-shop" @click="isGoods = false,getShopSeekDetails()">商铺</view>
+					<view class="seek-shop" @click="isGoods = false,shopSeekResult=[],getShopSeekDetails()">商铺</view>
 				</view>
 				<view v-else class="select">
 					<view class="seek-goods" @click="isGoods = true">商品</view>

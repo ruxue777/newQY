@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<topGoodsdetails :GoodsData="GoodsData"></topGoodsdetails>
+		<topGoodsdetails :GoodsData="GoodsData" v-on:share="show = true"></topGoodsdetails>
 		<recommend v-if="BusinessData.length>1" :BusinessData="BusinessData" :LatItude="LatItude" :LongItude="LongItude"></recommend>
 		<shopDetails :MerchantData="MerchantData" :LatItude="LatItude" :LongItude="LongItude"></shopDetails>
 		<goodsH5 :GoodsData="GoodsData"></goodsH5>
@@ -37,7 +37,7 @@
 				<view class="popup-left">
 					<u-icon name="weixin-fill" size="56" color="#18b566"></u-icon>
 					<text>分享给微信好友</text>
-					<button class="share" open-type="share" ></button>
+					<button class="share" open-type="share"></button>
 				</view>
 				<view class="popup-right" @click="sharePoster">
 					<u-icon name="download" size="56" color="#f29100"></u-icon>
@@ -172,9 +172,6 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 					IsFL:-1,IsBP:-1,pageSize:6,index:1}).then(res=>{
 						this.MoreData = res
 				})
-			},
-			share(){
-				console.log(123)
 			},
 			toIndex(){
 				uni.switchTab({url:'/pages/index/index'})

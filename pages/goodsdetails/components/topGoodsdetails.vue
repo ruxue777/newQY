@@ -43,7 +43,7 @@
 								</view>
 							</view>
 							<view class="cont-right">
-								<view class="button">
+								<view class="button" @click="share">
 									<u-icon name="zhuanfa"></u-icon>
 									<p>邀请好友一起抢</p>
 								</view>
@@ -112,6 +112,9 @@
 			};
 		},
 		methods:{
+			share(){
+				this.$emit('share')
+			},
 			call(mobile){
 				uni.makePhoneCall({
 					phoneNumber: mobile

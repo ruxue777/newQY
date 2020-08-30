@@ -62,8 +62,11 @@ import md5Libs from "uview-ui/libs/function/md5";
 				up_Mobile:''
 			};
 		},
-		onLoad() {
-			
+		onLoad(e) {
+			let scene = decodeURIComponent(e.scene);
+			if(null != scene && '' != scene && undefined != scene && scene != 'undefined'){
+				this.referrer = scene
+			}
 		},
 		methods:{
 			getSmsCode(){

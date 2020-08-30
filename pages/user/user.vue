@@ -253,8 +253,7 @@ import {request,wxRequest} from "@/api/request.js"
 				wxRequest('API_GetWxappQR',{scene:this.userInfo.mobile,page:"pages/user/signUp"}).then(res=>{
 					this.show = true
 					
-					let data = res[1].data
-					this.WxappQR = data.result_content
+					this.WxappQR = res.result_content
 				})
 			},
 			toUserAccout(AccoutType){
