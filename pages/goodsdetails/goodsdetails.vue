@@ -29,7 +29,7 @@
 		</view>	
 	
 	<!-- 反馈组件 -->
-	<qrcode-poster ref="poster" :title="GoodsData.BP_Name" :subTitle="GoodsData.BP_Desc" :headerImg="GoodsData.BP_ImgUrl" :price="GoodsData.BP_Amount" ></qrcode-poster>
+	<qrcode-poster ref="poster" :title="GoodsData.BP_Name" :subTitle="GoodsData.BP_Desc" :headerImg="GoodsData.BP_ImgUrl" :price="GoodsData.BP_Amount" :abImg="AdSubimg"></qrcode-poster>
 	<u-popup v-model="show" mode="bottom" border-radius="20">
 		<view class="popup-share">
 			<view class="top">分享</view>
@@ -94,7 +94,9 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 					color: 'red',
 					userInfo:[]
 				},
-				wxQrCode:''
+				wxQrCode:'',
+				//分享广告副图
+				AdSubimg:''
 			};
 		},
 		onLoad(e){
@@ -120,6 +122,7 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 			this.getWriteoffData()
 			this.getMoreData()
 			this.getGoods_wxQrCode()
+			this.getAdSubimg()
 		},
 		onShareAppMessage(res) {
 			return {
@@ -173,6 +176,11 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 						this.MoreData = res
 				})
 			},
+			getAdSubimg(){
+				request('API_GetList_ADRecord_CallIndex',{CallIndex:"ad0099"}).then(res=>{
+					this.AdSubimg = res[1].ADR_ImgUrl
+				})
+			},
 			toIndex(){
 				uni.switchTab({url:'/pages/index/index'})
 			},
@@ -195,7 +203,7 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 							else if(res.confirm)
 							{
 								uni.navigateTo({
-									url:'./signIn'
+									url:'/pages/user/signIn'
 								})
 							}
 						}

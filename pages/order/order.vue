@@ -398,6 +398,18 @@ export default {
 			};
 		}
 	},
+	onPullDownRefresh(){
+		this.getUserInfo()
+		this.orderList_0 = []
+		this.orderList_1 = []
+		this.orderList_2 = []
+		this.Index[0] = 1
+		this.Index[1] = 1
+		this.Index[2] = 1
+		this.getOrderList_0();
+		this.getOrderList_1();
+		this.getOrderList_2();
+	},
 	methods: {
 		reachBottom_0() {
 			if(this.orderList_0.length<this.Index[0]*10){
@@ -455,7 +467,7 @@ export default {
 						else if(res.confirm)
 						{
 							uni.navigateTo({
-								url:'./signIn'
+								url:'/pages/user/signIn'
 							})
 						}
 					}

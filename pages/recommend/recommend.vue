@@ -42,13 +42,14 @@
 								</view>
 							</view>
 							<view class="y">
-								<u-icon name="shopping-cart" size="32" @click="back"></u-icon>
+								<u-icon name="shopping-cart" size="32" @click="back" color="red"></u-icon>
 							</view>
 						</view>
 					</view>
 				</view>
 			</view>
 		</view>
+	<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
 	</view>
 </template>
 
@@ -79,13 +80,28 @@ import {request} from '@/api/request.js'
 					}
 				],
 				goodlsListData:[],
-				Index:1
+				loadStatus: 'loadmore',
+				Index:1 
 			}
 		},
 		//上拉加载
-		onReachBottom()
-		{
-		
+		onReachBottom() {
+			if(this.goodlsListData.length<this.Index*10){
+				this.loadStatus = 'nomore';
+				return;
+			}else{
+				this.Index++;
+				this.loadStatus = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					if(this.pageType == 0){
+						this.getRecommendedDaily()
+					}else if(this.pageType == 1){
+						this.getBaoPingData()
+					}
+					this.loadStatus = 'loadmore';
+				}, 1000);
+			}
 		},
 		//下拉刷新
 		onPullDownRefresh()
@@ -93,7 +109,11 @@ import {request} from '@/api/request.js'
 			this.Index = 1
 			this.goodlsListData = []
 			//刷新效果
-			
+			if(this.pageType == 0){
+				this.getRecommendedDaily()
+			}else if(this.pageType == 1){
+				this.getBaoPingData()
+			}
 			
 		},
 		onLoad(e) 
@@ -128,41 +148,19 @@ import {request} from '@/api/request.js'
 				
 			},
 			//每日推荐
-			getRecommendedDaily()
-			{
-				console.log(0)
-			},
-			getFuLiData(callBack)
-			{		  
-				let _this = this
-	
-				this.request({
-					url:'https://api.xfgoo.com:60010/api/XFClientAPI_Json.asmx/API_GetList_BusinessProductSearch',
-					data:{
-						CategoryID:0,
-						BusinessID:0,
-						Keywords:'',
-						Longitude:this.LongItude,
-						Latitude:this.LatItude,
-						orderState:0,
-						IsFL:1,
-						IsBP:0,
-						pageSize:6,
-						index:_this.Index
-					},
-					method:'GET',
-					dataType:'json',
-					header:{'content-type': 'application/x-www-form-urlencoded'} 
-					})
-					.then(res=>{
-					
-					this.goodlsListData = [...this.goodlsListData,...res]
-					callBack && callBack()
+			getRecommendedDaily(callBack){
+				request('API_GetList_BusinessProductSearch_V2',{CategoryID:0,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:-1,IsBP:-1,
+					pageSize:10,index:this.Index}).then(res=>{		
+						this.goodlsListData = [...this.goodlsListData,...res]
+						callBack && callBack()		
 				})
 			},
-			getBaoPingData(callBack)
-			{console.log(1)
-			    //API_GetList_BusinessProductSearch_V2
+			getBaoPingData(callBack){
+				request('API_GetList_BusinessProductSearch_V2',{CategoryID:0,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:0,IsBP:0,
+					pageSize:10,index:this.Index}).then(res=>{		
+						this.goodlsListData = [...this.goodlsListData,...res]
+						callBack && callBack()		
+				})
 			}
 		}
 	}
