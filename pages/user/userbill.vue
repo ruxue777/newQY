@@ -10,20 +10,20 @@
 		</view>		
 		
 		<view class="middle">			
-			<view class="bill-content">
+			<view class="bill-content" v-for="(item,index) in BillDetails" :key="index">
 				<view class="top-title">
-					<text class="left-account-name">消费账户</text>
-					<text class="right-account-time">2020/8/31 15:34:31</text>
+					<text class="left-account-name">{{item.LP_AmountType}}</text>
+					<text class="right-account-time">{{item.createTime}}</text>
 				</view>
 				<view class="middle-cont">
 					<p>
-						<text class="left">收银</text>
-						<text class="middle-amount">转入</text>
-						<text class="right">0.01</text>
+						<text class="left">{{item.LP_Desc}}</text>
+						<text class="middle-amount">{{item.LP_Event}}</text>
+						<text class="right">{{item.LP_Amount}}</text>
 					</p>
 				</view>
 				<view class="bottom-type">
-					<text>补贴账户充值</text>
+					<text>{{item.LP_Type}}</text>
 				</view>
 			</view>
 		</view>
@@ -36,24 +36,25 @@ import {request} from '@/api/request.js'
 	export default {
 		data() {
 			return {
+				user_id:'',
 				value1: 1,
 				value2: 1,
 				value3: 1,
 				options1: [{
 						label: '补贴权益',
-						value: 1,
+						value: 'Integral',
 					},
 					{
 						label: '商家账户',
-						value: 2,
+						value: 'Credit',
 					},
 					{
 						label: '补贴账户',
-						value: 3,
+						value: 'Recharge',
 					},
 					{
 						label: '津贴账户',
-						value: 4,
+						value: 'Profit',
 					}
 				],
 				options2:[
@@ -68,20 +69,45 @@ import {request} from '@/api/request.js'
 						value: 1,
 					},
 				],
-				Index:1
+				loadStatus: 'loadmore',
+				AmountType:'Integral',
+				Index:1,
+				BillDetails:[]
 			};
 		},
-		onLoad() {
-			
+		onLoad(e) {
+			this.user_id = e.user_id
+			this.getBillDetails()
+		},
+		onReachBottom() {
+			if(this.BillDetails.length<this.Index*10){
+				this.loadStatus = 'nomore';
+				return;
+			}else{
+				this.Index++;
+				this.loadStatus = 'loading';
+				// 模拟数据加载效果
+				setTimeout(() => {
+					this.getBillDetails();
+					this.loadStatus = 'loadmore';
+				}, 1000);
+			}
 		},
 		methods:{
-			getBillDetails(){
-				request('API_GetList_LogsUserProfit',{user_id:user_id,LP_Type:0,AmountType:'',pageSize:10,index:this.Index}).then(res=>{
-					
+			getBillDetails(callBack){
+				request('API_GetList_LogsUserProfit',{user_id:this.user_id,LP_Type:0,AmountType:this.AmountType,pageSize:10,index:this.Index}).then(res=>{
+					if(res.length<10){
+						this.loadStatus = 'nomore'
+					}
+					this.BillDetails = [...this.BillDetails,...res]
+					callBack && callBack()
 				})
 			},
 			change(val){
-				console.log(val)
+				this.AmountType = val
+				this.Index = 1
+				this.BillDetails = []
+				this.getBillDetails()
 			}
 		}
 	}

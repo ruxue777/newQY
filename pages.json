@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path" : "pages/user/userbill",
-			"style" : {
-				"navigationStyle": "custom"
-			}
-		},
+		// {
+		// 	"path" : "pages/user/project",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -225,12 +225,18 @@
 				"navigationStyle": "custom"
 			}
         }
-   //      ,{
-   //          "path" : "pages/user/userbill",
-   //          "style" : {
-			// 	"navigationStyle": "custom"
-			// }
-   //      }
+        ,{
+            "path" : "pages/user/userbill",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/user/project",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",

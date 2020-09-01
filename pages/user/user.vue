@@ -131,7 +131,7 @@
 					<text>常用功能</text>
 				</view>
 				<view  class="bottom-middle">
-					<view class="common-cont">
+					<view class="common-cont" @click="toBill">
 						<image src="../../static/image/amount.png"></image>
 						<text class="name">账单</text>
 					</view>
@@ -139,7 +139,7 @@
 						<image style="width: 80rpx;" src="../../static/image/bill.png"></image>
 						<text class="name">银行卡管理</text>
 					</view>
-					<view class="common-cont">
+					<view class="common-cont" @click="toProject">
 						<image src="../../static/image/project.png"></image>
 						<text class="name">我的项目</text>
 					</view>
@@ -370,6 +370,16 @@ import {request,wxRequest} from "@/api/request.js"
 			toRecommend(){
 				uni.navigateTo({
 					url:`/pages/user/recommend?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toBill(){
+				uni.navigateTo({
+					url:`/pages/user/userbill?user_id=${this.userInfo.user_id}`
+				})
+			},
+			toProject(){
+				uni.navigateTo({
+					url:`/pages/user/project?user_id=${this.userInfo.user_id}`
 				})
 			},
 			toAllowance(){
