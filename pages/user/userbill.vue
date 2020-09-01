@@ -1,0 +1,163 @@
+<template>
+	<view class="main">
+		<view class="top">
+			<u-navbar  title="我的账单"></u-navbar>
+			<u-dropdown active-color="#ff9900">
+				<u-dropdown-item v-model="value1" title="账户类别" :options="options1" @change="change"></u-dropdown-item>
+				<u-dropdown-item v-model="value2" title="支付时间" :options="options2"></u-dropdown-item>
+				<u-dropdown-item v-model="value3" title="操作类型" :options="options3"></u-dropdown-item>
+			</u-dropdown>
+		</view>		
+		
+		<view class="middle">			
+			<view class="bill-content">
+				<view class="top-title">
+					<text class="left-account-name">消费账户</text>
+					<text class="right-account-time">2020/8/31 15:34:31</text>
+				</view>
+				<view class="middle-cont">
+					<p>
+						<text class="left">收银</text>
+						<text class="middle-amount">转入</text>
+						<text class="right">0.01</text>
+					</p>
+				</view>
+				<view class="bottom-type">
+					<text>补贴账户充值</text>
+				</view>
+			</view>
+		</view>
+		<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus"></u-loadmore>
+	</view>
+</template>
+
+<script>
+import {request} from '@/api/request.js'	
+	export default {
+		data() {
+			return {
+				value1: 1,
+				value2: 1,
+				value3: 1,
+				options1: [{
+						label: '补贴权益',
+						value: 1,
+					},
+					{
+						label: '商家账户',
+						value: 2,
+					},
+					{
+						label: '补贴账户',
+						value: 3,
+					},
+					{
+						label: '津贴账户',
+						value: 4,
+					}
+				],
+				options2:[
+					{
+						label: '最近',
+						value: 1,
+					},
+				],
+				options3:[
+					{
+						label: '所有',
+						value: 1,
+					},
+				],
+				Index:1
+			};
+		},
+		onLoad() {
+			
+		},
+		methods:{
+			getBillDetails(){
+				request('API_GetList_LogsUserProfit',{user_id:user_id,LP_Type:0,AmountType:'',pageSize:10,index:this.Index}).then(res=>{
+					
+				})
+			},
+			change(val){
+				console.log(val)
+			}
+		}
+	}
+</script>
+
+<style lang="less">
+.main{
+	.middle{
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		background-color: rgb(240, 240, 240);
+		padding: 20rpx;
+		
+		.bill-content{
+			width: 670rpx;
+			height: 260rpx;
+			margin-bottom: 15rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			background-color: #FFFFFF;
+			border-radius: 20rpx;
+			
+			.top-title{
+				width: 100%;
+				height: 50rpx;
+				padding-left: 20rpx;
+				padding-right: 20rpx;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				border-bottom: 1rpx solid #d9d9d9;
+				
+				.left-account-name{
+					font-size: 30rpx;
+				}
+				.right-account-time{
+					font-size: 26rpx;
+					color: #999999;
+				}
+			}
+			
+			.middle-cont{
+				width: 100%;
+				height: 170rpx;
+				p{
+					width: 100%;
+					height: 170rpx;
+					display: flex;
+					justify-content: space-around;
+					align-items: center;
+					
+					.left,.middle-amount{
+						font-size: 30rpx;
+						color: #929292;
+					}
+					
+					.right{
+						font-size: 36rpx;
+						font-weight: bold;
+					}
+				}
+			}
+			
+			.bottom-type{
+				width: 100%;
+				height: 40rpx;
+				padding-left: 20rpx;
+				font-size: 26rpx;
+				color: #999999;
+			}
+		}
+	}
+}
+</style>
