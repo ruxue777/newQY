@@ -151,6 +151,7 @@ export default {
 			request('API_GetList_IndexBanner').then(res=>{	
 				this.swiperData = res
 			})
+			console.log(this.$u.config.v);
 		},
 		getShopListData(){
 			request('API_GetList_IndexNavTrade',{pageSize:4}).then(res=>{
