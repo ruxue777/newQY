@@ -33,11 +33,35 @@
 					<u-icon name="gift" color="#fff"></u-icon>
 					<text>会员权益(份)</text>
 					<text class="amount">{{item.BonusAmount}}</text>
-					<text class="give-away">转赠</text>
+					<text class="give-away" @click="Donate(item.id,item.BusinessName,item.BonusAmount)">转赠</text>
 				</view>
 			</view>
 		</view>
+	
+	<!-- 反馈组件 -->
+	<u-toast ref="uToast" />
 	<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
+	<u-popup v-model="show" mode="bottom" border-radius="15" closeable="true" close-icon-pos="top-left">
+		<view class="donate-content">
+			<view class="middle">
+				<text class="tips">权益转赠为个人行为,请核对转赠人账号,避免造成财产损失</text>
+				<view class="pop-project-name">项目名称:{{BusinessName}}</view>
+				<view class="pop-project-amount">
+					<text>可转赠权益数(份)</text>
+					<text class="amount">{{BonusAmount}}</text>
+				</view>
+				<view class="input-box">
+					<input placeholder="输入转赠份数" v-model="amount"/>
+					<input placeholder="转赠人账号(用户名或手机号)" v-model="account"/>
+					<input placeholder="输入支付密码" type="password" v-model="password"/>
+				</view>
+				
+				<view class="button">
+					<u-button type="primary" @click="income_Transfer">确认转赠</u-button>
+				</view>
+			</view>
+		</view>
+	</u-popup>
 	</view>
 </template>
 
@@ -46,10 +70,18 @@ import {request} from '@/api/request.js'
 	export default {
 		data() {
 			return {
+				show:false,
 				user_id:'',
 				Index:1,
 				ProjectDetails:[],
-				loadStatus: 'loadmore'
+				loadStatus: 'loadmore',
+				amount:'',
+				account:'',
+				password:'',
+				//分红权id
+				id:'',
+				BusinessName:'',
+				BonusAmount:''
 			};
 		},
 		onLoad(e) {
@@ -71,6 +103,39 @@ import {request} from '@/api/request.js'
 			}
 		},
 		methods:{
+			Donate(id,BusinessName,BonusAmount){
+				this.id = id
+				this.BusinessName = BusinessName
+				this.BonusAmount = BonusAmount
+				this.show = true
+			},
+			income_Transfer(){
+				if(this.account.length != 0 && this.amount.length!=0 && this.password.length != 0){
+					request('API_AddTransferBonus',{user_id:this.user_id,PayPwd:this.password,UB_id:this.id,Bonus:this.amount,to_user_name:this.account}).then(res=>{
+						if(res.result_code === 'SUCCESS'){
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'success',
+							})
+							this.show = false
+							this.Index = 1
+							this.ProjectDetails = []
+							this.getProjectDetails()
+						}else{
+							this.$refs.uToast.show({
+								title: res.result_content,
+								type: 'error',
+							})
+							return
+						}	
+					})
+				}else{
+					this.$refs.uToast.show({
+						title: `请完善信息`,
+						type: 'error',
+					})
+				}
+			},
 			getProjectDetails(callBack){
 				request('API_GetList_UserBusinessBonus',{user_id:this.user_id,pageSize:10,index:this.Index}).then(res=>{
 					if(res.length<10){
@@ -164,6 +229,82 @@ import {request} from '@/api/request.js'
 					margin-left: 20rpx;
 					color: yellow;
 				}
+			}
+		}
+	}
+	
+	.donate-content{
+		width: 100%;
+		height: 1200rpx;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+		.middle{
+			width: 690rpx;
+			height: 1100rpx;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			
+			.tips{
+				font-size: 26rpx;
+				color: #afafaf;
+				margin-bottom: 20rpx;
+			}
+			
+			.pop-project-name{
+				width: 100%;
+				height: 100rpx;
+				font-size: 38rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 20rpx;
+			}
+			
+			.pop-project-amount{
+				width: 100%;
+				height: 100rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				margin-bottom: 20rpx;
+				
+				.amount{
+					font-size: 34rpx;
+					color: #000;
+				}
+				
+				text{
+					font-size: 24rpx;
+					color: #afafaf;
+				}
+			}
+			
+			.input-box{
+				width: 100%;
+				height: 400rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				text-align:center;
+				vertical-align:middle;
+				
+				input{
+					width: 100%;
+					height: 100rpx;
+					border: 1rpx solid #EEEEEE;
+					border-radius: 20rpx;
+					margin-bottom: 10rpx;
+				}
+			}
+			
+			.button{
+				width: 100%;
+				height: 80rpx;
 			}
 		}
 	}

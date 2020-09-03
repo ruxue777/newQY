@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/user/project",
+		// 	"path" : "pages/excellent/excellent",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -233,6 +233,12 @@
         }
         ,{
             "path" : "pages/user/project",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/excellent/excellent",
             "style" : {
 				"navigationStyle": "custom"
 			}

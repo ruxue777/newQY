@@ -12,7 +12,7 @@
 				
 				<view class="bottom">
 					<view class="inside-left">
-						<image class="inside-left-img" :src="HotListData[2].ADR_ImgUrl"></image>
+						<image class="inside-left-img" :src="HotListData[2].ADR_ImgUrl" @click="toExcellent"></image>
 					</view>
 					<view class="inside-right">
 						<image class="inside-right-img" :src="HotListData[3].ADR_ImgUrl"></image>
@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import {request} from '@/api/request.js'	
 	export default {
 		props:['HotListData',"LatItude" ,"LongItude"],
 		data() {
@@ -32,6 +33,13 @@
 			}; 
 		},
 		methods:{
+			toExcellent(){
+				request('API_GetList_ADRecord_CallIndex',{CallIndex:"ad0010"}).then(res=>{
+					uni.navigateTo({
+						url:`/pages/excellent/excellent?name=酒品荟&imgUrl=${res[0].ADR_ImgUrl}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+					})
+				})
+			},
 			toRecommend(pageType){
 				uni.navigateTo({
 					url:`/pages/recommend/recommend?pageType=${pageType}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
