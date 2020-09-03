@@ -11,14 +11,25 @@
 			<view class="select-box-top">
 				<view class="left">{{name}}</view>
 				<view class="select-cont">
-					<view class="shop">店铺</view>
-					<view class="goods">商品</view>
+					<view  @click="isShop = true" :class="{btn:isShop == true}">店铺</view>
+					<view  @click="isShop = false" :class="{btn:isShop == false}">商品</view>
 				</view>
 			</view>
 			<view class="select-box-bottom">
-				<view class="default">默认排序</view>
-				<view class="sales">销量最高</view>
-				<view class="distance">距离最近</view>
+				<view @click="cur = 0" :class="cur == 0 ? 'selected':'Unselected'">默认排序</view>
+				<view @click="cur = 1" :class="cur == 1 ? 'selected':'Unselected'">销量最高</view>
+				<view @click="cur = 2" :class="cur == 2 ? 'selected':'Unselected'">距离最近</view>
+			</view>
+		</view>
+		
+		<view class="shopList">
+			<view class="shopList-middle">
+				<view class="shopList-middle-left">
+					<image src="../../static/image/img2.jpg"></image>
+				</view>
+				<view class="shopList-middle-right">
+					
+				</view>
 			</view>
 		</view>
 	</view>
@@ -31,6 +42,8 @@
 				background:{
 					backgroundColor: '#FFE50E',
 				},
+				isShop:true,
+				cur:0,
 				//头部名称
 				name:'',
 				//头部图片
@@ -92,6 +105,12 @@
 				display: flex;
 				justify-content: space-around;
 				align-items: center;
+				
+				.btn{
+					font-weight: bold;
+					padding-bottom: 2px;
+					border-bottom:  3px solid #FF9900;
+				}
 			}
 		}
 		
@@ -101,7 +120,19 @@
 			display: flex;
 			align-items: center;
 			
-			.default,.sales,.distance{
+			.selected{
+				width: 120rpx;
+				height: 40rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				border-radius: 20rpx;
+				background-color: #ff9900;
+				font-size: 22rpx;
+				margin: 5rpx;	
+			}
+			
+			.Unselected{
 				width: 120rpx;
 				height: 40rpx;
 				display: flex;
@@ -110,7 +141,33 @@
 				border-radius: 20rpx;
 				background-color: #cecece;
 				font-size: 22rpx;
-				margin: 5rpx;
+				margin: 5rpx;	
+			}
+		}
+	}
+
+	.shopList{
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: center;
+		
+		.shopList-middle{
+			width: 710rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			.shopList-middle-left{
+				image{
+					width: 150rpx;
+					height: 150rpx;
+				}
+			}
+			
+			.shopList-middle-right{
+				width: 560rpx;
 			}
 		}
 	}
