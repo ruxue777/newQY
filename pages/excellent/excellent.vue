@@ -66,9 +66,14 @@
 					</view>
 					<view class="bottom-goods-cont">
 						<text class="goods-title">鲁格作案法国接口原装好久3只礼盒装</text>
-						<view class="goods-details">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
+						<view class="goods-details btnn">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
 						<view class="goods-bottom-content">
-							
+							<text class="goods-amount">￥500.00</text>
+							<view class="subsidy-box">
+								<view class="subsidy-box-left">补贴</view>
+								<view class="subsidy-box-right">可抵扣123.00元</view>
+							</view>
+							<u-icon name="shopping-cart" color="red"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -79,22 +84,14 @@
 					</view>
 					<view class="bottom-goods-cont">
 						<text class="goods-title">鲁格作案法国接口原装好久3只礼盒装</text>
-						<view class="goods-details">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
+						<view class="goods-details btnn">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
 						<view class="goods-bottom-content">
-							
-						</view>
-					</view>
-				</view>
-				
-				<view class="goods-content">
-					<view class="top-goods-image">
-						<image src="../../static/image/img1.jpg"></image>
-					</view>
-					<view class="bottom-goods-cont">
-						<text class="goods-title">鲁格作案法国接口原装好久3只礼盒装</text>
-						<view class="goods-details">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
-						<view class="goods-bottom-content">
-							
+							<text class="goods-amount">￥500.00</text>
+							<view class="subsidy-box">
+								<view class="subsidy-box-left">补贴</view>
+								<view class="subsidy-box-right">可抵扣123.00元</view>
+							</view>
+							<u-icon name="shopping-cart" color="red"></u-icon>
 						</view>
 					</view>
 				</view>
@@ -133,7 +130,7 @@
 	}
 </script>
 
-<style lang="less">
+<style lang="less">	
 .main{
 	.top-img{
 		width: 100%;
@@ -226,6 +223,9 @@
 			display: flex;
 			justify-content: space-between;
 			margin-bottom: 10rpx;
+			border-radius: 15rpx;
+			-moz-box-shadow:0px 0px 8rpx #cacaca; -webkit-box-shadow:0px 0px 8rpx #cacaca; box-shadow:0px 0px 8rpx #cacaca;
+			padding: 10rpx;
 			
 			.shopList-middle-left{
 				image{
@@ -286,7 +286,6 @@
 					display: flex;
 					justify-content: space-around;
 					align-items: center;
-					border-bottom: 1rpx solid #d1d1d1;
 					
 					.left-goods-amount{
 						display: flex;
@@ -330,18 +329,18 @@
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: row;
-		justify-content: space-around;
-		padding: 10rpx;
-		background-color: #e2e2e2;
+		justify-content: space-between;
+		padding: 40rpx;
 		
 		.goods-content{
-			width: 320rpx;
+			width: 325rpx;
 			display: flex;
 			flex-direction: column;
 			justify-content: center;
 			border-radius: 20rpx;
+			margin-bottom: 20rpx;
 			background-color: #FFFFFF;
-			margin: 10rpx;
+			-moz-box-shadow:0px 0px 8rpx #cacaca; -webkit-box-shadow:0px 0px 8rpx #cacaca; box-shadow:0px 0px 8rpx #cacaca;
 			
 			.top-goods-image{
 				width: 100%;
@@ -361,8 +360,101 @@
 				display: flex;
 				flex-direction: column;
 				justify-content: space-around;
-				align-items: center;
+				padding-left: 20rpx;
 				
+				.goods-title,.goods-details{
+					width: 275rpx;
+					font-size: 26rpx;
+					font-family: PingFang SC;
+					font-weight: 400;
+					color: #000000;
+					line-height: 32rpx;
+					text-overflow: ellipsis;
+					-webkit-line-clamp: 2;
+					-webkit-box-orient: vertical;
+					word-break: break-all;
+					overflow: hidden; 
+					display: -webkit-box;
+				}
+				
+				.btnn{
+					font-size: 22rpx;
+					color: #c3c3c3;
+				}
+				
+				.goods-bottom-content{
+					display: flex;
+					flex-direction: column;
+					justify-content: space-between;
+					position: relative;
+					
+					.goods-amount{
+						font-size: 32rpx;
+						color: red;
+						position: relative;
+						bottom: 15rpx;
+					}
+					
+					u-icon{
+						position: absolute;
+						left: 240rpx;
+					}
+					
+					.subsidy-box{						
+						width: 240rpx;
+						background: #ffffff;
+						display: -webkit-box;
+						display: -webkit-flex;
+						display: flex;
+						-webkit-box-align: center;
+						-webkit-align-items: center;
+						align-items: center;
+
+						
+						.subsidy-box-left{
+							font-size: 22rpx;
+							color: red;
+							width: 60rpx;
+							height: 36rpx;
+							background: #fff1e4;
+							border: 1rpx solid #f88c8c;
+							display: -webkit-box;
+							display: -webkit-flex;
+							display: flex;
+							-webkit-box-pack: center;
+							-webkit-justify-content: center;
+							justify-content: center;
+							-webkit-box-align: center;
+							-webkit-align-items: center;
+							align-items: center;
+							border-top-left-radius: 5rpx;
+							border-bottom-left-radius: 5rpx;
+							border-right: 1px dashed #f88c8c;
+						}
+						
+						.subsidy-box-right{
+							width: 170rpx;
+							height: 36rpx;
+							font-size: 22rpx;
+							color: #eb544d;
+							background-color: #FFFFFF;
+							border: 1rpx solid #f88c8c;
+							display: -webkit-box;
+							display: -webkit-flex;
+							display: flex;
+							-webkit-box-pack: center;
+							-webkit-justify-content: center;
+							justify-content: center;
+							-webkit-box-align: center;
+							-webkit-align-items: center;
+							align-items: center;
+							border-top-right-radius: 5rpx;
+							border-bottom-right-radius: 5rpx;
+							border-style: solid;
+							border-left: 1rpx dashed #f88c8c;
+						}
+					}
+				}
 			}
 		}
 	}
