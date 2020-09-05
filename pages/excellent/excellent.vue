@@ -23,73 +23,54 @@
 		</view>
 		
 		<view class="shopList" v-if="isShop == true">
-			<view class="shopList-middle">
+			<view class="shopList-middle" v-for="(item,index) in shopList" :key="index">
 				<view class="shopList-middle-left">
-					<image src="../../static/image/img2.jpg"></image>
+					<image :src="item.ImgUrl"></image>
 				</view>
 				<view class="shopList-middle-right">
-					<view class="top-content">
-						<text class="shop-name">哒哒哒哒哒哒哒哒哒阿达的按</text>
+					<view class="top-content" @click="toShopDetails(item.id)">
+						<text class="shop-name">{{item.BusinessName}}</text>
 						<view class="rate">
 							<text>5.0</text>
 							<u-rate :count="count" v-model="starAmount" active-color="#FFE50E" disabled="true"></u-rate>
 						</view>
 						<view class="shop-type">
-							<view class="left">酒水饮料</view>
-							<text class="distance">3.5km</text>
+							<view class="left">{{item.T_Name}}</view>
+							<text class="distance">{{(item.Distance*1).toFixed(2)}}km</text>
 						</view>
-						
 					</view>
-					<view class="bottom-content">
+					<view class="bottom-content" v-if="item.ProductList_Detail.length != 0" v-for="(list,index1) in item.ProductList_Detail" :key="index1" @click="toGoodsDetails(list.id,list.BusinessID,list.CategoryID)">
 						<view class="left-goods-amount">
-							<text class="amount">500.00元</text>
+							<text class="amount">{{list.BP_Amount}}元</text>
 							<text class="name">特惠价</text>
 						</view>
 						<view class="right-goods-discount">
-							<view class="discount"> 500元通用小风景哈哈哈</view>
-							<text>已售 90</text>
+							<view class="discount"> {{list.BP_Name}}</view>
+							<text>已售 {{list.BP_OrderIsSell}}</text>
 						</view>
 						<u-icon name="arrow-right"></u-icon>
 					</view>
-					
 				</view>
 			</view>
-			
-			
 		</view>
 	
 		<view class="goodsList" v-else>
 			<view class="goodsList-middle">
-				<view class="goods-content">
+				<view class="goods-content" v-for="(item,index) in goodsList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
 					<view class="top-goods-image">
-						<image src="../../static/image/img1.jpg"></image>
+						<image :src="item.BP_ImgUrl"></image>
 					</view>
 					<view class="bottom-goods-cont">
-						<text class="goods-title">鲁格作案法国接口原装好久3只礼盒装</text>
-						<view class="goods-details btnn">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
+						<text class="goods-title">{{item.BP_Name}}</text>
+						<view class="goods-details btnn">{{item.BP_Desc}}</view>
 						<view class="goods-bottom-content">
-							<text class="goods-amount">￥500.00</text>
-							<view class="subsidy-box">
-								<view class="subsidy-box-left">补贴</view>
-								<view class="subsidy-box-right">可抵扣123.00元</view>
+							<view class="goods-amount">
+								<text class="goods-amount-left">￥{{item.BP_MarketAmount}}</text>
+								<text class="goods-amount-right">{{item.BP_OrderIsSell }}人付款</text>
 							</view>
-							<u-icon name="shopping-cart" color="red"></u-icon>
-						</view>
-					</view>
-				</view>
-				
-				<view class="goods-content">
-					<view class="top-goods-image">
-						<image src="../../static/image/img1.jpg"></image>
-					</view>
-					<view class="bottom-goods-cont">
-						<text class="goods-title">鲁格作案法国接口原装好久3只礼盒装</text>
-						<view class="goods-details btnn">鲁格作案法国接口原装好久3只礼盒装鲁格作案法国接口原装好久3只礼盒装</view>
-						<view class="goods-bottom-content">
-							<text class="goods-amount">￥500.00</text>
-							<view class="subsidy-box">
+							<view class="subsidy-box" v-if="item.IsOffset != 0">
 								<view class="subsidy-box-left">补贴</view>
-								<view class="subsidy-box-right">可抵扣123.00元</view>
+								<view class="subsidy-box-right">可抵扣{{item.BPR_OffsetAmount}}元</view>
 							</view>
 							<u-icon name="shopping-cart" color="red"></u-icon>
 						</view>
@@ -97,10 +78,12 @@
 				</view>
 			</view>
 		</view>
+	<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
 	</view>
 </template>
 
 <script>
+import {request} from '@/api/request.js';	
 	export default {
 		data() {
 			return {
@@ -113,19 +96,106 @@
 				count: 5,
 				//星星当前数量
 				starAmount:5,
+				loadStatus: 'loadmore',
 				//头部名称
+				//商圈id
+				CircleID:'',
+				//类别id
+				CategoryID:'',
+				//店铺类别id
+				TradeID:'',
 				name:'',
 				//头部图片
 				imgUrl:'',
 				LatItude:'',
-				LongItude:''
+				LongItude:'',
+				//商品index
+				goods_index:1,
+				//商品排序
+				orderState_Goods:0,
+				//商品数据
+				goodsList:[],
+				//商铺index
+				shop_index:1,
+				//商铺排序
+				orderState_Shop:0,
+				//商铺数据
+				shopList:[]
 			};
 		},
 		onLoad(e) {
+			this.CircleID = e.CircleID;
+			this.CategoryID = e.CategoryID;
+			this.TradeID = e.TradeID
 			this.name = e.name;
 			this.imgUrl = e.imgUrl
 			this.LatItude = e.LatItude
 			this.LongItude = e.LongItude
+			
+			this.getGoodsList()
+			this.getShopList()
+		},
+		onReachBottom() {
+			if(this.isShop == true){
+				if(this.shopList.length<this.shop_index*10){
+					this.loadStatus = 'nomore';
+					return;
+				}else{
+					this.shop_index++;
+					this.loadStatus = 'loading';
+					// 模拟数据加载效果
+					setTimeout(() => {
+						this.getShopList();
+						this.loadStatus = 'loadmore';
+					}, 1000);
+				}
+			}else{
+				if(this.goodsList.length<this.goods_index*10){
+					this.loadStatus = 'nomore';
+					return;
+				}else{
+					this.goods_index++;
+					this.loadStatus = 'loading';
+					// 模拟数据加载效果
+					setTimeout(() => {
+						this.getGoodsList();
+						this.loadStatus = 'loadmore';
+					}, 1000);
+				}
+			}
+		},
+		methods:{
+			getGoodsList(callBack){
+				request('API_GetList_BusinessProductExchange_V2',{CircleID:this.CircleID,CategoryID:this.CategoryID,BusinessID:0,Keywords:'',
+					Longitude:this.LongItude,Latitude:this.LatItude,orderState:this.orderState_Goods,IsFL:'',IsBP:'',pageSize:10,		
+						index:this.goods_index}).then(res=>{
+							if(res.length<10){
+								this.loadStatus = 'nomore'
+							}
+							this.goodsList = [...this.goodsList,...res]
+							callBack && callBack()
+						})	
+			},
+			getShopList(callBack){
+				request('API_GetList_BusinessSearch_V2',{CircleID:this.CircleID,TradeID:this.TradeID,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,
+					orderState:this.orderState_Shop,pageSize:10,index:this.shop_index,ProductPageSize:5}).then(res=>{
+						if(res.length<10){
+							this.loadStatus = 'nomore'
+						}
+						this.shopList = [...this.shopList,...res]
+						callBack && callBack()
+					})									
+			},
+			toGoodsDetails(id,BusinessID,CategoryID){
+				uni.navigateTo({
+					url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&CategoryID=${CategoryID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			},
+			toShopDetails(BusinessID){
+				uni.navigateTo({
+					url:`/pages/shopdetails/shopdetails?BusinessID=${BusinessID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
+			}
 		}
 	}
 </script>
@@ -245,7 +315,6 @@
 				.top-content{
 					width: 100%;
 					height: 150rpx;
-					border-bottom: 1rpx solid #d1d1d1;
 					
 					.shop-name{
 						font-size: 30rpx;
@@ -286,6 +355,7 @@
 					display: flex;
 					justify-content: space-around;
 					align-items: center;
+					border-top: 1rpx solid #d1d1d1;
 					
 					.left-goods-amount{
 						display: flex;
@@ -316,6 +386,18 @@
 						flex-direction: column;
 						
 						.discount{
+							width: 340rpx;
+							font-size: 26rpx;
+							font-family: PingFang SC;
+							font-weight: 400;
+							color: #000000;
+							line-height: 32rpx;
+							text-overflow: ellipsis;
+							-webkit-line-clamp: 2;
+							-webkit-box-orient: vertical;
+							word-break: break-all;
+							overflow: hidden; 
+							display: -webkit-box;
 							margin-bottom: 10rpx;
 						}
 					}
@@ -389,15 +471,28 @@
 					position: relative;
 					
 					.goods-amount{
-						font-size: 32rpx;
-						color: red;
+						width: 100%;
+						display: flex;
+						justify-content: space-between;
+						align-items: center;
 						position: relative;
 						bottom: 15rpx;
+						
+						.goods-amount-left{
+							font-size: 32rpx;
+							color: red;
+						}
+						
+						.goods-amount-right{
+							font-size: 24rpx;
+							color: #c3c3c3;
+						}
 					}
 					
 					u-icon{
 						position: absolute;
-						left: 240rpx;
+						top: 40rpx;
+						left: 250rpx;
 					}
 					
 					.subsidy-box{						
