@@ -19,14 +19,14 @@
 			</scroll-view>
 			<scroll-view :scroll-top="scrollRightTop" scroll-y scroll-with-animation class="right-box" @scroll="rightScroll">
 				<view class="page-view">
-					<view class="class-item" :id="'item' + index" v-for="(item , index) in tabbar" :key="index">
+					<view class="class-item" :id="'item' + index" v-for="(item , index) in GoodsTypeList" :key="index">
 						<view class="item-title">
 							<text>{{item.C_Name}}</text>
 						</view>
 						<view class="item-container">
 							<view class="thumb-box" v-for="(item1, index1) in item.foods" :key="index1">
-								<image class="item-menu-image" :src="item1.icon" mode=""></image>
-								<view class="item-menu-name">{{item1.name}}</view>
+								<image class="item-menu-image" :src="item1.C_ImgUrl" mode=""></image>
+								<view class="item-menu-name">{{item1.C_Name}}</view>
 							</view>
 						</view>
 					</view>
@@ -64,26 +64,26 @@ import classifyData from './classify.data.js';
 		},
 		methods: {
 			async getGoodsTypeList(){
-				// await request('API_GetList_ProductCategory',{pid:0}).then(res=>{
-				// 	//需要构造的数据
-				// 	let typelist = []
-				// 	//大类别长度
-				// 	const typeListlength = res.length;
+				await request('API_GetList_ProductCategory',{pid:0}).then(res=>{
+					//需要构造的数据
+					let typelist = []
+					//大类别长度
+					const typeListlength = res.length;
 					
-				// 	for(let i=0;i<typeListlength;i++){
-				// 		typelist.push({C_Name:res[i].C_Name,C_IsMin:res[i].C_IsMin,C_ImgUrl:res[i].C_ImgUrl,C_Subtitle:res[i].C_Subtitle,foods:this.getInternal(res[i].id)})
-				// 	}
-					console.log(this.getInternal(32))
-				// })
+					for(let i=0;i<typeListlength;i++){
+						typelist.push({C_Name:res[i].C_Name,C_IsMin:res[i].C_IsMin,C_ImgUrl:res[i].C_ImgUrl,C_Subtitle:res[i].C_Subtitle,foods:this.getInternal(res[i].id)})
+					}
+					this.GoodsTypeList = typelist
+				})
 			},
 			getInternal(id){
+				var list = []
 				request('API_GetList_ProductCategory',{pid:id}).then(res=>{
-					this.data(res)	
+					for(let i=0;i<res.length;i++){
+						list.push({C_Name:res[i].C_Name,C_IsMin:res[i].C_IsMin,C_ImgUrl:res[i].C_ImgUrl,C_Subtitle:res[i].C_Subtitle,id:res[i].id})
+					}
 				})
-				
-				function data(data){
-					return data
-				}
+				return list
 			},
 			// 点击左边的栏目切换
 			async swichMenu(index) {
