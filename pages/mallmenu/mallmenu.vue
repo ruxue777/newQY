@@ -4,7 +4,7 @@
 			<u-navbar  title="补贴商城" ></u-navbar>
 		</view>
 		<view class="u-search-box">
-			<view class="u-search-inner">
+			<view class="u-search-inner" @click="toSeek">
 				<u-icon name="search" color="#909399" :size="28"></u-icon>
 				<text class="u-search-text">搜索</text>
 			</view>
@@ -24,7 +24,7 @@
 							<text>{{item.C_Name}}</text>
 						</view>
 						<view class="item-container">
-							<view class="thumb-box" v-for="(item1, index1) in item.foods" :key="index1">
+							<view class="thumb-box" v-for="(item1, index1) in item.foods" :key="index1" @click="toRecommend(item1.id,item1.C_Name)">
 								<image class="item-menu-image" :src="item1.C_ImgUrl" mode=""></image>
 								<view class="item-menu-name">{{item1.C_Name}}</view>
 							</view>
@@ -39,6 +39,7 @@
 import {request} from '@/api/request.js'	
 import classifyData from './classify.data.js';
 	export default {
+		props:['LatItude','LongItude'],
 		data() {
 			return {
 				scrollTop: 0, //tab标题的滚动条位置
@@ -84,6 +85,16 @@ import classifyData from './classify.data.js';
 					}
 				})
 				return list
+			},
+			toRecommend(id,name){
+				uni.navigateTo({
+					url:`/pages/recommend/recommend?pageType=2&LatItude=${this.LatItude}&LongItude=${this.LongItude}&titleName=${name}&CategoryID=${id}`
+				})
+			},
+			toSeek(){
+				uni.navigateTo({
+					url:`/pages/seek/seek?LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
 			},
 			// 点击左边的栏目切换
 			async swichMenu(index) {

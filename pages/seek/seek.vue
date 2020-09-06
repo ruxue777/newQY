@@ -45,10 +45,10 @@
 				LongItude:0
 			}
 		},
-		onLoad(options)
+		onLoad(e)
 		{
-			this.LatItude = options.LatItude
-			this.LongItude = options.LongItude
+			this.LatItude = e.LatItude
+			this.LongItude = e.LongItude
 		},
 		onShow()
 		{

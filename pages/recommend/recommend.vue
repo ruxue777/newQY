@@ -8,7 +8,7 @@
 				<view class="nda2">
 					<span v-if="pageType == 0">每日推荐</span>
 					<span v-if="pageType == 1">主打产品</span>
-					<span v-if="pageType == 2">补贴商城</span>
+					<span v-if="pageType == 2">{{titleName}}</span>
 				</view>
 			</view>
 		
@@ -22,7 +22,7 @@
 		</view>
 		<view class="sp">
 			<view class="spnk">
-				<view class="cp" v-for="(item,index) in goodlsListData" :key="index" @click="navItemClick(item.id,item.Latitude,item.Longitude,item.BusinessID)">
+				<view class="cp" v-for="(item,index) in goodlsListData" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
 					<view class="s"><image :src="item.BP_ImgUrl"></image></view>
 					<view class="x">
 						<view class="diyi1"><p class="biaoti">{{item.BP_Name}}</p></view>
@@ -61,10 +61,14 @@ import {request} from '@/api/request.js'
 				index:0,
 				currindex:0,
 				//经度
-				LongItude:'114.92',
+				LongItude:'',
 				//纬度
 				LatItude:'',
 				pageType:'',
+				//标题名称
+				titleName:'',
+				//商品类别
+				CategoryID:0,
 				list:[
 					{
 						name:'综合'
@@ -98,6 +102,8 @@ import {request} from '@/api/request.js'
 						this.getRecommendedDaily()
 					}else if(this.pageType == 1){
 						this.getBaoPingData()
+					}else{
+						this.getGoodsList()
 					}
 					this.loadStatus = 'loadmore';
 				}, 1000);
@@ -113,6 +119,8 @@ import {request} from '@/api/request.js'
 				this.getRecommendedDaily()
 			}else if(this.pageType == 1){
 				this.getBaoPingData()
+			}else{
+				this.getGoodsList()
 			}
 			
 		},
@@ -121,6 +129,8 @@ import {request} from '@/api/request.js'
 			this.LongItude = e.LongItude
 			this.LatItude = e.LatItude
 			this.pageType = e.pageType
+			this.titleName = e.titleName
+			this.CategoryID = e.CategoryID 
 			
 			if(e.pageType == 0)
 			{
@@ -132,7 +142,7 @@ import {request} from '@/api/request.js'
 			}
 			else if(e.pageType == 2)
 			{
-				this.getFuLiData()
+				this.getGoodsList()
 			}
 		},
 		methods:{
@@ -144,20 +154,38 @@ import {request} from '@/api/request.js'
 			back(){
 				uni.navigateBack()
 			},
-			navItemClick(workerId,G_Latitude,G_Longitude,B_BusinessID){
-				
+			toGoodsDetails(id,BusinessID,CategoryID){
+				uni.navigateTo({
+					url:`/pages/goodsdetails/goodsdetails?id=${id}&BusinessID=${BusinessID}&CategoryID=${CategoryID}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+				})
 			},
 			//每日推荐
 			getRecommendedDaily(callBack){
-				request('API_GetList_BusinessProductSearch_V2',{CategoryID:0,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:-1,IsBP:-1,
-					pageSize:10,index:this.Index}).then(res=>{		
+				request('API_GetList_BusinessProductSearch_V2',{CategoryID:this.CategoryID,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:-1,IsBP:-1,
+					pageSize:10,index:this.Index}).then(res=>{	
+						if(res.length<10){
+							this.loadStatus = 'nomore'
+						}
 						this.goodlsListData = [...this.goodlsListData,...res]
 						callBack && callBack()		
 				})
 			},
 			getBaoPingData(callBack){
-				request('API_GetList_BusinessProductSearch_V2',{CategoryID:0,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:0,IsBP:0,
-					pageSize:10,index:this.Index}).then(res=>{		
+				request('API_GetList_BusinessProductSearch_V2',{CategoryID:this.CategoryID,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:0,IsBP:0,
+					pageSize:10,index:this.Index}).then(res=>{
+						if(res.length<10){
+							this.loadStatus = 'nomore'
+						}
+						this.goodlsListData = [...this.goodlsListData,...res]
+						callBack && callBack()		
+				})
+			},
+			getGoodsList(callBack){
+				request('API_GetList_BusinessProductSearch_V2',{CategoryID:this.CategoryID,CircleID:0,BusinessID:0,Keywords:'',Longitude:this.LongItude,Latitude:this.LatItude,orderState:2,IsFL:1,IsBP:0,
+					pageSize:10,index:this.Index}).then(res=>{
+						if(res.length<10){
+							this.loadStatus = 'nomore'
+						}
 						this.goodlsListData = [...this.goodlsListData,...res]
 						callBack && callBack()		
 				})

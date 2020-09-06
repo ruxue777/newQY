@@ -47,7 +47,7 @@ import {request} from '@/api/request.js'
 			},
 			toMallmenu(){
 				uni.navigateTo({
-					url:'/pages/mallmenu/mallmenu'
+					url:`/pages/mallmenu/mallmenu?LatItude=${this.LatItude}&LongItude=${this.LongItude}`
 				})
 			}
 		}
