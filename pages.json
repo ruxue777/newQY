@@ -4,7 +4,7 @@
 		},
 	"pages": [ 
 		// {
-		// 	"path" : "pages/excellent/excellent",
+		// 	"path" : "pages/userSetting/contactus",
 		// 	"style" : {
 		// 		"navigationStyle": "custom"
 		// 	}
@@ -245,6 +245,12 @@
         }
         ,{
             "path" : "pages/mallmenu/mallmenu",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/userSetting/contactus",
             "style" : {
 				"navigationStyle": "custom"
 			}

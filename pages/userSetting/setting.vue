@@ -50,7 +50,7 @@
 				</u-grid-item>
 				<u-grid-item @click="monitor('message')">
 					<u-icon name="info-circle" :size="46"></u-icon>
-					<view class="grid-text">关于平台</view>
+					<view class="grid-text">联系我们</view>
 				</u-grid-item>
 				<u-grid-item @click="monitor('exit')">
 					<u-icon name="close-circle" color="" :size="46"></u-icon>
@@ -157,6 +157,11 @@ import md5Libs from "uview-ui/libs/function/md5";
 					break;
 					case 'exit':
 						this.exit()
+					break;
+					case 'message':
+						uni.navigateTo({
+							url:'/pages/userSetting/contactus'
+						})
 					break;
 				}
 			},
