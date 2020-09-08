@@ -20,7 +20,7 @@
 				<view class="bonus-box">
 					<view class="bonus-box-top">
 						<image src="../../../static/image/bonus-box-img.png" class="bonus-box-img"></image>
-						<text class="awarded-amount">团队奖9名,个人奖18名</text>
+						<text class="awarded-amount">团队奖9名，个人奖18名</text>
 					</view>
 					<view class="bonus-box-bottom">
 						<view class="prize-pool-amount">
@@ -43,13 +43,13 @@
 				<view class="countdown-box">
 					<view class="countdown-middle">
 						<view class="countdown-middle-time">
-							<view class="time">0</view>
+							<view class="time">{{countdownDetails.leftd}}</view>
 							<text class="text">天</text>
-							<view class="time">0</view>
+							<view class="time">{{countdownDetails.lefth}}</view>
 							<text class="text">时</text>
-							<view class="time">0</view>
+							<view class="time">{{countdownDetails.leftm}}</view>
 							<text class="text">分</text>
-							<view class="time">10</view>
+							<view class="time">{{countdownDetails.lefts}}</view>
 						</view>
 						<view class="countdown-tips">投票活动进行中</view>
 					</view>
@@ -67,6 +67,37 @@
 						</view>
 					</view>
 				</view>
+			
+				<view class="rank-box">
+					<view class="rank-top-select">
+						<view class="rank-top-select-left" @click="cur = 0" :class="cur==0 ? 'selected':''">团队排行榜</view>
+						<view class="rank-top-select-right" @click="cur = 1" :class="cur==1 ? 'selected':''">选手排行榜</view>
+					</view>
+					
+					<view class="rank-middle">
+						<view class="player-box">
+							<image src="../../../static/image/img4.jpg" ></image>
+							<view class="player-content">
+								<text class="player-name">我爱跳广场舞</text>
+								<view class="Reward">
+									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
+								</view>
+								<text class="votes">2098票</text>
+							</view>
+						</view>
+						<view class="player-box">
+							<image src="../../../static/image/img4.jpg" ></image>
+							<view class="player-content">
+								<text class="player-name">我爱跳广场舞</text>
+								<view class="Reward">
+									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
+								</view>
+								<text class="votes">2098票</text>
+							</view>
+						</view>
+						
+					</view>
+				</view>
 			</view>
 		</view>
 	</view>
@@ -77,23 +108,50 @@ import {request} from '@/api/request.js'
 	export default {
 		data() {
 			return {
-				//
+				//顶部背景
 				background:{
 					backgroundColor: '#FB5C6A',
 				},
+				//按钮样式
+				customStyle:{
+					backgroundColor:'#FA5E6A',
+					color:'#FFF'
+				},
+				cur:0,
 				//活动详情数据
-				DanceDetails:[]
+				DanceDetails:[],
+				//
+				countdownDetails:{}
 			};
 		},
 		onLoad() {
 			this.getDanceDetails()
+			
+			//倒计时定时器
+			setInterval(()=>{
+				this.countdown()
+			},1000)
 		},
 		methods:{
 			getDanceDetails(){
 				request('API_GetInfo_SpecialSubject_Reward',{MSS_id:0}).then(res=>{
 					this.DanceDetails = res
 				})
-			}
+			},
+			countdown(){
+				//获得当前时间
+				const nowtime = new Date();
+				//结束时间
+				const endtime = new Date(this.DanceDetails.MSS_CloseTime)
+				
+				const lefttime = endtime.getTime() - nowtime.getTime();  //距离结束时间的毫秒数
+				let	leftd = Math.floor(lefttime/(1000*60*60*24));  //计算天数
+				let	lefth = Math.floor(lefttime/(1000*60*60)%24);  //计算小时数
+				let	leftm = Math.floor(lefttime/(1000*60)%60);  //计算分钟数
+				let	lefts = Math.floor(lefttime/1000%60);  //计算秒数				
+				
+				this.countdownDetails = {leftd:leftd,lefth:lefth,leftm:leftm,lefts:lefts}
+			},
 		}
 	}
 </script>
@@ -114,6 +172,7 @@ page{
 		position: fixed;
 		right: 0;
 		top: 230rpx;
+		z-index: 119;
 		
 		.activity-rule{
 			width: 60rpx;
@@ -149,10 +208,10 @@ page{
 	}
 	
 	.background-img{
-		width: 100%;
+		width: 750rpx;
 		height: 750rpx;
 		image{
-			width: 100%;
+			width: 750rpx;
 			height: 750rpx;
 		}
 	}
@@ -332,7 +391,7 @@ page{
 					width: 635rpx; 
 					height: 60rpx;
 					border:1rpx solid #FC3644;
-					border-radius: 15rpx;
+					border-radius: 20rpx;
 					display: flex;
 					justify-content: space-between;
 					align-items: center;
@@ -353,7 +412,7 @@ page{
 						text-align: center;
 						line-height: 60rpx;
 						border-top-right-radius: 15rpx;
-						border-bottom-right-radius: 15rpx;
+						border-bottom-right-radius: 20rpx;
 						
 						text{
 							font-size: 24rpx;
@@ -364,7 +423,115 @@ page{
 					}
 				}
 			}
+		
+			.rank-box{
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				
+				.rank-top-select{
+					width: 630rpx;
+					height: 150rpx;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					.rank-top-select-left,.rank-top-select-right{
+						width: 300rpx;
+						height: 120rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						border-radius: 15rpx;
+						-webkit-border-radius: 15rpx;
+						-moz-border-radius: 15rpx;
+						background-color: #F9ACB2;
+						font-size: 30rpx;
+						font-family: PingFang SC;
+						font-weight: 600;
+						color: #FFFFFF;
+					}
+					
+					.selected{
+						background-color: #F13C61;
+					}
+				}
+			
+				.rank-middle{
+					width: 630rpx;
+					display: flex;
+					flex-wrap: wrap;
+					justify-content: space-between;
+					margin: 20rpx 0;
+					
+					.player-box{
+						width: 300rpx;
+						height: 500rpx;
+						border-radius: 10rpx;
+						border: 2rpx solid #FF7172;
+						margin-bottom: 30rpx;
+						display: flex;
+						flex-direction: column;
+						justify-content: flex-start;
+						align-items: center;
+						padding: 10rpx;
+						
+						image{
+							width: 280rpx;
+							height: 280rpx;
+							border-radius: 10px;
+						}
+						
+						.player-content{
+							width: 200rpx;
+							height: 180rpx;
+							margin-top: 35rpx;
+							display: flex;
+							flex-direction: column;
+							justify-content: space-around;
+							align-items: center;r
+							
+							.player-name{
+								font-size: 30rpx;
+								font-family: PingFang SC;
+								font-weight: 600;
+								color: #333333;
+								line-height: 38rpx;
+							}
+							
+							.Reward{
+								width: 200rpx;
+								height: 80rpx;
+							}
+							
+							.votes{
+								font-size: 30rpx;
+								font-family: SourceHanSansCN;
+								font-weight: 500;
+								color: #FF1A1B;
+								line-height: 38rpx;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 }
+// .ribbon {
+//   -webkit-box-sizing: content-box;
+//   -moz-box-sizing: content-box;
+//   box-sizing: content-box;
+//   width: 0;
+//   height: 100px;
+//   border: 50px solid #1abc9c;
+//   border-top: 0 solid;
+//   border-bottom: 35px solid rgba(0,0,0,0);
+//   font: normal 100%/normal Arial, Helvetica, sans-serif;
+//   color: rgba(0,0,0,1);
+//   -o-text-overflow: clip;
+//   text-overflow: clip;
+// }
 </style>
