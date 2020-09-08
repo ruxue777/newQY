@@ -1,7 +1,8 @@
 <template>
 	<view class="main">
 		
-		<image class="act-img" src="../../../static/image/activity.png"></image>
+		<image class="act-img" :src="IndexImage[0].ADR_ImgUrl"></image>
+		<image class="act-img" :src="IndexImage[0].ADR_ImgUrl"></image>
 		<view class="hot">
 			<image class="act-hot" src="../../../static/image/index_activity.png"></image>
 			<view class="title">热门产品</view>
@@ -12,6 +13,7 @@
 
 <script>
 	export default {
+		props:['IndexImage'],
 		data() {
 			return {
 				
@@ -23,7 +25,6 @@
 <style lang="less">
 .main{
 	width: 100%;
-	height: 220rpx;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -31,6 +32,7 @@
 	.act-img{
 		width: 690rpx;
 		height: 150rpx;
+		margin-top: 10rpx;
 	}
 	
 	.hot{

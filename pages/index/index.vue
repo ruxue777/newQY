@@ -5,7 +5,7 @@
 		<centralNav :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
 		<!-- <zhixunlan></zhixunlan> -->
 		<centGoods :HotListData="HotListData" :LatItude="LatItude" :LongItude="LongItude"></centGoods>
-		<indexImage></indexImage>
+		<indexImage :IndexImage="IndexImage"></indexImage>
 		 
 		<!-- 瀑布流不支持组件形式 -->
 		<view class="wrap">
@@ -103,15 +103,19 @@ export default {
 			LocationData:'',
 			loadStatus: 'loadmore',
 			flowList: [],
+			IndexImage:[],
 			//当前页面数量
 			Index:1
 		};
 	},
 	onLoad() {
-		this.getLocationData()
+		this.getLocationData();
 		this.getSwiperData();
 		this.getShopListData();
 		this.getHotListData();
+		this.getIndexImage();
+		//ui库版本号
+		console.log(this.$u.config.v);
 		
 	},
 	//下拉刷新 
@@ -151,11 +155,15 @@ export default {
 			request('API_GetList_IndexBanner').then(res=>{	
 				this.swiperData = res
 			})
-			console.log(this.$u.config.v);
 		},
 		getShopListData(){
 			request('API_GetList_IndexNavTrade',{pageSize:4}).then(res=>{
 				this.ShopListData = res
+			})
+		},
+		getIndexImage(){
+			request('API_GetList_ADRecord_CallIndex',{CallIndex:'ad0004'}).then(res=>{
+				this.IndexImage = res
 			})
 		},
 		getHotListData(){
