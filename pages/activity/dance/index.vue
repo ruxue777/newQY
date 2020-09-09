@@ -20,18 +20,14 @@
 				<view class="bonus-box">
 					<view class="bonus-box-top">
 						<image src="../../../static/image/bonus-box-img.png" class="bonus-box-img"></image>
-						<text class="awarded-amount">团队奖9名，个人奖18名</text>
+						<text class="awarded-amount">团队奖{{DanceDetails.MSS_BusinessPrizeNums}}名，个人奖{{DanceDetails.MSS_ProductPrizeNums}}名</text>
 					</view>
 					<view class="bonus-box-bottom">
 						<view class="prize-pool-amount">
 							<text class="prize-pool-amount-text">奖金</text>
 							
-							<view class="prize-pool-amount-number">
-								<view class="middle-amount">1</view>
-								<view class="middle-amount">1</view>
-								<view class="middle-amount">1</view>
-								<view class="middle-amount">0</view>
-								<view class="middle-amount">9</view>
+							<view class="prize-pool-amount-number" v-for="(item,index) in prize_Amount" :key="index">
+								<view class="middle-amount">{{item}}</view>
 							</view>
 							
 							<text class="prize-pool-amount-text">元</text>
@@ -74,29 +70,56 @@
 						<view class="rank-top-select-right" @click="cur = 1" :class="cur==1 ? 'selected':''">选手排行榜</view>
 					</view>
 					
-					<view class="rank-middle">
+					<view class="rank-middle" v-if="cur == 0" v-for="(item,index) in TeamDetails" :key="index">
 						<view class="player-box">
-							<image src="../../../static/image/img4.jpg" ></image>
+							<view class="ribbon">{{index+1}}</view>							
+							<image :src="item.ImgUrl" ></image>
 							<view class="player-content">
-								<text class="player-name">我爱跳广场舞</text>
+								<text class="player-name">{{item.BusinessName}}</text>
 								<view class="Reward">
 									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
 								</view>
-								<text class="votes">2098票</text>
+								<text class="votes">{{item.MSSBR_Count}}票</text>
 							</view>
 						</view>
-						<view class="player-box">
-							<image src="../../../static/image/img4.jpg" ></image>
-							<view class="player-content">
-								<text class="player-name">我爱跳广场舞</text>
-								<view class="Reward">
-									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
-								</view>
-								<text class="votes">2098票</text>
-							</view>
-						</view>
-						
 					</view>
+					
+					<view class="rank-middle" v-else v-for="(item,index1) in PersonalDetails" :key="index1" @click="toPersonal(item.ProductID,item.BusinessID,item.BP_Name)">
+						<view class="player-box">
+							<view class="ribbon">{{index1+1}}</view>							
+							<image :src="item.BP_ImgUrl" ></image>
+							<view class="player-content">
+								<text class="player-name">{{item.BP_Name}}</text>
+								<view class="Reward">
+									<u-button :custom-style="customStyle" @click="toPersonal(item.ProductID,item.BusinessID,item.BP_Name)">打赏</u-button>
+								</view>
+								<text class="votes">{{item.MSSPR_Count }}票</text>
+							</view>
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+	
+		<view class="bottom-navt-box">
+			<view class="bottom-navt-content" >
+				<view class="middle">
+					<text class="amount-top">{{DanceDetails.MSS_BusinessNums}}</text>
+					<text class="amount-bottom">参数团队(个)</text>
+				</view> 
+			</view>
+			
+			<view class="bottom-navt-content frame">
+				<view class="middle">
+					<text class="amount-top">{{DanceDetails.MSS_ProductNums}}</text>
+					<text class="amount-bottom">参数选手(人)</text>
+				</view>
+			</view>
+			
+			<view class="bottom-navt-content" >
+				<view class="middle">
+					<text class="amount-top">{{DanceDetails.MSS_TotalCount}}</text>
+					<text class="amount-bottom">打赏次数(次)</text>
 				</view>
 			</view>
 		</view>
@@ -120,13 +143,23 @@ import {request} from '@/api/request.js'
 				cur:0,
 				//活动详情数据
 				DanceDetails:[],
-				//
-				countdownDetails:{}
+				//奖池金额
+				prize_Amount:0,
+				//活动期数
+				MSS_id:0,
+				//倒计时
+				countdownDetails:{},
+				//团队数据
+				TeamDetails:[],
+				TeamIndex:1,
+				//个人数据
+				PersonalDetails:[],
+				PersonalIndex:1
 			};
 		},
 		onLoad() {
 			this.getDanceDetails()
-			
+				
 			//倒计时定时器
 			setInterval(()=>{
 				this.countdown()
@@ -136,6 +169,27 @@ import {request} from '@/api/request.js'
 			getDanceDetails(){
 				request('API_GetInfo_SpecialSubject_Reward',{MSS_id:0}).then(res=>{
 					this.DanceDetails = res
+					this.MSS_id = res.MSS_id
+					let prize_Amount = Math.ceil(res.MSS_TotalAmount).toString() 
+					this.prize_Amount = prize_Amount
+				
+					this.getTeamDetails(res.MSS_id);
+					this.getPersonalDetails(res.MSS_id);
+				})
+			},
+			getTeamDetails(MSS_id){
+				request('API_GetList_SpecialSubject_BusinessRanking_Reward',{MSS_id:MSS_id,Keywords:'',pageSize:10,index:this.TeamIndex}).then(res=>{
+					this.TeamDetails = res
+				})
+			},
+			getPersonalDetails(MSS_id){
+				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:MSS_id,BusinessID:0,Keywords:'',pageSize:10,index:this.PersonalIndex}).then(res=>{
+					this.PersonalDetails = res
+				})
+			},
+			toPersonal(ProductID,BusinessID,BP_Name){
+				uni.navigateTo({
+					url:`/pages/activity/dance/personal?ProductID=${ProductID}&BusinessID=${BusinessID}&BP_Name=${BP_Name}&MSS_id=${this.MSS_id}`
 				})
 			},
 			countdown(){
@@ -477,6 +531,27 @@ page{
 						justify-content: flex-start;
 						align-items: center;
 						padding: 10rpx;
+						position: relative;
+						
+						.ribbon {
+							-webkit-box-sizing: content-box;
+							-moz-box-sizing: content-box;
+							box-sizing: content-box;
+							width: 0;
+							height: 40rpx;
+							border: 20rpx solid #FA5E6A;
+							border-top: 0 solid;
+							border-bottom: 15rpx solid rgba(0,0,0,0);
+							font: normal 100%/normal Arial, Helvetica, sans-serif;
+							color: #FFFFFF;
+							-o-text-overflow: clip;
+							text-overflow: clip;
+							position: absolute;
+							left: 30rpx;
+							display: flex;
+							justify-content: center;
+							align-items: center;
+						}
 						
 						image{
 							width: 280rpx;
@@ -519,19 +594,54 @@ page{
 			}
 		}
 	}
+
+	.bottom-navt-box{
+		width: 100%;
+		height: 130rpx;
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		background-color: #FFFFFF;
+		position: fixed;
+		bottom: 0;
+		z-index: 165;
+		border-top: 1rpx solid #e8e8e8;
+		
+		.bottom-navt-content{
+			width: 250rpx;
+			height: 80rpx;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			
+			.middle{
+				width: 160rpx;
+				height: 80rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				
+				.amount-top{
+					font-size: 40rpx;
+					font-family: SourceHanSansCN;
+					font-weight: 400;
+					color: #FF2A3A;
+				}
+				
+				.amount-bottom{
+					font-size: 24rpx;
+					font-family: Adobe Heiti Std;
+					font-weight: normal;
+					color: #343434;
+				}
+			}			
+		}
+		
+		.frame{
+			border-left: 1rpx solid #D8D8D8;
+			border-right: 1rpx solid #D8D8D8;
+		}
+	}
 }
-// .ribbon {
-//   -webkit-box-sizing: content-box;
-//   -moz-box-sizing: content-box;
-//   box-sizing: content-box;
-//   width: 0;
-//   height: 100px;
-//   border: 50px solid #1abc9c;
-//   border-top: 0 solid;
-//   border-bottom: 35px solid rgba(0,0,0,0);
-//   font: normal 100%/normal Arial, Helvetica, sans-serif;
-//   color: rgba(0,0,0,1);
-//   -o-text-overflow: clip;
-//   text-overflow: clip;
-// }
 </style>

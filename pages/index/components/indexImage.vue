@@ -2,7 +2,7 @@
 	<view class="main">
 		
 		<image class="act-img" :src="IndexImage[0].ADR_ImgUrl"></image>
-		<image class="act-img" :src="IndexImage[0].ADR_ImgUrl"></image>
+		<image class="act-img" :src="IndexImage[1].ADR_ImgUrl" @click="toActivity"></image>
 		<view class="hot">
 			<image class="act-hot" src="../../../static/image/index_activity.png"></image>
 			<view class="title">热门产品</view>
@@ -18,6 +18,13 @@
 			return {
 				
 			};
+		},
+		methods:{
+			toActivity(){
+				uni.navigateTo({
+					url:'/pages/activity/dance/index'
+				})
+			}
 		}
 	}
 </script>

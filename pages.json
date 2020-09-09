@@ -3,12 +3,12 @@
 			"^u-(.*)": "uview-ui/components/u-$1/u-$1.vue"
 		},
 	"pages": [ 
-		{
-			"path" : "pages/activity/dance/index",
-			"style" : {
-				"navigationStyle": "custom"
-			}
-		},
+		// {
+		// 	"path" : "pages/activity/dance/index",
+		// 	"style" : {
+		// 		"navigationStyle": "custom"
+		// 	}
+		// },
 		{
 			"path": "pages/index/index",
 			"style": {
@@ -255,12 +255,24 @@
 				"navigationStyle": "custom"
 			}
         }
-   //      ,{
-   //          "path" : "pages/activity/dance/index",
-   //          "style" : {
-			// 	"navigationStyle": "custom"
-			// }
-   //      }
+        ,{
+            "path" : "pages/activity/dance/index",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/activity/dance/personal",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
+        ,{
+            "path" : "pages/activity/dance/team",
+            "style" : {
+				"navigationStyle": "custom"
+			}
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
