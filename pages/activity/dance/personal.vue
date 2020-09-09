@@ -62,29 +62,87 @@
 			</view>
 			<view class="reward-box">
 				<view class="button">
-					<u-button shape="circle" ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle" @click="show = true">马上打赏</u-button>
+					<u-button shape="circle" ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle" @click="rewardPresonal">马上打赏</u-button>
 				</view>
 			</view>
 		</view>	
 	
 	<!-- 反馈组件 -->
-	<u-popup v-model="show" mode="center" border-radius="10">
+	<u-toast ref="uToast" />
+	<u-popup v-model="show" mode="center" border-radius="10" closeable=true>
 		<view class="popup-middle">
+						
 			<view class="pop-top">
 				<view class="head-img">
 					<image src="../../../static/image/img4.jpg"></image>
 				</view>
+				
+				<view class="text-box">
+					<text class="top">向{{PersonalDetails.BP_Name}}打赏</text>
+					<text class="bottom">每投票一次需打赏{{PersonalDetails.BP_Amount}}元</text>
+				</view>
 			</view>
 			
 			<view class="pop-middle">
-				
+				<text>打赏金额</text>
+				<view class="amount-select">
+					<image src="../../../static/image/sub.png" @click="reward_Amount--"></image>
+					<input type="text" v-model="reward_Amount"/>
+					<image src="../../../static/image/add.png" @click="reward_Amount++"></image>
+				</view>
 			</view>
 			
 			<view class="pop-bottom">
-				
+				<view class="button">
+					<u-button shape="circle" ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle" @click="sunmitOrder">立即打赏{{(PersonalDetails.BP_Amount * reward_Amount).toFixed(2)}}元</u-button>
+				</view>
 			</view>
 		</view>
 	</u-popup>
+	
+	<u-popup v-model="pop_pay" mode="bottom" border-radius="15" closeable="true" close-icon-pos="top-left">
+		<view class="popup-content">
+			<view class="top">
+				<text class="top-title">付款详情</text>
+				<text class="pay-amount">实付:￥<text class="btn">{{popup_Amount}}</text></text>
+			</view>
+			
+			<view class="middle">
+				<view class="subsidy">
+					<view class="left-cont">
+						<image src="../../../static/image/coupon.png"></image>
+						<text>{{DeductionTips}}</text>
+						<view class="title">补贴抵扣</view>
+					</view>
+					<view class="right-cont">
+						<u-switch v-model="deductionSwitch" size='40' active-color="#fa3534" :disabled="isDeduction"></u-switch>
+					</view>
+				</view>
+				
+				<view class="payment-method">
+					<view class="payment-method-title">选择付款方式</view>
+					<view class="payment-method-content">						
+						<view class="wx-account Selected">
+							<view class="left">
+								<image class="left-img-0" src="../../../static/image/pop_wxred.png"></image>
+								<text>微信支付</text>
+							</view>
+							<view class="right">
+								<u-icon class="btn" name="checkmark-circle-fill" size="38"></u-icon>
+							</view>		
+						</view>
+					</view>
+				</view>
+			</view>
+			
+			<view class="bottom">
+				<view class="button" @click="Pay()">
+					立即支付
+				</view>
+			</view>
+		</view>
+	</u-popup>
+	
 	</view>
 </template>
 
@@ -105,9 +163,32 @@ import {request} from '@/api/request.js'
 				},
 				//弹窗
 				show:false,
+				//用户信息
+				userInfo:[],
 				//选手详情
-				PersonalDetails:[]
+				PersonalDetails:[],
+				//打赏次数
+				reward_Amount:1,
+				//支付弹窗
+				pop_pay:false,
+				//抵扣开关
+				isDeduction:false,
+				//支付弹窗付款金额
+				popup_Amount:0.00,
+				DeductionTips:''
 			};
+		},
+		watch:{
+			reward_Amount(){
+				if(this.reward_Amount <1){
+					this.reward_Amount = 1;
+					
+					this.$refs.uToast.show({
+						title:'不能小于1哦',
+						type: 'warning'
+					})				
+				}
+			}
 		},
 		onLoad() {
 			this.getPersonalDetails()
@@ -117,6 +198,63 @@ import {request} from '@/api/request.js'
 				request('API_GetInfo_BusinessProductSearch',{ProductID:this.ProductID,Longitude:114,Latitude:25}).then(res=>{
 					this.PersonalDetails = res
 				})
+			},
+			rewardPresonal(){
+				const userInfo = uni.getStorageSync("globalUser");
+				if(!userInfo){
+					uni.showModal({
+						title:'您还没有登录哦',
+						confirmText:'去登录',
+						success:(res=>{
+							if(res.cancel)
+							{
+								return
+							}
+							else if(res.confirm)
+							{
+								uni.navigateTo({
+									url:'/pages/user/signIn'
+								})
+							}
+						})
+					})
+				}
+				else{
+					this.userInfo = userInfo;
+					this.show = true
+				}
+			},
+			sunmitOrder(){
+				request('API_AddBusinessProduct_V4',{user_id:this.userInfo.user_id,ProductID:this.ProductID,Count:this.reward_Amount,UserName:'',
+					Mobile:this.userInfo.mobile,Address:'',ReceiveType:0,IsIntegralConsume:this.PersonalDetails.IsOffset}).then(res=>{
+						
+						if(res.result_code === 'SUCCESS'){
+							this.popup_Amount = (res.BPR_AppAmount - res.BPR_OffsetAmount).toFixed(2); 							
+							
+							if(res.BPR_OffsetAmount == 0){
+								this.DeductionTips = '不使用或不支持抵扣'
+								this.isDeduction = true
+								this.pop_pay = true
+							}else{
+								this.isDeductions()
+								this.pop_pay = true
+							}
+						}
+						else{
+							this.$refs.uToast.show({
+								title:res.result_content,
+								type: 'error'
+							})
+						}	
+				})	
+			},
+			//判断是否开启抵扣
+			isDeductions(){
+				if(this.deductionSwitch == true && this.isDeduction == false){
+					this.DeductionTips = `补贴账户已抵扣￥${this.reward_Amount * this.PersonalDetails.BPR_OffsetAmount}`
+				}else{
+					this.DeductionTips = `不使用或不支持抵扣`
+				}
 			},
 			back(){
 				uni.navigateBack()
@@ -341,17 +479,19 @@ page{
 		align-items: center;
 		justify-content: flex-end;
 		
-		
 		.pop-top{
 			width: 100%;
 			height: 325rpx;
 			position: relative;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 			
 			.head-img{
 				width: 280rpx;
 				height: 280rpx;
 				position: absolute;
-				top: -140rpx;
+				top: -120rpx;
 				left: 28%;
 				border-radius: 50%;
 				background-color: #FFFFFF;
@@ -364,16 +504,290 @@ page{
 					z-index: 20202;
 				}
 			}
+			
+			.text-box{
+				width: 450rpx;
+				height: 110rpx;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: center;
+				position: absolute;
+				top: 180rpx;
+				
+				.top{
+					font-size: 42rpx;
+					font-family: Adobe Heiti Std;
+					font-weight: normal;
+					color: #343434;
+					line-height: 39rpx;
+				}
+				
+				.bottom{
+					font-size: 28rpx;
+					font-family: PingFang SC;
+					font-weight: 400;
+					color: #999999;
+					line-height: 39rpx;
+				}
+			}
 		}
 		
 		.pop-middle{
 			width: 540rpx;
 			height: 190rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+			border-radius: 10rpx;
+			box-shadow:0 0 10rpx #dcdcdc;
+			
+			text{
+				font-size: 30rpx;
+				font-family: PingFang SC;
+				font-weight: 500;
+				color: #000000;
+			}
+			
+			.amount-select{
+				width: 480rpx;
+				height: 110rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				input{
+					width: 260rpx;
+					height: 70rpx;
+					text-align:center;
+					background: #F2F2F2;
+					border-radius: 10rpx;
+					margin-left: -10rpx;
+					margin-right: -10rpx;
+					font-size: 36rpx;
+					font-family: PingFang SC;
+					font-weight: 500;
+					color: #000000;
+				}
+				
+				image{
+					width: 110rpx;
+					height: 110rpx;
+				}
+			}
 		}
 		
 		.pop-bottom{
 			width: 100%;
 			height: 190rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			.button{
+				width: 460rpx;
+				height: 90rpx;
+			}
+		}
+	}
+	
+	.popup-content{
+		width: 100%;
+		height: 1000rpx;
+		background-color: #fff;
+		
+		.top{
+			width: 100%;
+			height: 210rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+			align-items: center;
+			
+			.top-title{
+				font-size:36rpx;
+				font-family:PingFang SC;
+				font-weight:500;
+				color:rgba(0,0,0,1);
+			}
+			
+			.pay-amount{
+				font-size:30rpx;
+				font-family:PingFang SC;
+				font-weight:500;
+				color:rgba(0,0,0,1);
+				
+				.btn{
+					font-size:50rpx;
+					font-family:PingFang SC;
+					font-weight:500;
+					color:rgba(0,0,0,1);
+				}
+			}
+		}
+		
+		.middle{
+			width: 100%;
+			height: 580rpx;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			border-radius:20px;
+			-moz-box-shadow:0px 0px 10px #e1e1e1; -webkit-box-shadow:0px 0px 10px #e1e1e1; box-shadow:0px 0px 10px #e1e1e1;
+			
+			.subsidy{
+				width: 670rpx;
+				height: 80rpx;
+				border-bottom: 4rpx solid rgba(250, 250, 250, 1);
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				
+				.left-cont{
+					width: 520rpx;
+					height: 100%;
+					display: flex;
+					justify-content: space-between;
+					align-items: center;
+					
+					image{
+						width: 40rpx;
+						height: 30rpx;
+					}
+					
+					text{
+						font-size:28rpx;
+						font-family:PingFang SC;
+						font-weight:300;
+						color:rgba(255,48,0,1);
+						line-height:46rpx;
+					}
+					
+					.title{
+						width:90rpx;
+						height:25rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						background:rgba(255,104,104,1);
+						border-radius:5rpx 5rpx 5rpx 0rpx;						
+						font-size:20rpx;
+						font-family:Adobe Heiti Std;
+						font-weight:normal;
+						color:rgba(255,255,255,1);
+						line-height:40rpx;
+					}
+				}
+				
+				.right-cont{
+					width: 150rpx;
+					height: 100%;
+					display: flex;
+					justify-content: flex-end;
+					align-items: center;
+				}
+			}
+			
+			.payment-method{
+				width: 670rpx;
+				height: 500rpx;
+				
+				.payment-method-title{
+					width: 100%;
+					height: 80rpx;
+					display: flex;
+					align-items: center;
+					font-size:30rpx;
+					font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+					font-weight:500;
+					color:rgba(51,51,51,1);
+				}
+				
+				.payment-method-content{
+					width: 100%;
+					height: 420rpx;
+					display: flex;
+					flex-direction: column;
+					justify-content: space-around;
+					align-items: center;
+					image{
+						width: 40rpx;
+						height: 40rpx;
+					}
+					
+					.jt-account,.bt-account,.wx-account{
+						width:670rpx;
+						height:80rpx;
+						border:3rpx solid rgba(225,225,225,1);
+						border-radius:40rpx;
+						display: flex;
+						justify-content: center;
+						align-items: center;
+						
+						.left{
+							width: 215rpx;
+							height: 40rpx;
+							display: flex;
+							justify-content: space-around;
+							align-items: center;
+							border-right: 2rpx solid #efefef;
+						}
+						
+						.right{
+							width: 360rpx;
+							height: 50rpx;
+							display: flex;
+							justify-content: space-between;
+							align-items: center;
+							position: relative;
+							
+							.account-amount{
+								position: absolute;
+								left: 20rpx;
+								font-size:26rpx;
+								font-family:PingFang SC;
+								font-weight:400;
+								color:rgba(102,102,102,1);
+								line-height:40rpx;
+							}
+							
+							.btn{
+								position: absolute;
+								right: 0;
+							}
+						}
+					}
+			
+					.Selected{
+						border:3rpx solid rgba(255, 48, 0, 1);
+						color:rgba(255, 48, 0, 1);
+					}
+				}
+			}
+		}
+		
+		.bottom{
+			width: 100%;
+			height: 200rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			.button{
+				width: 670rpx;
+				height: 80rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background:rgba(255,229,14,1);
+				border-radius:40rpx;
+				font-size:36rpx;
+				font-family:PingFang SC;
+				font-weight:600;
+				color:rgba(51,51,51,1);
+			}
 		}
 	}
 }
