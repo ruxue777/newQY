@@ -195,7 +195,7 @@ import {request} from '@/api/request.js'
 			//团队详情页
 			toTeam(BusinessID){
 				uni.navigateTo({
-					url:`/pages/activity/dance/team?BusinessID=${BusinessID}`
+					url:`/pages/activity/dance/team?BusinessID=${BusinessID}&MSS_id=${this.MSS_id}`
 				})
 			},
 			countdown(){
