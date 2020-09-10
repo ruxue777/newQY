@@ -1,16 +1,16 @@
 <template>
 	<view class="main">
-		<u-navbar :title="BP_Name" :background="background" title-width="350" back-icon-color="#ffffff" title-color="#ffffff"></u-navbar>
-		<view class="top-team-name">《最美广场舞队》成员</view>
+		<u-navbar :title="PersonalDetails.BP_Name" :background="background" title-width="350" back-icon-color="#ffffff" title-color="#ffffff"></u-navbar>
+		<view class="top-team-name">《{{PersonalDetails.BusinessName}}》成员</view>
 		<view class="personal-box">
 			<view class="personal-details-box">
 				<text class="player-profile">选手资料:</text>
 				
 				<view class="player-profile-middle">
-					<text class="personal-name">{{BP_Name}}</text>
+					<text class="personal-name">{{PersonalDetails.BP_Name}}</text>
 					<image :src="PersonalDetails.BP_ImgUrl"></image>
 					<view class="personal-desc">
-						显示选手介绍分地区一年四季中的第四季，由于天气转冷(赤道地区除外)，在很多地区都意味着沉寂和冷清。
+						{{PersonalDetails.BP_Desc}}。
 					</view>
 				</view>
 			
@@ -18,7 +18,7 @@
 					<view class="ranking-item">
 						<view class="ranking-item-content">
 							<view class="top-text">
-								<text class="amount">21</text><text>名</text>
+								<text class="amount">{{PersonalRank.BusinessOrderID}}</text><text>名</text>
 							</view>
 							<text class="bottom-text">团队内排名</text>
 						</view>
@@ -26,7 +26,7 @@
 					<view class="ranking-item btn">
 						<view class="ranking-item-content ">
 							<view class="top-text middle">
-								<text class="amount" style="color: #FB5C6A;">21</text><text class="frequency" style="color: #FB5C6A;">次</text>
+								<text class="amount" style="color: #FB5C6A;">{{PersonalRank.MSSPR_Count}}</text><text class="frequency" style="color: #FB5C6A;">次</text>
 							</view>
 							<text class="bottom-text">打赏次数</text>
 						</view>
@@ -34,7 +34,7 @@
 					<view class="ranking-item">
 						<view class="ranking-item-content">
 							<view class="top-text">
-								<text class="amount">21</text><text>名</text>
+								<text class="amount">{{PersonalRank.OrderID}}</text><text>名</text>
 							</view>
 							<text class="bottom-text">选手排名</text>
 						</view>
@@ -56,7 +56,7 @@
 				<image src="../../../static/image/toIndex.png"></image>
 				<text>投票首页</text>
 			</view>
-			<view class="share-it">
+			<view class="share-it" @click="pop_share = true">
 				<image src="../../../static/image/share_it.png"></image>
 				<text>分享(为ta加油)</text>
 			</view>
@@ -136,20 +136,58 @@
 			</view>
 			
 			<view class="bottom">
-				<view class="button" @click="Pay()">
+				<view class="button" @click="wxPay">
 					立即支付
 				</view>
 			</view>
 		</view>
 	</u-popup>
 	
+	<u-popup v-model="pop_paySuccess" mode="center" >
+		<view class="pop_paySuccess">			
+			<image src="../../../static/image/Background%20-act-img.png"></image>
+			<view class="pop_paySuccess-content">
+				<image src="../../../static/image/paysuccess.png"></image>
+				
+				<view class="success-tips">
+					<text class="top">恭喜您,打赏成功!</text>
+					<text class="bottom">谢谢你的支持和打赏~</text>
+				</view>
+				
+				<view class="button" @click="pop_paySuccess = false">好的</view>
+			</view>		
+		</view>
+	</u-popup>
+	
+	<u-popup v-model="pop_share" mode="bottom" border-radius="20">
+		<view class="pop-share">
+			<view class="top">分享</view>
+			<view class="bottom">
+				<view class="popup-left">
+					<u-icon name="weixin-fill" size="56" color="#18b566"></u-icon>
+					<text>分享给微信好友</text>
+					<button class="share" open-type="share"></button>
+				</view>
+				<view class="popup-right" @click="sharePoster">
+					<u-icon name="download" size="56" color="#f29100"></u-icon>
+					<text>保存图片到本地</text>
+				</view>
+			</view>
+		</view>
+	</u-popup>
+	
+	<qrcode-poster ref="poster" :title="PersonalDetails.BP_Name" :subTitle="PersonalDetails.BP_Desc" :price="PersonalDetails.BP_Amount" :headerImg="PersonalDetails.BP_ImgUrl" :abImg="AdSubimg"></qrcode-poster>
 	</view>
 </template>
 
 <script>
-import {request} from '@/api/request.js'	
+import {request,wxRequest} from '@/api/request.js';
+import md5Libs from "uview-ui/libs/function/md5";
+import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue';	
 	export default {
-		props:['ProductID','BusinessID','BP_Name','MSS_id'],
+		components:{
+			QrcodePoster:QrcodePoster
+		},
 		data() {
 			return {
 				//顶部背景
@@ -161,12 +199,16 @@ import {request} from '@/api/request.js'
 					backgroundColor:'#FFBA00',
 					color:'#000000'
 				},
+				//分享弹窗
+				pop_share:false,
 				//弹窗
 				show:false,
 				//用户信息
 				userInfo:[],
 				//选手详情
 				PersonalDetails:[],
+				//选手排名
+				PersonalRank:[],
 				//打赏次数
 				reward_Amount:1,
 				//支付弹窗
@@ -175,7 +217,16 @@ import {request} from '@/api/request.js'
 				isDeduction:false,
 				//支付弹窗付款金额
 				popup_Amount:0.00,
-				DeductionTips:''
+				DeductionTips:'',
+				//订单详情
+				orderDetails:[],
+				//支付成功弹窗
+				pop_paySuccess:false,
+				ProductID:'',
+				BP_Name:'',
+				MSS_id:'',
+				wxQrCode:'',
+				AdSubimg:''
 			};
 		},
 		watch:{
@@ -190,13 +241,41 @@ import {request} from '@/api/request.js'
 				}
 			}
 		},
-		onLoad() {
-			this.getPersonalDetails()
+		onLoad(e) {
+			let scene = decodeURIComponent(e.scene);
+			if(null != scene && '' != scene && undefined != scene && scene != 'undefined'){
+				let array = scene.split(',');
+				
+				this.ProductID = array[0];
+				this.MSS_id = array[1];
+			}else{
+				this.ProductID = e.ProductID;
+				this.BP_Name = e.BP_Name;
+				this.MSS_id = e.MSS_id;
+			}
+				
+			this.getPersonalDetails();
+			this.getPersonalRank();
+			this.getPersonal_wxQrCode();
+			this.getAdSubimg();
+		},
+		//分享
+		onShareAppMessage(res) {
+			return {
+				title: this.PersonalDetails.BP_Desc,
+				path:`/pages/activity/dance/personal?ProductID=${this.ProductID}&MSS_id=${this.MSS_id}`,
+				imageUrl: this.PersonalDetails.BP_ImgUrl
+			};
 		},
 		methods:{
 			getPersonalDetails(){
 				request('API_GetInfo_BusinessProductSearch',{ProductID:this.ProductID,Longitude:114,Latitude:25}).then(res=>{
 					this.PersonalDetails = res
+				})
+			},
+			getPersonalRank(){
+				request('API_GetInfo_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,ProductID:this.ProductID}).then(res=>{
+					this.PersonalRank = res
 				})
 			},
 			rewardPresonal(){
@@ -230,6 +309,7 @@ import {request} from '@/api/request.js'
 						
 						if(res.result_code === 'SUCCESS'){
 							this.popup_Amount = (res.BPR_AppAmount - res.BPR_OffsetAmount).toFixed(2); 							
+							this.orderDetails = res
 							
 							if(res.BPR_OffsetAmount == 0){
 								this.DeductionTips = '不使用或不支持抵扣'
@@ -255,6 +335,65 @@ import {request} from '@/api/request.js'
 				}else{
 					this.DeductionTips = `不使用或不支持抵扣`
 				}
+			},
+			wxPay(){
+				uni.login({
+					success:(e=>{
+						let code = e.code
+						wxRequest('API_GetOpenid',{code:code}).then(result=>{
+							wxRequest('API_GetWxpayTradeInfo_BusinessProductRecord_V2_Json',{OrderId:this.orderDetails.OrderId,openid:result.openid,IsOffset:this.isDeductions()}).then(pay=>{
+								let obj = JSON.parse(pay.RequestStr);
+								const {appId,timeStamp,nonceStr,paySign} = obj
+								const Zpackage = obj.package
+								
+								let md5Data = md5Libs.md5(`appId=${appId}&nonceStr=${nonceStr}&package=${Zpackage}&signType=MD5
+									&timeStamp=${timeStamp}&key=78fe4b2343ec3cc7fa3a46e858e5e7bf`).toUpperCase();
+								uni.requestPayment({
+									provider:'wxpay',
+									timeStamp:timeStamp,
+									nonceStr:nonceStr,
+									package:Zpackage,
+									signType:'MD5',
+									paySign:paySign,
+									success:(success) => {
+										this.$refs.uToast.show({
+											title:'支付成功',
+											type: 'success'
+										})
+										this.pop_pay = false;
+										this.show = false;
+										//刷新
+										this.getPersonalDetails()
+										this.pop_paySuccess = true;
+									},
+									fail:(err) => {
+										this.$refs.uToast.show({
+											title:'支付失败',
+											type: 'error'
+										})
+										return;
+									}
+								})
+							})
+						})
+					}) 
+				})
+			},
+			getPersonal_wxQrCode(){
+				wxRequest('API_GetWxappQR',{scene:`${this.ProductID},${this.MSS_id}`,page:'/pages/activity/dance/personal'}).then(res=>{
+					this.wxQrCode = res.result_content
+				})
+			},
+			//不能分享未发布的页面
+			sharePoster(){
+				this.pop_share = false
+				//获取带参数二维码并传递
+				this.$refs.poster.showCanvas(this.wxQrCode)
+			},
+			getAdSubimg(){
+				request('API_GetList_ADRecord_CallIndex',{CallIndex:"ad0099"}).then(res=>{
+					this.AdSubimg = res[1].ADR_ImgUrl
+				})
 			},
 			back(){
 				uni.navigateBack()
@@ -478,6 +617,7 @@ page{
 		flex-direction: column;
 		align-items: center;
 		justify-content: flex-end;
+		background-color: #FFFFFF;
 		
 		.pop-top{
 			width: 100%;
@@ -787,6 +927,126 @@ page{
 				font-family:PingFang SC;
 				font-weight:600;
 				color:rgba(51,51,51,1);
+			}
+		}
+	}
+
+	.pop_paySuccess{
+		width: 720rpx;
+		height: 700rpx;
+		position: relative;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		
+		image{
+			width: 725rpx;
+			height: 340rpx;
+			z-index: 900;
+		}
+		
+		.pop_paySuccess-content{
+			width: 480rpx;
+			height: 510rpx;
+			position: absolute;
+			top: 150rpx;
+			background-color: #FFFFFF;			
+			box-shadow: 0rpx 20rpx 40rpx 0rpx rgba(28, 23, 47, 0.2);
+			border-radius: 28rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			
+			image{
+				width: 460rpx;
+				height: 460rpx;
+				z-index: 900;
+				position: absolute;
+				top: -175rpx;
+			}
+			
+			.success-tips{
+				width: 310rpx;
+				height: 100rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: space-between;
+				position: absolute;
+				top: 210rpx;
+				
+				.top{
+					font-size: 36rpx;
+					color: #FB606C;
+				}
+				
+				.bottom{
+					font-size: 28rpx;
+					font-family: PingFang SC;
+					font-weight: 400;
+					color: #AAAFB5;
+				}
+			}
+		
+			.button{
+				width: 400rpx;
+				height: 80rpx;
+				background: #FB606C;
+				border-radius: 44rpx;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				font-size: 30rpx;
+				font-family: PingFang SC;
+				font-weight: 400;
+				color: #FEFEFE;
+				position: absolute;
+				top: 375rpx;
+			}
+		}
+	}
+	
+	.pop-share{
+		width: 100%;
+		height: 200rpx;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		
+		.top{
+			width: 100%;
+			height: 40rpx;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			font-size: 30rpx;
+			background-color: #f4f4f4;
+		}
+		
+		.bottom{
+			width: 100%;
+			height: 160rpx;
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			
+			.popup-left,.popup-right{
+				width: 260rpx;
+				height: 130rpx;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				position: relative;
+				
+				.share{
+					width: 260rpx;
+					height: 130rpx;
+					position: absolute;
+					z-index: 1;
+					opacity: 0;
+				}
 			}
 		}
 	}

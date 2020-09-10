@@ -240,6 +240,8 @@ import {request} from '@/api/request.js'
 		display: flex;
 		align-items: center;
 		flex-direction: column;
+		background-color: #FFFFFF;
+		
 		.top-title{
 			width: 100%;
 			height: 120rpx;

@@ -70,7 +70,7 @@
 						<view class="rank-top-select-right" @click="cur = 1" :class="cur==1 ? 'selected':''">选手排行榜</view>
 					</view>
 					
-					<view class="rank-middle" v-if="cur == 0" v-for="(item,index) in TeamDetails" :key="index">
+					<view class="rank-middle" v-if="cur == 0" v-for="(item,index) in TeamDetails" :key="index" @click="toTeam(item.BusinessID)">
 						<view class="player-box">
 							<view class="ribbon">{{index+1}}</view>							
 							<image :src="item.ImgUrl" ></image>
@@ -187,9 +187,15 @@ import {request} from '@/api/request.js'
 					this.PersonalDetails = res
 				})
 			},
-			toPersonal(ProductID,BusinessID,BP_Name){
+			toPersonal(ProductID,BP_Name){
 				uni.navigateTo({
-					url:`/pages/activity/dance/personal?ProductID=${ProductID}&BusinessID=${BusinessID}&BP_Name=${BP_Name}&MSS_id=${this.MSS_id}`
+					url:`/pages/activity/dance/personal?ProductID=${ProductID}&BP_Name=${BP_Name}&MSS_id=${this.MSS_id}`
+				})
+			},
+			//团队详情页
+			toTeam(BusinessID){
+				uni.navigateTo({
+					url:`/pages/activity/dance/team?BusinessID=${BusinessID}`
 				})
 			},
 			countdown(){

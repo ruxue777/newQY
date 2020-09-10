@@ -90,10 +90,6 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 				MoreData:[],
 				//分享弹窗
 				show:false,
-				customStyle:{
-					color: 'red',
-					userInfo:[]
-				},
 				wxQrCode:'',
 				//分享广告副图
 				AdSubimg:''

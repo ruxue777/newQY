@@ -320,6 +320,7 @@ import {request} from "@/api/request.js"
 			display: flex;
 			flex-direction: column;
 			align-items: center;
+			background-color: #FFFFFF;
 			
 			.title{
 				width: 480rpx;

@@ -957,6 +957,7 @@ page{
 }	
 
 	.wxQRimg{
+		background-color: #FFFFFF;
 		.qr-img{
 			width: 450rpx;
 			height: 450rpx;

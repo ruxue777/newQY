@@ -341,6 +341,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		background-color: #FFFFFF;
 		
 		.up-cell{
 			padding: 10rpx;
@@ -373,6 +374,8 @@ import md5Libs from "uview-ui/libs/function/md5";
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		background-color: #FFFFFF;
+		
 		.title{
 			position: relative;
 			top: 25rpx;
