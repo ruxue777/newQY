@@ -145,7 +145,7 @@
 	
 	<u-popup v-model="pop_paySuccess" mode="center" >
 		<view class="pop_paySuccess">			
-			<image src="../../../static/image/Background%20-act-img.png"></image>
+			<image src="../../../static/image/Background-act-img.png"></image>
 			<view class="pop_paySuccess-content">
 				<image src="../../../static/image/paysuccess.png"></image>
 				
