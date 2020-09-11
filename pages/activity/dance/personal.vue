@@ -145,9 +145,9 @@
 	
 	<u-popup v-model="pop_paySuccess" mode="center" >
 		<view class="pop_paySuccess">			
-			<image src="../../../static/image/Background-act-img.png"></image>
+			<image :src="successImg"></image>
 			<view class="pop_paySuccess-content">
-				<image src="../../../static/image/paysuccess.png"></image>
+				<!-- <image :src="successImg"></image> -->
 				
 				<view class="success-tips">
 					<text class="top">恭喜您,打赏成功!</text>
@@ -176,14 +176,14 @@
 		</view>
 	</u-popup>
 	
-	<qrcode-poster ref="poster" :title="PersonalDetails.BP_Name" :subTitle="PersonalDetails.BP_Desc" :price="PersonalDetails.BP_Amount" :headerImg="PersonalDetails.BP_ImgUrl" :abImg="AdSubimg"></qrcode-poster>
+	<qrcode-poster ref="poster" :title="PersonalDetails.BP_Name" :subTitle="PersonalDetails.BP_Desc" :headerImg="PersonalDetails.BP_ImgUrl" :abImg="AdSubimg"></qrcode-poster>
 	</view>
 </template>
 
 <script>
 import {request,wxRequest} from '@/api/request.js';
 import md5Libs from "uview-ui/libs/function/md5";
-import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-poster.vue';	
+import QrcodePoster from '@/components/zhangyu-qrcode-poster/activicy-canvas.vue'
 	export default {
 		components:{
 			QrcodePoster:QrcodePoster
@@ -226,7 +226,8 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 				BP_Name:'',
 				MSS_id:'',
 				wxQrCode:'',
-				AdSubimg:''
+				AdSubimg:'',
+				successImg:''
 			};
 		},
 		watch:{
@@ -250,7 +251,6 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 				this.MSS_id = array[1];
 			}else{
 				this.ProductID = e.ProductID;
-				this.BP_Name = e.BP_Name;
 				this.MSS_id = e.MSS_id;
 			}
 				
@@ -392,7 +392,8 @@ import QrcodePoster  from '@/components/zhangyu-qrcode-poster/zhangyu-qrcode-pos
 			},
 			getAdSubimg(){
 				request('API_GetList_ADRecord_CallIndex',{CallIndex:"ad0099"}).then(res=>{
-					this.AdSubimg = res[1].ADR_ImgUrl
+					this.AdSubimg = res[2].ADR_ImgUrl
+					this.successImg = res[3].ADR_ImgUrl
 				})
 			},
 			back(){
@@ -940,9 +941,11 @@ page{
 		align-items: center;
 		
 		image{
-			width: 725rpx;
-			height: 340rpx;
+			width: 720rpx;
+			height: 510rpx;
 			z-index: 900;
+			position: absolute;
+			top: -50rpx;
 		}
 		
 		.pop_paySuccess-content{

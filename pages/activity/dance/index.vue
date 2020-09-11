@@ -5,10 +5,10 @@
 		</view>
 		
 		<view class="right-content">
-			<view class="activity-rule">
+			<view class="activity-rule"  @click="toRule(MSS_id)">
 				<text>活动规则</text>
 			</view>
-			<image class="music-img" src="../../../static/image/music.png"></image>
+			<image class="music-img" src="../../../static/image/music.png" @click="audio(true)"></image>
 		</view>
 		
 		<view class="background-img">
@@ -58,7 +58,7 @@
 							<input type="text" placeholder="搜索团队名称或选手名称" v-model="player_name" />
 						</view>
 						
-						<view class="seek-middle-right">
+						<view class="seek-middle-right" @click="search">
 							<text>搜索</text>
 						</view>
 					</view>
@@ -77,7 +77,7 @@
 							<view class="player-content">
 								<text class="player-name">{{item.BusinessName}}</text>
 								<view class="Reward">
-									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
+									<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle" @click="toTeam(item.BusinessID)">打赏</u-button>
 								</view>
 								<text class="votes">{{item.MSSBR_Count}}票</text>
 							</view>
@@ -123,11 +123,14 @@
 				</view>
 			</view>
 		</view>
+	
+	<u-toast ref="uToast" />
 	</view>
 </template>
 
 <script>
 import {request} from '@/api/request.js'
+	const music = uni.createInnerAudioContext();
 	export default {
 		data() {
 			return {
@@ -154,18 +157,33 @@ import {request} from '@/api/request.js'
 				TeamIndex:1,
 				//个人数据
 				PersonalDetails:[],
-				PersonalIndex:1
+				PersonalIndex:1,
+				//搜索内容
+				player_name:''
+				
 			};
 		},
 		onLoad() {
 			this.getDanceDetails()
-				
+
 			//倒计时定时器
 			setInterval(()=>{
 				this.countdown()
-			},1000)
+			},1000)		
+			
+			//背景音乐播放
+			music.src = "http://www.xfgoo.com/upfiles/music/1.mp3";
+			music.loop = true;
+			music.play()
+		
+		},
+		onUnload(){
+			music.stop()
 		},
 		methods:{
+			audio(){
+				music.pause()
+			},
 			getDanceDetails(){
 				request('API_GetInfo_SpecialSubject_Reward',{MSS_id:0}).then(res=>{
 					this.DanceDetails = res
@@ -183,9 +201,53 @@ import {request} from '@/api/request.js'
 				})
 			},
 			getPersonalDetails(MSS_id){
-				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:MSS_id,BusinessID:0,Keywords:'',pageSize:10,index:this.PersonalIndex}).then(res=>{
+				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:MSS_id,BusinessID:0,Keywords:'',pageSize:20,index:this.PersonalIndex}).then(res=>{
 					this.PersonalDetails = res
 				})
+			},
+			search(){
+				if(this.player_name.length!=0){
+					switch(this.cur){
+						//团队
+						case 0:
+							request('API_GetList_SpecialSubject_BusinessRanking_Reward',{MSS_id:this.MSS_id,Keywords:this.player_name,pageSize:20,index:1}).then(res=>{
+								if(res.length < 1){
+									this.$refs.uToast.show({
+										title:'未查询到结果',
+										type: 'warning'
+									})
+									return;
+								}else{
+									uni.navigateTo({
+										url:`/pages/activity/dance/team?MSS_id=${this.MSS_id}&BusinessID=${res[0].BusinessID}`
+									})
+								}
+							})
+						break;
+						//个人
+						case 1:
+							request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,BusinessID:0,Keywords:this.player_name,pageSize:20,index:1}).then(res=>{
+								if(res.length < 1){
+									this.$refs.uToast.show({
+										title:'未查询到结果',
+										type: 'warning'
+									})
+									return;
+								}else{
+									uni.navigateTo({
+										url:`/pages/activity/dance/personal?MSS_id=${this.MSS_id}&ProductID=${res[0].ProductID}`
+									})
+								}
+							})
+						break;
+					}
+				}else{
+					this.$refs.uToast.show({
+						title:'请输入内容',
+						type: 'warning'
+					})
+					return;
+				}
 			},
 			toPersonal(ProductID,BP_Name){
 				uni.navigateTo({
@@ -196,6 +258,11 @@ import {request} from '@/api/request.js'
 			toTeam(BusinessID){
 				uni.navigateTo({
 					url:`/pages/activity/dance/team?BusinessID=${BusinessID}&MSS_id=${this.MSS_id}`
+				})
+			},
+			toRule(MSS_id){
+				uni.navigateTo({
+					url:`/pages/activity/dance/rule?MSS_id=${MSS_id}`
 				})
 			},
 			countdown(){

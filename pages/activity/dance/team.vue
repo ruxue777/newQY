@@ -42,7 +42,7 @@
 				<view class="select-box">
 					<view class="left-personal" style="border-right: 1rpx solid #f1f1f1;">
 						<view class="content" @click="cur = 0" :class="cur==0 ? 'unselect':''">
-							参数队员
+							参赛队员
 						</view>
 					</view>
 					<view class="right-team">
@@ -58,7 +58,7 @@
 							<text>选手巅峰榜</text>
 						</view>
 						<view class="middle-content">
-							<view class="left-one">
+							<view class="left-one" @click="toPersonal(top_Three[0].ProductID,top_Three[0].MSS_id)">
 								<view class="middle">
 									<view class="ribbon">1</view>	
 									<image :src="top_Three[0].BP_ImgUrl"></image>
@@ -70,8 +70,8 @@
 							</view>
 							
 							<view class="right-two-three">
-								<view class="two-three-box" >
-									<view class="item-cont" v-if="!top_Three[1].data">
+								<view class="two-three-box">
+									<view class="item-cont" v-if="!top_Three[1].data" @click="toPersonal(top_Three[1].ProductID,top_Three[1].MSS_id)">
 										<view class="ribbon">2</view>
 										<image :src="top_Three[1].BP_ImgUrl"></image>
 										<view class="votes-box">
@@ -83,8 +83,8 @@
 									<u-empty v-else text="虚位以待" mode="list" icon-size="64"></u-empty>
 								</view>
 								
-								<view class="two-three-box" >
-									<view class="item-cont" v-if="!top_Three[2].data">
+								<view class="two-three-box">
+									<view class="item-cont" v-if="!top_Three[2].data" @click="toPersonal(top_Three[2].ProductID,top_Three[2].MSS_id)">
 										<view class="ribbon">3</view>
 										<image :src="top_Three[2].BP_ImgUrl"></image>
 										<view class="votes-box">
@@ -99,24 +99,24 @@
 						</view>
 					</view>
 				
-					<view class="others-box">
+					<view class="others-box" v-if="length>3">
 						<view class="title">
 							<text>其他队员:</text>
 						</view>
 						
 						<view class="personal-box">
-							<view class="personal-item">
+							<view class="personal-item" v-for="(item,index) in TeamRanking" :key="index" @click="toPersonal(item.ProductID,item.MSS_id)">
 								<view class="top-image">
-									<view class="ribbon">3</view>
-									<image src="../../../static/image/img1.jpg"></image>
+									<view class="ribbon">{{4+index}}</view>
+									<image :src="item.BP_ImgUrl"></image>
 								</view>
 								
 								<view class="team-box">
-									<text class="team-name">团队2</text>
+									<text class="team-name">{{item.BP_Name}}</text>
 									<view class="button">
 										<u-button ripple="true" ripple-bg-color="#dcdcdc" :custom-style="customStyle">打赏</u-button>
 									</view>
-									<text class="votes-amount">8979票</text>
+									<text class="votes-amount">{{item.MSSPR_Count}}票</text>
 								</view>
 							</view>
 						</view>
@@ -149,10 +149,11 @@ import {request} from '@/api/request.js';
 				},
 				//团队排名
 				TeamRank:[],
-				//团队内排名
+				//团队内三名之后排名
 				TeamRanking:[],
 				//前三数据
-				top_Three:[]
+				top_Three:[],
+				length:0
 			};
 		},
 		onLoad(e) {
@@ -174,30 +175,44 @@ import {request} from '@/api/request.js';
 				})
 			},
 			getTeamRanking(){
-				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,BusinessID:this.BusinessID,Keywords:'',pageSize:10,index:1}).then(res=>{
-					//this.TeamRanking = res
+				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,BusinessID:this.BusinessID,Keywords:'',pageSize:20,index:1}).then(res=>{
+					this.arrayChunk(res,3) 
 					
 					let topThreeArray = []
 					
-					let length = res.length;
+					this.length = res.length;
 					
 					const data = {data:'nullData'}
 					
-					if(length<3 && length==1){
+					if(res.length<3 && res.length==1){
 						topThreeArray.push(res[0]);
 						topThreeArray.push(data,data);
-					}else if(length<3 && length==2){
-						topThreeArray.push(res[0]);
+					}else if(res.length<3 && res.length==2){
+						topThreeArray.push(res[0],res[1]);
 						topThreeArray.push(data);
 					}else{
 						topThreeArray.push(res[0],res[1],res[2]);
 					}
 					
 					this.top_Three = topThreeArray
-					// for(let i = 0;i<2;i++){
-						
-					// }
+										
+				})
+			},
+			arrayChunk(array,size){
+				let data = []
 					
+				if(array.length<3){
+					this.TeamRanking = []
+				}else{
+					for(let i=size;i<array.length;i++){
+						data.push(array[i])
+					}
+					this.TeamRanking = data
+				}
+			},
+			toPersonal(ProductID,MSS_id){
+				uni.navigateTo({
+					url:`/pages/activity/dance/personal?ProductID=${ProductID}&MSS_id=${MSS_id}`
 				})
 			},
 			back(){
@@ -391,6 +406,7 @@ page{
 				justify-content: center;
 				flex-direction: column;
 				align-items: center;
+				margin-bottom: 10rpx;
 				
 				.title{
 					width: 100%;

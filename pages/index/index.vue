@@ -33,7 +33,7 @@
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
-						<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon>
+						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
 					</view>
 				</template>
 				<template v-slot:right="{ rightList }">
@@ -56,7 +56,7 @@
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
 						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
-						<u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon>
+						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
 					</view>
 				</template>
 			</u-waterfall>
