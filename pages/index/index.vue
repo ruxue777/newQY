@@ -26,9 +26,14 @@
 						<view class="demo-tag">
 							<!-- <view class="demo-tag-owner">自营</view>
 							<view class="demo-tag-text">放心购</view> -->
-							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
+							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
 								<span class="jintie">补贴</span>
-								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
+								<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+							</view>
+							
+							<view class="subsidy" v-if="item.IsOffset == 1">
+								<span class="jintie">补贴</span> 
+								<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
 							</view>
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
@@ -49,9 +54,14 @@
 							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 						</view>
 						<view class="demo-tag">
-							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0">
+							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
 								<span class="jintie">补贴</span>
-								<span class="diyon">抵{{item.BP_IntegralConsumeAmount}}元</span>
+								<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+							</view>
+							
+							<view class="subsidy" v-if="item.IsOffset == 1">
+								<span class="jintie">补贴</span>
+								<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
 							</view>
 						</view>
 						<view class="demo-shop">{{ item.BusinessName }}</view>
@@ -278,12 +288,14 @@ page {
 .demo-tag {
 	display: flex;
 	margin-top: 5px;
+	flex-direction: column;
 	
 	.subsidy{
 		width: 240rpx;
 		background: #ffffff;
-		display: flex;
+		display: flex;		
 		align-items: center;
+		margin-top: 5px;
 	}	
 	.jintie {
 		font-size: 22rpx;
@@ -300,7 +312,7 @@ page {
 		border-right: 1px dashed #f88c8c;
 	}
 	.diyon{
-		width: 140rpx;
+		width: 220rpx;
 		height: 36rpx;
 		font-size: 22rpx;
 		color: #eb544d;

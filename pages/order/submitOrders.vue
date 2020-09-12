@@ -34,7 +34,7 @@
 				
 				<view class="goods-list">
 					<text>商品列表</text>
-					<view class="list">
+					<view class="list" v-if="GoodsList.length !=0">
 						<view class="giveaway-name">{{GoodsList[0].BPD_Name}}</view>
 						<view class="giveaway-list">
 							<text>每月可领{{GoodsList[0].BPD_TotalCount}}{{GoodsList[0].BPD_Unit}}</text>
@@ -217,7 +217,7 @@
 				<text class="title">请输入支付密码</text>
 				<input type="password" v-model="PayPwd"/>
 				<text class="mini">忘记支付密码</text>
-				<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
+				<u-button shape="circle" size="medium" ripple="true" loading="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -350,8 +350,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 						title: `请选择支付方式`,
 						type: 'warning',
 					})
-				}
-				
+				}				
 			},
 			//是否参加积分消费
 			isSubmit(){
@@ -381,12 +380,17 @@ import md5Libs from "uview-ui/libs/function/md5";
 				
 					//判断是否支持抵扣 
 					if(this.GoodsDatails.BP_IsIntegralConsume != 0){
-						this.subTips = `可用${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}补贴权益抵扣${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}元`
-						
 						this.max_SubAmount = Math.floor(this.AccoutAmount.IntegralAmount/this.GoodsDatails.BP_IntegralConsumeAmount) 
-						
-						this.currentAmount()
-						
+						//判断账户金额是否够抵扣
+						if(this.AccoutAmount.IntegralAmount<this.GoodsDatails.BP_IntegralConsumeAmount ){
+							this.subTips = '账户金额不足';
+							//禁用抵扣开关
+							this.isSub = true;
+							this.currentAmount()
+						}else{
+							this.subTips = `可用${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}补贴权益抵扣${(this.GoodsDatails.BP_IntegralConsumeAmount*1).toFixed(2)}元`
+							this.currentAmount()
+						}			
 					}else{
 						this.subTips = '此商品暂不支持抵扣'
 						//禁用抵扣开关
@@ -453,9 +457,20 @@ import md5Libs from "uview-ui/libs/function/md5";
 					//判断是否大于最大抵扣份数
 					if(this.amount > this.max_SubAmount){
 						
-						// = 当前数量 * 原价 - 最大抵扣份数 * 单件抵扣金额
-						this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount - this.max_SubAmount * this.GoodsDatails.BP_IntegralConsumeAmount).toFixed(2)
-						this.subAmount = this.max_SubAmount
+						//判断最大抵扣份数是否为0
+						if(this.max_SubAmount == 0){
+							
+							// = 当前数量 * 原价 
+							this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount).toFixed(2)
+							this.subAmount = this.max_SubAmount
+						
+						}else{
+							
+							// = 当前数量 * 原价 - 最大抵扣份数 * 单件抵扣金额
+							this.payment_Amount = (this.amount * this.GoodsDatails.BP_Amount - this.max_SubAmount * this.GoodsDatails.BP_IntegralConsumeAmount).toFixed(2)
+							this.subAmount = this.max_SubAmount
+						}
+					
 					}else{
 						
 						// = 当前数量 * 原价 - 当前数量 * 单件抵扣金额
@@ -1087,6 +1102,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		background-color: #FFFFFF;
 		
 		.title{
 			width: 480rpx;

@@ -70,8 +70,8 @@
 						<view class="rank-top-select-right" @click="cur = 1" :class="cur==1 ? 'selected':''">选手排行榜</view>
 					</view>
 					
-					<view class="rank-middle" v-if="cur == 0" v-for="(item,index) in TeamDetails" :key="index" @click="toTeam(item.BusinessID)">
-						<view class="player-box">
+					<view class="rank-middle" v-if="cur == 0">
+						<view class="player-box" v-for="(item,index) in TeamDetails" :key="index" @click="toTeam(item.BusinessID)">
 							<view class="ribbon">{{index+1}}</view>							
 							<image :src="item.ImgUrl" ></image>
 							<view class="player-content">
@@ -84,8 +84,8 @@
 						</view>
 					</view>
 					
-					<view class="rank-middle" v-else v-for="(item,index1) in PersonalDetails" :key="index1" @click="toPersonal(item.ProductID,item.BusinessID,item.BP_Name)">
-						<view class="player-box">
+					<view class="rank-middle" v-else>
+						<view class="player-box" v-for="(item,index1) in PersonalDetails" :key="index1" @click="toPersonal(item.ProductID,item.BusinessID,item.BP_Name)">
 							<view class="ribbon">{{index1+1}}</view>							
 							<image :src="item.BP_ImgUrl" ></image>
 							<view class="player-content">

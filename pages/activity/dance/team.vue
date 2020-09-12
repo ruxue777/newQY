@@ -73,7 +73,7 @@
 								<view class="two-three-box">
 									<view class="item-cont" v-if="!top_Three[1].data" @click="toPersonal(top_Three[1].ProductID,top_Three[1].MSS_id)">
 										<view class="ribbon">2</view>
-										<image :src="top_Three[1].BP_ImgUrl"></image>
+										<image :src="top_Three[1].BP_ImgUrl" mode="aspectFill"></image>
 										<view class="votes-box">
 											<text>{{top_Three[1].BP_Name}}</text>
 											<text>{{top_Three[1].MSSPR_Count}}票</text>
@@ -86,7 +86,7 @@
 								<view class="two-three-box">
 									<view class="item-cont" v-if="!top_Three[2].data" @click="toPersonal(top_Three[2].ProductID,top_Three[2].MSS_id)">
 										<view class="ribbon">3</view>
-										<image :src="top_Three[2].BP_ImgUrl"></image>
+										<image :src="top_Three[2].BP_ImgUrl" mode="aspectFill"></image>
 										<view class="votes-box">
 											<text>{{top_Three[2].BP_Name}}</text>
 											<text>{{top_Three[2].MSSPR_Count}}票</text>
@@ -175,7 +175,7 @@ import {request} from '@/api/request.js';
 				})
 			},
 			getTeamRanking(){
-				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,BusinessID:this.BusinessID,Keywords:'',pageSize:20,index:1}).then(res=>{
+				request('API_GetList_SpecialSubject_ProductRanking_Reward',{MSS_id:this.MSS_id,BusinessID:this.BusinessID,Keywords:'',pageSize:30,index:1}).then(res=>{
 					this.arrayChunk(res,3) 
 					
 					let topThreeArray = []

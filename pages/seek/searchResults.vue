@@ -320,7 +320,7 @@ import {request} from '@/api/request.js'
 						justify-content: flex-start;
 						
 						.cont{
-							width: 100rpx;
+							width: 160rpx;
 							height: 40rpx;
 							display: flex;
 							justify-content: center;
@@ -480,7 +480,7 @@ import {request} from '@/api/request.js'
 						}
 						
 						.cont{
-							width: 100rpx;
+							width: 150rpx;
 							height: 40rpx;
 							display: flex;
 							justify-content: center;

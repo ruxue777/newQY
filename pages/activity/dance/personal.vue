@@ -560,6 +560,7 @@ page{
 			}
 			
 			.personal-display-H5{
+				padding: 20rpx;
 				margin-top: 100rpx;
 			}
 		}
