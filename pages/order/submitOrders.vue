@@ -217,7 +217,7 @@
 				<text class="title">请输入支付密码</text>
 				<input type="password" v-model="PayPwd"/>
 				<text class="mini">忘记支付密码</text>
-				<u-button shape="circle" size="medium" ripple="true" loading="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
+				<u-button shape="circle" size="medium" ripple="true" loading="false"  type="warning" @click="virtual_Payment()">确认支付</u-button>
 			</view>
 		</u-popup>
 	</view>
