@@ -3,17 +3,15 @@
 		<view v-if="page_img == true" >
 			<image :src="sWitchImg" style="width: 100%; height: 1650rpx;"></image>
 		</view>
-		
-		
+			
 		<view v-else>
 			<topSeek :LocationData="LocationData" :LatItude="LatItude" :LongItude="LongItude"></topSeek>
 			<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
-			<centralNav v-if="sWitch != 1" :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
+			<centralNav :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
 			<!-- <zhixunlan></zhixunlan> -->
 			<centGoods :HotListData="HotListData" :LatItude="LatItude" :LongItude="LongItude"></centGoods>
 			<indexImage :IndexImage="IndexImage"></indexImage>
-		
-				 
+					 
 			<!-- 瀑布流不支持组件形式 -->
 			<view class="wrap">
 				<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">
@@ -26,8 +24,8 @@
 							<!-- #ifdef MP-WEIXIN -->
 							<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl " mode="widthFix"></image></view>
 							<!-- #endif -->
-							<view class="demo-title">{{ item.BP_Name  }}</view>
-							<view class="demo-price">{{ item.BP_Amount  }}元
+							<view class="demo-title">{{ item.BP_Name }}</view>
+							<view class="demo-price">{{ item.BP_Amount }}元
 								<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 							</view>
 							<view class="demo-tag">
@@ -133,7 +131,7 @@ export default {
 	onLoad() {
 		this.getswitch()
 		
-		this.page_Init(1)
+		this.getLocationData();
 	},
 	//下拉刷新 
 	onPullDownRefresh() {
@@ -169,7 +167,7 @@ export default {
 	methods:{
 		//页面初始化方法
 		page_Init(e){
-
+			console.log(e)
 			if(e == 1){
 				uni.navigateTo({
 					url:'/pages/shopdetails/shopdetails?BusinessID=13&LatItude=25.81751&LongItude=114.92085'
@@ -177,7 +175,6 @@ export default {
 			}else{
 				this.page_img = false
 				
-				this.getLocationData();
 				this.getSwiperData();
 				this.getShopListData();
 				this.getHotListData();
@@ -209,14 +206,12 @@ export default {
 			})
 		},
 		getswitch(){
-			var data ;
 			request('API_GetList_ADRecord_CallIndex',{CallIndex:'ad0099'}).then(res=>{
 				this.sWitch = res[0].ADR_PageParam
 				this.sWitchImg = res[0].ADR_ImgUrl
 				
-				data =  res[0].ADR_PageParam;
-			})
-			return data;
+				this.page_Init(res[0].ADR_PageParam)
+			})			
 		},
 		getHotGoodsListData(callBack){
 			request('API_GetList_BusinessProductSearch_V2',{CircleID:0,CategoryID:0,BusinessID:0,Keywords:'',
