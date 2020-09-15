@@ -42,7 +42,7 @@ import {request} from '@/api/request.js'
 			},
 			toRecommend(pageType){
 				uni.navigateTo({
-					url:`/pages/recommend/recommend?pageType=${pageType}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
+					url:`/pages/recommend/recommend?CategoryID=0&pageType=${pageType}&LatItude=${this.LatItude}&LongItude=${this.LongItude}`
 				})
 			},
 			toMallmenu(){

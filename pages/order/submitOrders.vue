@@ -83,7 +83,7 @@
 				<view class="filling"></view>
 			</view>
 			
-			<view class="middle" v-else>
+			<!-- <view class="middle" v-else>
 				<text class="top-title">请填收货地址</text>
 				
 				<view class="post">
@@ -100,7 +100,7 @@
 						<input placeholder="请输入联系人地址" v-model="location"/>
 					</view>
 				</view>
-			</view>
+			</view> -->
 		</view>
 		
 		<view class="subOrder">
@@ -246,10 +246,10 @@ import md5Libs from "uview-ui/libs/function/md5";
 						name: '到店自取',
 						disabled: false
 					},
-					{
-						name: '快递(需自费)',
-						disabled: false
-					}
+					// {
+					// 	name: '快递(需自费)',
+					// 	disabled: false
+					// }
 				],
 				deductionSwitch:true,
 				isDeduction:false,

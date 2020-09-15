@@ -1,76 +1,85 @@
 <template>
 	<view>
-		<topSeek :LocationData="LocationData" :LatItude="LatItude" :LongItude="LongItude"></topSeek>
-		<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
-		<centralNav :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
-		<!-- <zhixunlan></zhixunlan> -->
-		<centGoods :HotListData="HotListData" :LatItude="LatItude" :LongItude="LongItude"></centGoods>
-		<indexImage :IndexImage="IndexImage"></indexImage>
-		 
-		<!-- 瀑布流不支持组件形式 -->
-		<view class="wrap">
-			<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">
-				<template v-slot:left="{ leftList }">
-					<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
-						<!-- 警告：微信小程序不支持嵌入lazyload组件，请自行如下使用image标签 -->
-						<!-- #ifndef MP-WEIXIN -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl " :index="index"></u-lazy-load>
-						<!-- #endif -->
-						<!-- #ifdef MP-WEIXIN -->
-						<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl " mode="widthFix"></image></view>
-						<!-- #endif -->
-						<view class="demo-title">{{ item.BP_Name  }}</view>
-						<view class="demo-price">{{ item.BP_Amount  }}元
-							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
-						</view>
-						<view class="demo-tag">
-							<!-- <view class="demo-tag-owner">自营</view>
-							<view class="demo-tag-text">放心购</view> -->
-							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
-								<span class="jintie">补贴</span>
-								<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+		<view v-if="page_img == true" >
+			<image :src="sWitchImg" style="width: 100%; height: 1650rpx;"></image>
+		</view>
+		
+		
+		<view v-else>
+			<topSeek :LocationData="LocationData" :LatItude="LatItude" :LongItude="LongItude"></topSeek>
+			<topSwiper :swiperData="swiperData" :LatItude="LatItude" :LongItude="LongItude"></topSwiper>
+			<centralNav v-if="sWitch != 1" :ShopListData="ShopListData" :LatItude="LatItude" :LongItude="LongItude"></centralNav>
+			<!-- <zhixunlan></zhixunlan> -->
+			<centGoods :HotListData="HotListData" :LatItude="LatItude" :LongItude="LongItude"></centGoods>
+			<indexImage :IndexImage="IndexImage"></indexImage>
+		
+				 
+			<!-- 瀑布流不支持组件形式 -->
+			<view class="wrap">
+				<u-waterfall v-model="HotGoodsListData" ref="uWaterfall">
+					<template v-slot:left="{ leftList }">
+						<view class="demo-warter" v-for="(item, index) in leftList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
+							<!-- 警告：微信小程序不支持嵌入lazyload组件，请自行如下使用image标签 -->
+							<!-- #ifndef MP-WEIXIN -->
+							<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl " :index="index"></u-lazy-load>
+							<!-- #endif -->
+							<!-- #ifdef MP-WEIXIN -->
+							<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl " mode="widthFix"></image></view>
+							<!-- #endif -->
+							<view class="demo-title">{{ item.BP_Name  }}</view>
+							<view class="demo-price">{{ item.BP_Amount  }}元
+								<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 							</view>
-							
-							<view class="subsidy" v-if="item.IsOffset == 1">
-								<span class="jintie">补贴</span> 
-								<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
+							<view class="demo-tag">
+								<view class="demo-tag-owner" v-if="page_switch == true">自营</view>
+								<!-- <view class="demo-tag-text">放心购</view> -->
+								<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
+									<span class="jintie">补贴</span>
+									<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+								</view>
+								
+								<view class="subsidy" v-if="item.IsOffset == 1">
+									<span class="jintie">补贴</span> 
+									<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
+								</view>
 							</view>
+							<view class="demo-shop">{{ item.BusinessName }}</view>
+							<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
+							<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
 						</view>
-						<view class="demo-shop">{{ item.BusinessName }}</view>
-						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
-						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
-					</view>
-				</template>
-				<template v-slot:right="{ rightList }">
-					<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
-						<!-- #ifndef MP-WEIXIN -->
-						<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl" :index="index"></u-lazy-load>
-						<!-- #endif -->
-						<!-- #ifdef MP-WEIXIN -->
-						<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl" mode="widthFix"></image></view>
-						<!-- #endif -->
-						<view class="demo-title">{{ item.BP_Name  }}</view>
-						<view class="demo-price">{{ item.BP_Amount  }}元
-							<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
-						</view>
-						<view class="demo-tag">
-							<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
-								<span class="jintie">补贴</span>
-								<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+					</template>
+					<template v-slot:right="{ rightList }">
+						<view class="demo-warter" v-for="(item, index) in rightList" :key="index" @click="toGoodsDetails(item.id,item.BusinessID,item.CategoryID)">
+							<!-- #ifndef MP-WEIXIN -->
+							<u-lazy-load threshold="-450" border-radius="10" :image="item.BP_ImgUrl" :index="index"></u-lazy-load>
+							<!-- #endif -->
+							<!-- #ifdef MP-WEIXIN -->
+							<view class="demo-img-wrap"><image class="demo-image" :src="item.BP_ImgUrl" mode="widthFix"></image></view>
+							<!-- #endif -->
+							<view class="demo-title">{{ item.BP_Name }}</view>
+							<view class="demo-price">{{ item.BP_Amount }}元
+								<view class="sold">{{ item.BP_OrderIsSell }}人付款</view>
 							</view>
-							
-							<view class="subsidy" v-if="item.IsOffset == 1">
-								<span class="jintie">补贴</span>
-								<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
+							<view class="demo-tag">
+								<view class="demo-tag-owner" v-if="page_switch == true">自营</view>
+								<view class="subsidy" v-if="item.BP_IntegralConsumeAmount != 0 && item.BP_IsIntegralConsume == 1">
+									<span class="jintie">补贴</span>
+									<span class="diyon">权益可抵{{item.BP_IntegralConsumeAmount}}元</span>
+								</view>
+								
+								<view class="subsidy" v-if="item.IsOffset == 1">
+									<span class="jintie">补贴</span>
+									<span class="diyon">账户可抵{{item.BPR_OffsetAmount}}元</span>
+								</view>
 							</view>
+							<view class="demo-shop">{{ item.BusinessName }}</view>
+							<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
+							<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
 						</view>
-						<view class="demo-shop">{{ item.BusinessName }}</view>
-						<!-- 微信小程序无效，因为它不支持在template中引入组件 -->
-						<!-- <u-icon name="close-circle-fill" color="#fa3534" size="34" class="u-close" ></u-icon> -->
-					</view>
-				</template>
-			</u-waterfall>
-			<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
+					</template>
+				</u-waterfall>
+				<u-loadmore bg-color="rgb(240, 240, 240)" :status="loadStatus" ></u-loadmore>
+			</view>
 		</view>
 		
 	</view>
@@ -115,18 +124,16 @@ export default {
 			flowList: [],
 			IndexImage:[],
 			//当前页面数量
-			Index:1
+			Index:1,
+			sWitch:1,
+			sWitchImg:'',
+			page_img:true
 		};
 	},
 	onLoad() {
-		this.getLocationData();
-		this.getSwiperData();
-		this.getShopListData();
-		this.getHotListData();
-		this.getIndexImage();
-		//ui库版本号
-		console.log(this.$u.config.v);
+		this.getswitch()
 		
+		this.page_Init(1)
 	},
 	//下拉刷新 
 	onPullDownRefresh() {
@@ -160,6 +167,26 @@ export default {
 		}
 	},
 	methods:{
+		//页面初始化方法
+		page_Init(e){
+
+			if(e == 1){
+				uni.navigateTo({
+					url:'/pages/shopdetails/shopdetails?BusinessID=13&LatItude=25.81751&LongItude=114.92085'
+				})
+			}else{
+				this.page_img = false
+				
+				this.getLocationData();
+				this.getSwiperData();
+				this.getShopListData();
+				this.getHotListData();
+				this.getIndexImage();
+				
+				//ui库版本号
+				console.log(this.$u.config.v);
+			}
+		},
 		//获得轮播图数据
 		getSwiperData(){				
 			request('API_GetList_IndexBanner').then(res=>{	
@@ -180,6 +207,16 @@ export default {
 			request('API_GetList_ADRecord_CallIndex',{CallIndex:'ad0006'}).then(res=>{
 				this.HotListData = res
 			})
+		},
+		getswitch(){
+			var data ;
+			request('API_GetList_ADRecord_CallIndex',{CallIndex:'ad0099'}).then(res=>{
+				this.sWitch = res[0].ADR_PageParam
+				this.sWitchImg = res[0].ADR_ImgUrl
+				
+				data =  res[0].ADR_PageParam;
+			})
+			return data;
 		},
 		getHotGoodsListData(callBack){
 			request('API_GetList_BusinessProductSearch_V2',{CircleID:0,CategoryID:0,BusinessID:0,Keywords:'',
@@ -329,14 +366,15 @@ page {
 }
 
 .demo-tag-owner {
+	width: 85rpx;
+	height: 35rpx;
 	background-color: $u-type-error;
 	color: #ffffff;
 	display: flex;
+	justify-content: center;
 	align-items: center;
-	padding: 4rpx 14rpx;
 	border-radius: 50rpx;
-	font-size: 20rpx;
-	line-height: 1;
+	font-size: 26rpx;
 }
 
 .demo-tag-text {

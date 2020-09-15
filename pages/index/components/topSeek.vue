@@ -127,7 +127,7 @@
 			<text class="title">请输入支付密码</text>
 			<input type="password" v-model="PayPwd"/>
 			<text class="mini">忘记支付密码</text>
-			<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
+			<u-button shape="circle" size="medium" ripple="true" :loading="loading" type="warning" @click="virtual_Payment()">确认支付</u-button>
 		</view>
 	</u-popup>
 	</view>
@@ -163,7 +163,8 @@ import md5Libs from "uview-ui/libs/function/md5";
 				//密码弹窗
 				Pay_popup:false,
 				//虚拟银行密码
-				PayPwd:''
+				PayPwd:'',
+				loading:false
 			}
 		},
 		watch:{
@@ -270,6 +271,9 @@ import md5Libs from "uview-ui/libs/function/md5";
 			//虚拟银行支付
 			virtual_Payment(){
 				if(this.PayPwd != '' && this.PayPwd.length != 0){
+					
+					this.loading = true
+					
 					payment('API_Payment_CashierQRCode_V2_Json',{OrderId:this.orderDetails.OrderId,AmountType:this.AmountType,PayPwd:this.PayPwd,IsOffset:this.isDeductions()}).then(res=>{
 						if(res.result_code === 'SUCCESS'){
 							this.$refs.uToast.show({
@@ -277,6 +281,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 								type: 'success',
 								url:`/pages/pay/paySuccess?AmountType=${this.AmountTypeCh}&Amount=${this.popup_Amount}&orderId=${this.orderDetails.OrderId}&BusinessName=商家账户`
 							})
+							this.loading = false
 							return;
 						}
 						else
@@ -285,6 +290,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 								title: res.result_content,
 								type: 'error'
 							})
+							this.loading = false
 							return;
 						}
 					})
