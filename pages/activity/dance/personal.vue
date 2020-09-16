@@ -74,7 +74,7 @@
 						
 			<view class="pop-top">
 				<view class="head-img">
-					<image src="../../../static/image/img4.jpg"></image>
+					<image :src="PersonalDetails.BP_ImgUrl"></image>
 				</view>
 				
 				<view class="text-box">
@@ -225,6 +225,7 @@ import QrcodePoster from '@/components/zhangyu-qrcode-poster/activicy-canvas.vue
 				ProductID:'',
 				BP_Name:'',
 				MSS_id:'',
+				//小程序二维码
 				wxQrCode:'',
 				AdSubimg:'',
 				successImg:''
@@ -380,7 +381,7 @@ import QrcodePoster from '@/components/zhangyu-qrcode-poster/activicy-canvas.vue
 				})
 			},
 			getPersonal_wxQrCode(){
-				wxRequest('API_GetWxappQR',{scene:`${this.ProductID},${this.MSS_id}`,page:'/pages/activity/dance/personal'}).then(res=>{
+				wxRequest('API_GetWxappQR',{scene:`${this.ProductID},${this.MSS_id}`,page:'pages/activity/dance/personal'}).then(res=>{
 					this.wxQrCode = res.result_content
 				})
 			},

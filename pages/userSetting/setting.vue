@@ -98,6 +98,16 @@
 				<u-button type="success" shape="circle" ripple="true" ripple-bg-color="#909399" @click="getCodeAndupPsd" :disabled="disabled">{{initText}}</u-button>
 			</view>
 		</u-popup>	
+		
+		<u-popup v-model="show_2" mode="center" border-radius="15" closeable="true" close-icon-pos="top-left">
+			<view class="updata-middle">
+				<view class="top-title">
+					3.0.1更新
+				</view>
+				<text class="content">新增活动,解决页面展示会出现的bug.</text>
+				<text style="font-size: 30rpx;">2020/9/10</text>
+			</view>
+		</u-popup>	
 	</view>
 </template>
 
@@ -109,6 +119,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 			return {
 				show_0:false,
 				show_1:false,
+				show_2:false,
 				//用户本地信息
 				userInfo:{
 				},
@@ -157,6 +168,10 @@ import md5Libs from "uview-ui/libs/function/md5";
 					break;
 					case 'exit':
 						this.exit()
+					break;
+					//日志
+					case 'updatalog':
+						this.show_2 = true;
 					break;
 					case 'message':
 						uni.navigateTo({
@@ -415,6 +430,21 @@ import md5Libs from "uview-ui/libs/function/md5";
 				align-items: center;
 				
 			}
+		}
+	}
+	.updata-middle{
+		width: 560rpx;		height: 300rpx;
+		background-color: #FFFFFF;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		.top-title{
+			font-weight: bold;
+			font-size: 38rpx;
+		}
+		.content{
+			font-size: 34rpx;
 		}
 	}
 }
