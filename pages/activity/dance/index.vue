@@ -267,9 +267,10 @@ import {request} from '@/api/request.js'
 			},
 			countdown(){
 				//获得当前时间
-				const nowtime = new Date();
+				let nowtime = new Date();
+				
 				//结束时间
-				const endtime = new Date(this.DanceDetails.MSS_CloseTime)
+				const endtime = new Date((this.DanceDetails.MSS_CloseTime).replace(/\-/g, "/"));
 				
 				const lefttime = endtime.getTime() - nowtime.getTime();  //距离结束时间的毫秒数
 				let	leftd = Math.floor(lefttime/(1000*60*60*24));  //计算天数
