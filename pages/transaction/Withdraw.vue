@@ -47,7 +47,7 @@
 			
 			<view class="cont">
 				<view class="middle"  @click="show = true">
-					<view class="title">充值账户类别:</view>
+					<view class="title">转账账户类别:</view>
 					<text class="sort">{{default_0}}</text>
 				</view>
 			</view>
@@ -95,7 +95,7 @@ import {request} from '@/api/request.js'
 				],
 				show: false,
 				popup:false,
-				default_0:'点击选择充值的账户',
+				default_0:'点击选择转账的账户',
 				AmountType:''
 			};
 		},
