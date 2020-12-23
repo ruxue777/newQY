@@ -217,7 +217,7 @@
 				<text class="title">请输入支付密码</text>
 				<input type="password" v-model="PayPwd"/>
 				<text class="mini">忘记支付密码</text>
-				<u-button shape="circle" size="medium" ripple="true" loading="false"  type="warning" @click="virtual_Payment()">确认支付</u-button>
+				<u-button shape="circle" size="medium" ripple="true"  type="warning" @click="virtual_Payment()">确认支付</u-button>
 			</view>
 		</u-popup>
 	</view>
@@ -436,7 +436,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 			submitOrder(){		
 				request('API_AddBusinessProduct_V4',{user_id:this.user_id,ProductID:this.GoodsDatails.id,Count:this.amount,UserName:this.name,
 					Mobile:this.callphone,Address:this.location,ReceiveType:this.collection_Method(),IsIntegralConsume:this.isSubmit()}).then(res=>{
-						
+						console.log(res)
 						this.popup_Amount = (res.BPR_AppAmount - res.BPR_OffsetAmount).toFixed(2); 							
 						this.orderData = res;
 						

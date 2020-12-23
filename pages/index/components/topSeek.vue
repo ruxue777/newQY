@@ -657,6 +657,7 @@ import md5Libs from "uview-ui/libs/function/md5";
 	height: 500rpx;
 	display: flex;
 	flex-direction: column;
+	background-color: #FFFFFF;
 	align-items: center;
 	
 	.title{
